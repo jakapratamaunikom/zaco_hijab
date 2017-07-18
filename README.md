@@ -1,1 +1,1 @@
-# Zaco-Hijab
+Aplikasi Stok dan Penjualan berbasis PHP
