@@ -1,1 +1,4 @@
-Aplikasi Stok dan Penjualan berbasis PHP
+Aplikasi Penjualan Bernasis WEB
+
+-Menggunakan Template AdminLTE
+-Native
