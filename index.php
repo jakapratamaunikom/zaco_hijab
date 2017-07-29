@@ -14,8 +14,10 @@
 		
 		<title>Sistem Informasi Zaco Hijab</title>
 		<!-- jQuery -->
-
+		<script src="<?= base_url."assets/plugins/jQuery/jquery-2.2.3.min.js"; ?>"></script>
 		<!-- CSS -->
+		<?php include_once("pages/css.php") ?>
+
 	</head>
 	<body class="hold-transition skin-blue sidebar-mini">
 
@@ -39,6 +41,6 @@
 		<!-- ./wrapper -->
 
 		<!-- JavaScript -->
-
+		<?php include_once("pages/javascript.php") ?>
 	</body>
 </html>
