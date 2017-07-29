@@ -24,16 +24,16 @@
 			<?php include_once("pages/header.php") ?>
 
 			<!-- Sidebar -->
-
+			<?php include_once("pages/sidebar.php") ?>
 
 			<!-- Content -->
-
+			<?php include_once("pages/content.php") ?>
 
 			<!-- Footer -->
-
+			<?php include_once("pages/footer.php") ?>
 
 			<!-- Control Sidebar -->
-
+			<?php include_once("pages/control_sidebar.php") ?>
 
 		</div>
 		<!-- ./wrapper -->
