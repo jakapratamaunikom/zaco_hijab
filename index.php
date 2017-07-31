@@ -2,7 +2,16 @@
 	Define("BASE_PATH", true);
 	date_default_timezone_set('Asia/Jakarta');
 
+	// include semua fungsi
 	include_once("function/helper.php");
+
+	// start session
+	session_start();
+
+	// inisialisasi parameter get
+	// $m => get data module
+	// $p => get data page yang ada di dalam module
+	
 
 ?>
 <!DOCTYPE html>
