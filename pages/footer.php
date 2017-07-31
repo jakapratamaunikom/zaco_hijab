@@ -7,7 +7,7 @@
 	<footer class="main-footer">
     	<!-- To the right -->
     	<div class="pull-right hidden-xs">
-      		Anything you want
+      		<?= version; ?>
     	</div>
 
     	<!-- Default to the left -->
