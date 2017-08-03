@@ -14,7 +14,11 @@
 		<link rel="stylesheet" href="<?= base_url."assets/dist/css/skins/_all-skins.min.css"; ?>">
 
 		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/sweet-alert/sweet-alert.min.css"; ?>">
-
+		<style type="text/css">
+			legend{
+				font-size: 15px;
+			}
+		</style>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
