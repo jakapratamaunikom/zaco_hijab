@@ -3,6 +3,10 @@
 	
 ?>
 
+<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
+<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+<!-- -->
+
 <!-- List -->
 <section class="content-header">
 	<h1>Pengeluaran</h1>
