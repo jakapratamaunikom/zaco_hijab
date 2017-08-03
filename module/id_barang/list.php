@@ -9,6 +9,8 @@
         <!-- DataTables -->
         <link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
         <link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+        <!-- Datepicker -->
+        <link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
     <!-- -->
 
     <!-- header dan breadcrumb -->
@@ -40,11 +42,11 @@
                             <div class="col-md-12 col-xs-12">
                                 <div class="btn-group">
                                     <!-- tambah -->
-                                    <button type="button" id="btn_tambahIdBarang" class="btn btn-default">Tambah</button>
+                                    <button type="button" id="btn_tambahIdBarang" class="btn btn-default"><i class="fa fa-plus"></i> Tambah</button>
                                     <!-- export excel -->
-                                    <button type="button" class="btn btn-default">Export Excel</button>
+                                    <button type="button" class="btn btn-success" id="excelBarang"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                                     <!-- export pdf -->
-                                    <button type="button" class="btn btn-default">Export Pdf</button>
+                                    <button type="button" class="btn btn-danger" id="pdfBarang"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +85,7 @@
                     <h4 class="modal-title">Form Id Barang</h4>
                 </div>
                 <div class="modal-body">
-                    <form role=form>
+                    <form id="form_modal_idBarang" role=form>
                         <!-- field id barang -->
                         <div class="form-group">
                             <label for="fId_barang">Id Barang</label>
@@ -96,9 +98,51 @@
                         </div>
                 </div>
                 <div class="box-footer">
-                    <button class="btn btn-info pull-right" type="submit">Tambah</button>
+                    <button class="btn btn-info pull-right" type="submit" id="btn_submit_idBarang">Tambah</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
                 </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal export -->
+    <div class="modal fade" id="modal_exportIdBarang">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- button close -->
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                    <!-- header modal -->
+                    <h4 class="modal-title"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="form_modal_exportIdBarang" role=form>
+                        <!-- field jenis -->
+                        <div class="form-group">
+                            <label for="fmJenis">Jenis</label>
+                            <select id="fmJenis" class="form-control">
+                                <option value="">-- Pilih Jenis --</option>
+                                <option value="harian">Harian</option>
+                                <option value="bulanan">Bulanan</option>
+                            </select>
+                        </div>
+                       <!-- tanggal -->
+                        <div class="form-group">
+                            <label for="fmTgl">Tanggal</label>
+                            <input type="text" name="fmTgl" id="fmTgl" class="form-control datepicker">
+                        </div>
+                        <!-- bulan - tahun -->
+                        <div class="form-group">
+                            <label for="fmBln">Bulan</label>
+                            <input type="text" name="fmBln" id="fmBln" class="form-control datepicker">
+                        </div>
+                </div>
+                <div class="box-footer">
+                    <button class="btn pull-right" type="submit" id="btn_export_submit">Export</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -109,9 +153,12 @@
         <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"; ?>"></script>
         <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
         <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
+        <!-- js datepicker -->
+        <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
         <script type="text/javascript">
             // setting datatable
-            $(function(){
+            $(document).ready(function(){
+                // setting datatable
                 $("#tabel_id_barang").DataTable({
                     "language" : {
                         "lengthMenu": "Tampilkan _MENU_ data/page",
@@ -127,11 +174,154 @@
                         }
                     }
                 });
-                // btn tambah id barang
+
+                // setting form tambah id barang
+
+                // btn tambah id barang onclick
                 $("#btn_tambahIdBarang").click(function(){
                     // tampilkan modal
                     $("#modal_idBarang").modal('show');
+                    $('#form_modal_idBarang').trigger('reset'); // bersihkan form
                 });
+
+                // submit form modal tambah id barang
+                $("#form_modal_idBarang").submit(function(){
+                    var id_barang = $("#fId_barang").val().trim();
+                    var nama = $("#fNama_idBarang").val().trim();
+
+                    // validasi
+                    if(id_barang === "" || nama === ""){ // jika salah satu field kosong
+                        swal("Pesan", "Harap Field Id Barang dan Nama Diisi", "warning");
+                        return false;
+                    }
+                    else{
+                        // cek panjang karakter id barang
+                        if(id_barang.length > 4){ // jika melebihi ketentuan
+                            swal("Pesan", "Id Barang Maksimal Diisi 4 Karakter", "error");
+                            return false;
+                        }
+                        else{
+                            swal("doing ajax");
+                        }
+                    }
+
+                    return false;
+                });
+
+                //===================================================================//
+
+                // setting export
+
+                // setting datepicker fmTgl
+                $("#fmTgl").datepicker({
+                    autoclose: true,
+                    format: "dd-mm-yyyy",
+                    todayHighlight: true,
+                    orientation: "bottom auto",
+                    todayBtn: true,
+                    todayHighlight: true,
+                });
+
+                // setting datepicker fmBln
+                $("#fmBln").datepicker({
+                    autoclose: true,
+                    format: "MM yyyy",
+                    minViewMode: 1,
+                    orientation: "bottom auto",
+                });
+
+                // btn excelBarang onclick
+                $("#excelBarang").click(function(){
+                    set_allBtn_disable(); // disable semua btn modal
+                    $('#form_modal_exportIdBarang').trigger('reset'); // reset form modal
+                    // tampilkan modal
+                    $("#btn_export_submit").addClass("btn-success");
+                    $("#btn_export_submit").removeClass("btn-danger");
+                    $("#modal_exportIdBarang .modal-title").html("Export Excel"); // setting header
+                    $("#modal_exportIdBarang").modal();
+                });
+
+                // btn pdfBarang onclick
+                $("#pdfBarang").click(function(){
+                    set_allBtn_disable(); // disable semua btn modal
+                    $('#form_modal_exportIdBarang').trigger('reset'); // reset form modal
+                    // tampilkan modal
+                    $("#btn_export_submit").addClass("btn-danger");
+                    $("#btn_export_submit").removeClass("btn-success");
+                    $("#modal_exportIdBarang .modal-title").html("Export Pdf"); // setting header
+                    $("#modal_exportIdBarang").modal();
+                });
+
+                // pilihan jenis export
+                $("#fmJenis").change(function(){
+                    var value = this.value;
+                    if(value === ""){ // jika tidak dipilih 
+                        $('#form_modal_exportBarang').trigger('reset'); // reset form modal
+                        // semua field disable
+                        set_allBtn_disable();
+                    }
+                    else if(value === "harian"){ // jika harian
+                        set_allF_clear(); // bersihkan form
+                        // field bulan disable
+                        $("#fmBln").prop("disabled", true);
+                        // field tgl aktif
+                        $("#fmTgl").prop("disabled", false);
+                    }
+                    else if(value === "bulanan"){ // jika bulanan
+                        set_allF_clear(); // bersihkan form
+                        // field tgl disable
+                        $("#fmTgl").prop("disabled", true);
+                        // field bln aktif
+                        $("#fmBln").prop("disabled", false);
+                    }
+                });
+
+                // submit form modal export
+                $("#form_modal_exportIdBarang").submit(function(){
+                    var jenis = $("#fmJenis").val().trim();
+                    // validasi
+                    if(jenis === ""){ // jika tidak dipilih
+                        swal("Pesan", "Jenis Pilihan Export Data Belum Dipilih", "warning");
+                        return false;
+                    }
+                    else if(jenis === "harian"){ 
+                        if($("#fmTgl").val().trim() === ""){ //jika tgl kosong
+                            swal("Pesan", "Tanggal Belum Diisi", "warning");
+                            return false;
+                        }
+                        else{ // lakukan ajax
+                            swal("doing ajax");
+                        }
+                    }
+                    else if(jenis === "bulanan"){
+                        if($("#fmBln").val().trim() === ""){ // jika bln kosong
+                            swal("Pesan", "Bulan Belum Diisi", "warning");
+                            return false;
+                        }
+                        else{ // lakukan ajax
+                            swal("doing ajax");
+                        }
+                    }
+
+                    return false;
+                });
+
+                // fungsi untuk setting disable btn
+                function set_allBtn_disable(){
+                    $("#fmTgl").prop("disabled", true);
+                    $("#fmBln").prop("disabled", true);
+                }
+
+                // fungsi untuk bersihkan field
+                function set_allF_clear(){
+                    $("#fmTgl").val("");
+                    $("#fmBln").val("");
+                }
+
+                // fungsi get report sesuai tgl/bln yg dipilih dgn ajax
+                function getReport(){
+
+                }
             });
         </script>
     <!-- -->    
