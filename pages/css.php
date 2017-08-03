@@ -2,10 +2,10 @@
 
 		<!-- Bootstrap 3.3.6 -->
 		<link rel="stylesheet" href="<?= base_url."assets/bootstrap/css/bootstrap.min.css"; ?>">
-		<!-- Font Awesome -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+		<!-- font awesome -->
+		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/font-awesome-4.7.0/css/font-awesome.min.css"; ?>">
 		<!-- Ionicons -->
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+		<link rel="stylesheet" href="<?= base_url."assets/plugins/ionicons-2.0.1/css/ionicons.min.css"; ?>">
 		<!-- Select2 -->
   		<link rel="stylesheet" href="<?= base_url."assets/plugins/select2/select2.min.css"; ?>">
 		<!-- Theme style -->
@@ -14,6 +14,8 @@
 		<link rel="stylesheet" href="<?= base_url."assets/dist/css/skins/_all-skins.min.css"; ?>">
 
 		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/sweet-alert/sweet-alert.min.css"; ?>">
+
+		
 		<style type="text/css">
 			legend{
 				font-size: 15px;
