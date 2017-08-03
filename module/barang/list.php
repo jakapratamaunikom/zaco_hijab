@@ -88,7 +88,7 @@
                     <h4 class="modal-title"></h4>
                 </div>
                 <div class="modal-body">
-                    <form role=form>
+                    <form id="form_modal_exportBarang" role=form>
                         <!-- field jenis -->
                         <div class="form-group">
                             <label for="fmJenis">Jenis</label>
@@ -103,19 +103,14 @@
                             <label for="fmTgl">Tanggal</label>
                             <input type="text" name="fmTgl" id="fmTgl" class="form-control datepicker">
                         </div>
-                        <!-- bulan -->
+                        <!-- bulan - tahun -->
                         <div class="form-group">
                             <label for="fmBln">Bulan</label>
                             <input type="text" name="fmBln" id="fmBln" class="form-control datepicker">
                         </div>
-                        <!-- tahun -->
-                        <div class="form-group">
-                            <label for="fmThn">Tahun</label>
-                            <input type="text" name="fmThn" id="fmThn" class="form-control datepicker">
-                        </div>
                 </div>
                 <div class="box-footer">
-                    <button class="btn btn-info pull-right" type="submit">Tambah</button>
+                    <button class="btn btn-info pull-right" type="submit" id="btn_export_submit">Export</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
                 </div>
             </div>
@@ -133,13 +128,8 @@
 		<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 		<script type="text/javascript">
 			// setting datatable
-			$(function(){
-				// inisialisasi
-				$("#fmTgl").prop("disabled", true);
-				$("#fmBln").prop("disabled", true);
-				$("#fmThn").prop("disabled", true);
-
-
+			$(document).ready(function(){
+				// setting datatable
 				$("#tabel_barang").DataTable({
 					"language" : {
 						"lengthMenu": "Tampilkan _MENU_ data/page",
@@ -159,7 +149,7 @@
 				// setting datepicker fmTgl
 				$("#fmTgl").datepicker({
 					autoclose: true,
-			        format: "yyyy-mm-dd",
+			        format: "dd-mm-yyyy",
 			        todayHighlight: true,
 			        orientation: "bottom auto",
 			        todayBtn: true,
@@ -169,32 +159,24 @@
 				// setting datepicker fmBln
 				$("#fmBln").datepicker({
 					autoclose: true,
-			        format: "yyyy-mm-dd",
-			        todayHighlight: true,
+			        format: "MM yyyy",
+			  		minViewMode: 1,
 			        orientation: "bottom auto",
-			        todayBtn: true,
-			        todayHighlight: true,
 				});
 
-				// setting datepicker fmThn
-				$("#fmThn").datepicker({
-					autoclose: true,
-			        format: "yyyy-mm-dd",
-			        todayHighlight: true,
-			        orientation: "bottom auto",
-			        todayBtn: true,
-			        todayHighlight: true,
-				});
-
-				// btn excelBarang
+				// btn excelBarang onclick
 				$("#excelBarang").click(function(){
+					set_allBtn_disable(); // disable semua btn modal
+					$('#form_modal_exportBarang').trigger('reset'); // reset form modal
 					// tampilkan modal
 					$("#modal_exportBarang .modal-title").html("Export Excel"); // setting header
 					$("#modal_exportBarang").modal();
 				});
 
-				// btn pdfBarang
+				// btn pdfBarang onclick
 				$("#pdfBarang").click(function(){
+					set_allBtn_disable(); // disable semua btn modal
+					$('#form_modal_exportBarang').trigger('reset'); // reset form modal
 					// tampilkan modal
 					$("#modal_exportBarang .modal-title").html("Export Pdf"); // setting header
 					$("#modal_exportBarang").modal();
@@ -203,28 +185,73 @@
 				// pilihan jenis export
 				$("#fmJenis").change(function(){
 					var value = this.value;
-					// console.log(this.value);
 					if(value === ""){ // jika tidak dipilih 
+						$('#form_modal_exportBarang').trigger('reset'); // reset form modal
 						// semua field disable
-						$("#fmTgl").prop("disabled", true);
-						$("#fmBln").prop("disabled", true);
-						$("#fmThn").prop("disabled", true);
+						set_allBtn_disable();
 					}
 					else if(value === "harian"){ // jika harian
-						// field tahun dan bulan disable
+						set_allF_clear(); // bersihkan form
+						// field bulan disable
 						$("#fmBln").prop("disabled", true);
-						$("#fmThn").prop("disabled", true);
 						// field tgl aktif
 						$("#fmTgl").prop("disabled", false);
 					}
 					else if(value === "bulanan"){ // jika bulanan
+						set_allF_clear(); // bersihkan form
 						// field tgl disable
 						$("#fmTgl").prop("disabled", true);
-						// field bln dan thn aktif
+						// field bln aktif
 						$("#fmBln").prop("disabled", false);
-						$("#fmThn").prop("disabled", false);
 					}
 				});
+
+				// submit form modal export
+				$("#form_modal_exportBarang").submit(function(){
+					var jenis = $("#fmJenis").val().trim();
+					// validasi
+					if(jenis === ""){ // jika tidak dipilih
+						swal("Pesan", "Jenis Pilihan Export Data Belum Dipilih", "warning");
+						return false;
+					}
+					else if(jenis === "harian"){ 
+						if($("#fmTgl").val().trim() === ""){ //jika tgl kosong
+							swal("Pesan", "Tanggal Belum Diisi", "warning");
+							return false;
+						}
+						else{ // lakukan ajax
+							swal("doing ajax");
+						}
+					}
+					else if(jenis === "bulanan"){
+						if($("#fmBln").val().trim() === ""){ // jika bln kosong
+							swal("Pesan", "Bulan Belum Diisi", "warning");
+							return false;
+						}
+						else{ // lakukan ajax
+							swal("doing ajax");
+						}
+					}
+
+					return false;
+				});
+
+				// fungsi untuk setting disable btn
+				function set_allBtn_disable(){
+					$("#fmTgl").prop("disabled", true);
+					$("#fmBln").prop("disabled", true);
+				}
+
+				// fungsi untuk bersihkan field
+				function set_allF_clear(){
+					$("#fmTgl").val("");
+					$("#fmBln").val("");
+				}
+
+				// fungsi get report sesuai tgl/bln yg dipilih dgn ajax
+				function getReport(){
+
+				}
 			});
 		</script>
     <!-- -->

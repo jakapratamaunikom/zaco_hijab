@@ -8,7 +8,7 @@
 => field modal jenis. id = fmJenis
 => field modal tanggal. id = fmTgl
 => field modal bulan. id = fmBln
-=> field modal tahun. id = fmThn
+=> btn submit modal. id = btn_export_submit
 
 --------------------------------
 
