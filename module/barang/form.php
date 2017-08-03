@@ -27,7 +27,7 @@
 		<div class="row">
     		<div class="col-xs-12">
     			<!-- panel box -->
-    			<div class="box">
+    			<div class="box box-info">
     				<!-- judul panel box -->
     				<div class="box-header">
                         <div class="row">
@@ -53,13 +53,13 @@
 	          									</div>
 	          								</div>
 	          								<div class="row">
-	          									<div class="col-md-6 col-xs-12">
+	          									<div class="col-md-9 col-xs-12">
 	          										<select id="fId_barang" name="fId_barang" class="form-control">
 			          									<option value="">-- Pilih Id Barang --</option>
 			          								</select>
 	          									</div>
-	          									<div class="col-md-6 col-xs-12">
-	          										<button type="button" class="btn btn-default">Tambah Id Barang</button>
+	          									<div class="col-md-3 col-xs-12">
+	          										<button type="button" class="btn btn-default pull-right">Tambah Id Barang</button>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -72,13 +72,13 @@
 	          									</div>
 	          								</div>
 	          								<div class="row">
-	          									<div class="col-md-6 col-xs-12">
+	          									<div class="col-md-9 col-xs-12">
 	          										<select id="fId_warna" name="fId_barang" class="form-control">
 			          									<option value="">-- Pilih Id Warna --</option>
 			          								</select>
 	          									</div>
-	          									<div class="col-md-6 col-xs-12">
-	          										<button type="button" class="btn btn-default">Tambah Id Warna</button>
+	          									<div class="col-md-3 col-xs-12">
+	          										<button type="button" class="btn btn-default pull-right">Tambah Id Warna</button>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -139,7 +139,7 @@
 	          								</div>
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
-	          										<textarea class="form-control" rows="5" placeholder="Masukkan Keterangan" id="fKeterangan" name="fKeterangan"></textarea>
+	          										<textarea class="form-control" rows="2" placeholder="Masukkan Keterangan" id="fKeterangan" name="fKeterangan"></textarea>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -160,7 +160,7 @@
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
 		          									<div class="input-group">
-		          										<span class="input-group-addon">Rp. </span>
+		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
 		          										<input class="form-control" placeholder="Masukkan HPP" id="fHpp" name="fHpp">
 		          										<span class="input-group-addon">,00</span>
 		          									</div>
@@ -178,7 +178,7 @@
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
 	          										<div class="input-group">
-		          										<span class="input-group-addon">Rp. </span>
+		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
 	          											<input class="form-control" placeholder="Masukkan Harga Pasar" id="fHarga_pasar" name="fHarga_pasar">
 	          											<span class="input-group-addon">,00</span>
 	          										</div>
@@ -196,7 +196,7 @@
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
 	          										<div class="input-group">
-		          										<span class="input-group-addon">Rp. </span>
+		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
 	          											<input class="form-control" placeholder="Masukkan Harga Market Place" id="fHarga_market" name="fHarga_market">
 	          											<span class="input-group-addon">,00</span>
 	          										</div>
@@ -214,7 +214,7 @@
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
 	          										<div class="input-group">
-		          										<span class="input-group-addon">Rp. </span>
+		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
 	          											<input class="form-control" placeholder="Masukkan Harga IG" id="fHarga_ig" name="fHarga_ig">
 	          											<span class="input-group-addon">,00</span>
 	          										</div>
@@ -224,13 +224,18 @@
 	          						</fieldset>
 	    						</div>
 	    					</form>
-    					</div>
-          				
+    					</div>	
     				</div>
+	    			<div class="box-footer text-right">
+						<button type="submit" class="btn btn-default btn-lg"><i class="fa-">Tambah</button>
+						<button type="submit" class="btn btn-default btn-lg">Batal</button>
+					</div>		
     			</div>
     		</div>
     	</div>	
 	</section>
+
+	
 
 	<!-- js -->
     	<!-- DataTables -->

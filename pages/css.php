@@ -18,6 +18,10 @@
 			legend{
 				font-size: 15px;
 			}
+			/*.rp{
+				background-color: #dd4b39;
+				/*border-color: #d73925;*/
+			}*/
 		</style>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

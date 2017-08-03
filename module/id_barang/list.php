@@ -95,8 +95,8 @@
                             <input type="text" name="fNama_idBarang" id="fNama_idBarang" class="form-control" placeholder="Masukkan Nama Barang">
                         </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="submit_idBarang" type="button" class="btn btn-default">Tambah</button>
+                <div class="box-footer">
+                    <button class="btn btn-info pull-right" type="submit">Tambah</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
                 </div>
             </div>
