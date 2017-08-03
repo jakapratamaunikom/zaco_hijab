@@ -11,7 +11,16 @@
 	// inisialisasi parameter get
 	// $m => get data module
 	// $p => get data page yang ada di dalam module
+
+	$m = isset($_GET['m']) ? $_GET['m'] : false; // untuk get menu
+	$p = isset($_GET['p']) ? $_GET['p'] : false; // untuk get page
 	
+	// if(isset($_GET['m'])){
+	// 	$m = $_GET['m'];
+	// }
+	// else{
+	// 	$m = false;
+	// }
 
 ?>
 <!DOCTYPE html>
