@@ -37,7 +37,7 @@
 		<?php include_once("pages/css.php") ?>
 
 	</head>
-	<body class="hold-transition skin-blue sidebar-mini">
+	<body class="hold-transition skin-red sidebar-mini">
 
 		<div class="wrapper">
 			<!-- Header -->
