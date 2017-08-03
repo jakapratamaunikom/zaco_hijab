@@ -42,9 +42,9 @@
 								<!-- tambah -->
 	          					<a href="<?= base_url."index.php?m=barang&p=form" ?>" class="btn btn-default" role="button">Tambah Data</a>
 	          					<!-- export excel -->
-	          					<button type="button" class="btn btn-default" id="excelBarang">Export Excel</button>
+	          					<button type="button" class="btn btn-success" id="excelBarang"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 	          					<!-- export pdf -->
-	          					<button type="button" class="btn btn-default" id="pdfBarang">Export Pdf</button>
+	          					<button type="button" class="btn btn-danger" id="pdfBarang"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
 	            			</div>
 						</div>	
 					</div>
@@ -110,9 +110,10 @@
                         </div>
                 </div>
                 <div class="box-footer">
-                    <button class="btn btn-info pull-right" type="submit" id="btn_export_submit">Export</button>
+                    <button class="btn pull-right" type="submit" id="btn_export_submit">Export</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -169,6 +170,8 @@
 					set_allBtn_disable(); // disable semua btn modal
 					$('#form_modal_exportBarang').trigger('reset'); // reset form modal
 					// tampilkan modal
+					$("#btn_export_submit").addClass("btn-success");
+					$("#btn_export_submit").removeClass("btn-danger");
 					$("#modal_exportBarang .modal-title").html("Export Excel"); // setting header
 					$("#modal_exportBarang").modal();
 				});
@@ -178,6 +181,8 @@
 					set_allBtn_disable(); // disable semua btn modal
 					$('#form_modal_exportBarang').trigger('reset'); // reset form modal
 					// tampilkan modal
+					$("#btn_export_submit").addClass("btn-danger");
+					$("#btn_export_submit").removeClass("btn-success");
 					$("#modal_exportBarang .modal-title").html("Export Pdf"); // setting header
 					$("#modal_exportBarang").modal();
 				});
