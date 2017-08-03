@@ -17,7 +17,7 @@
   		<ol class="breadcrumb">
     		<li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i>Zaco Hijab</a></li>
     		<li>Data Master</li>
-    		<li><a href="<?= base_url."index.php?m=barang&p=list" ?>">Barang</li>
+    		<li><a href="<?= base_url."index.php?m=barang&p=list" ?>">Barang</a></li>
     		<li><i class="active"></i>Form Data Barang</a></li>
   		</ol>
 	</section>
@@ -27,7 +27,7 @@
 		<div class="row">
     		<div class="col-xs-12">
     			<!-- panel box -->
-    			<div class="box box-info">
+    			<div class="box">
     				<!-- judul panel box -->
     				<div class="box-header">
                         <div class="row">
@@ -134,12 +134,12 @@
 	          							<div class="form-group">
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
-	          										<label for="fKeterangan">Keterangan</label>
+	          										<label for="fKet">Keterangan</label>
 	          									</div>
 	          								</div>
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
-	          										<textarea class="form-control" rows="2" placeholder="Masukkan Keterangan" id="fKeterangan" name="fKeterangan"></textarea>
+	          										<textarea class="form-control" rows="2" placeholder="Masukkan Keterangan" id="fKetn" name="fKet"></textarea>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -204,7 +204,7 @@
 	          								</div>		
 	          							</div>
 
-	          							<!-- nama barang -->
+	          							<!-- harga ig -->
 	          							<div class="form-group">
 	          								<div class="row">
 	          									<div class="col-md-12 col-xs-12">
@@ -227,8 +227,8 @@
     					</div>	
     				</div>
 	    			<div class="box-footer text-right">
-						<button type="submit" class="btn btn-default btn-lg"><i class="fa-">Tambah</button>
-						<button type="submit" class="btn btn-default btn-lg">Batal</button>
+						<button type="submit" class="btn btn-default btn-lg"><i class="fa fa-plus"></i>  Tambah</button>
+						<a href="<?=base_url."index.php?m=barang&p=list" ?>" class="btn btn-default btn-lg"><i class="fa fa-reply"></i>  Batal</button>
 					</div>		
     			</div>
     		</div>
