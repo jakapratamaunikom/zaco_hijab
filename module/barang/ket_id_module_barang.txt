@@ -5,6 +5,7 @@
 => button export pdf. id = pdfBarang
 => tabel. id = tabel_barang
 => modal export. id = modal_exportBarang
+=> form export data. id = form_modal_exportBarang
 => field modal jenis. id = fmJenis
 => field modal tanggal. id = fmTgl
 => field modal bulan. id = fmBln
