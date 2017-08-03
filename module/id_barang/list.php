@@ -40,7 +40,7 @@
                             <div class="col-md-12 col-xs-12">
                                 <div class="btn-group">
                                     <!-- tambah -->
-                                    <button type="button" class="btn btn-default">Tambah</button>
+                                    <button type="button" id="btn_tambahIdBarang" class="btn btn-default">Tambah</button>
                                     <!-- export excel -->
                                     <button type="button" class="btn btn-default">Export Excel</button>
                                     <!-- export pdf -->
@@ -72,6 +72,38 @@
     	</div>
     </section>
 
+    <!-- modal tambah data -->
+    <div class="modal fade" id="modal_idBarang">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- button close -->
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                    <!-- header modal -->
+                    <h4 class="modal-title">Form Id Barang</h4>
+                </div>
+                <div class="modal-body">
+                    <form role=form>
+                        <!-- field id barang -->
+                        <div class="form-group">
+                            <label for="fId_barang">Id Barang</label>
+                            <input type="text" name="fId_barang" id="fId_barang" class="form-control" placeholder="Masukkan ID Barang">
+                        </div>
+                        <!-- field nama -->
+                        <div class="form-group">
+                            <label for="fNama_idBarang">Nama</label>
+                            <input type="text" name="fNama_idBarang" id="fNama_idBarang" class="form-control" placeholder="Masukkan Nama Barang">
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="submit_idBarang" type="button" class="btn btn-default">Tambah</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+
     <!-- js -->
     	<!-- DataTables -->
 		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js"; ?>"></script>
@@ -79,7 +111,7 @@
 		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
 		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
 		<script type="text/javascript">
-			//setting datatable
+			// setting datatable
 			$(function(){
 				$("#tabel_id_barang").DataTable({
 					"language" : {
@@ -96,6 +128,12 @@
 					    }
 					}
 				});
+
+                // btn tambah id barang
+                $("#btn_tambahIdBarang").click(function(){
+                    // tampilkan modal
+                    $("#modal_idBarang").modal('show');
+                });
 			});
 		</script>
     <!-- -->
