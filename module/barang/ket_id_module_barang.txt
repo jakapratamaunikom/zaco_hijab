@@ -1,0 +1,26 @@
+# Module Barang
+================================
+1. List
+=> button export excel. id = excelBarang
+=> button export pdf. id = pdfBarang
+=> tabel. id = tabel_barang
+=> modal export. id = modal_exportBarang
+
+--------------------------------
+
+2. Form
+=> Id Barang. id/name = fId_barang
+=> button tambah id barang. id = btn_tambah_idBarang
+=> Id Warna. id/name = fId_warna
+=> button tambah id warna. id = btn_tambah_idWarna
+=> modal tambah id barang/warna. id = modal_idBarangWarna
+=> Kode Barang. id/name = fKd_barang
+=> Nama Barang. id/name = fNama_barang
+=> Foto. id/name = fFoto
+=> Keterangan. id/name = fKet
+=> HPP. id/name = fHpp
+=> Harga Pasar. id/name = fHarga_pasar
+=> Harga Market Place. id/name = fHarga_market
+=> Harga IG. id/name = fHarga_ig
+=> button tambah submit. id/name = btn_tambah_submit
+=> button batal. id/name = btn_batal
