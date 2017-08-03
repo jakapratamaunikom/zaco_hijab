@@ -41,7 +41,7 @@
                         <div class="col-md-12 col-xs-12">
                             <div class="btn-group">
                                 <!-- tambah -->
-                                <button type="button" class="btn btn-default">Tambah</button>
+                                <button type="button" id="btn_tambahIdWarna" class="btn btn-default">Tambah</button>
                                 <!-- export excel -->
                                 <button type="button" class="btn btn-default">Export Excel</button>
                                 <!-- export pdf -->
@@ -73,6 +73,37 @@
     </div>
 </section>
 
+<!-- modal tambah data -->
+<div class="modal fade" id="modal_idWarna">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <!-- button close -->
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                <!-- header modal -->
+                <h4 class="modal-title">Form Id Warna</h4>
+            </div>
+            <div class="modal-body">
+                <form role=form>
+                    <!-- field id warna -->
+                    <div class="form-group">
+                        <label for="fId_warna">Id Warna</label>
+                        <input type="text" name="fId_warna" id="fId_warna" class="form-control" placeholder="Masukkan ID Warna">
+                    </div>
+                    <!-- field nama -->
+                    <div class="form-group">
+                        <label for="fNama_idWarna">Nama</label>
+                        <input type="text" name="fNama_idWarna" id="fNama_idWarna" class="form-control" placeholder="Masukkan Warna">
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button id="submit_idWarna" type="button" class="btn btn-default">Tambah</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- js -->
 <!-- DataTables -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js"; ?>"></script>
@@ -97,6 +128,13 @@
 			    }
 			}
 		});
+
+
+        $("#btn_tambahIdWarna").click(function(){
+            // tampilkan modal
+            $("#modal_idWarna").modal('show');
+        });
+
 	});
 </script>
 <!-- -->
