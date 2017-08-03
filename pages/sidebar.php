@@ -37,30 +37,72 @@
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu">
                 <li class="header">
-                    HEADER
+                    Menu Navigasi
                 </li>
                 <!-- Optionally, you can add icons to the links -->
-                <li class="active"><a href="javascript:;">
+                
+                <!-- menu beranda -->
+                <li <?php if(strtolower($m)=="beranda" || !$m) echo "class='active'"; ?> >
+                    <a href="<?= base_url; ?>">
                     <i class="fa fa-link"></i> 
-                    <span>Link</span></a>
+                    <span>Beranda</span></a>
                 </li>
 
-                <li>
-                    <a href="javascript:;"><i class="fa fa-link"></i>
-                    <span>Another Link</span></a>
+                <!-- menu data penjualan -->
+                <li <?php if(strtolower($m)=="penjualan") echo "class='active'"; ?> >
+                    <a href="<?= base_url."index.php?m=penjualan&p=list"; ?>"><i class="fa fa-link"></i>
+                    <span>Data Penjualan</span></a>
                 </li>
 
-                <li class="treeview">
+                <!-- menu data reject -->
+                <li <?php if(strtolower($m)=="reject") echo "class='active'"; ?> >
+                    <a href="<?= base_url."index.php?m=reject&p=list"; ?>"><i class="fa fa-link"></i>
+                    <span>Data Reject</span></a>
+                </li>
+
+                <!-- menu data pembelian -->
+                <li <?php if(strtolower($m)=="pembelian") echo "class='active'"; ?> >
+                    <a href="<?= base_url."index.php?m=pembelian&p=list"; ?>"><i class="fa fa-link"></i>
+                    <span>Data Pembelian</span></a>
+                </li>
+
+                <!-- menu data stok -->
+                <li <?php if(strtolower($m)=="stok") echo "class='active'"; ?> >
+                    <a href="<?= base_url."index.php?m=stok&p=list"; ?>"><i class="fa fa-link"></i>
+                    <span>Data Stok</span></a>
+                </li>
+
+                <!-- menu data pengeluaran -->
+                <li <?php if(strtolower($m)=="pengeluaran") echo "class='active'"; ?> >
+                    <a href="<?= base_url."index.php?m=pengeluaran&p=list"; ?>"><i class="fa fa-link"></i>
+                    <span>Data Pengeluaran</span></a>
+                </li>
+
+                <!-- menu data master -->
+                <li class="treeview <?php if(strtolower($m)=="id_barang" || strtolower($m)=="id_warna" || strtolower($m)=="barang") echo "active" ?>">
                     <a href="javascript:;"><i class="fa fa-link"></i> 
-                        <span>Multilevel</span>
+                        <span>Data Master</span>
                         <span class="pull-right-container">
                             <i class="fa fa-angle-left pull-right"></i>
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="javascript:;">Link in level 2</a></li>
-                        <li><a href="javascript:;">Link in level 2</a></li>
+                        <li <?php if(strtolower($m)=="id_barang") echo "class='active'" ?> >
+                            <a href="<?= base_url."index.php?m=id_barang&p=list"; ?>">Data Id Barang</a>
+                        </li>
+                        <li <?php if(strtolower($m)=="id_warna") echo "class='active'" ?> >
+                            <a href="<?= base_url."index.php?m=id_warna&p=list"; ?>">Data Id Warna</a>
+                        </li>
+                        <li <?php if(strtolower($m)=="barang") echo "class='active'" ?> >
+                            <a href="<?= base_url."index.php?m=barang&p=list"; ?>">Data Barang</a>
+                        </li>
                     </ul>
+                </li>
+
+                <!-- menu data admin -->
+                <li <?php if(strtolower($m)=="admin") echo "class='active'"; ?> >
+                    <a href="<?= base_url."index.php?m=admin&p=list"; ?>"><i class="fa fa-link"></i>
+                    <span>Data Admin</span></a>
                 </li>
             </ul>
             <!-- /.sidebar-menu -->
