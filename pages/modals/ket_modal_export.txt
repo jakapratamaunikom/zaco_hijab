@@ -1,0 +1,19 @@
+## Cat: modal_export.php dan modal_export.js bisa dipakai jika, button export excel,
+		dan pdf memiliki id yg sama dgn yg ada di cat. ini.
+		dan sudah meng-include kan plugin datepicker sebelumnya. 
+
+# Modals Export
+================================
+1. Modals
+=> button export excel. id = excelBarang
+=> button export pdf. id = pdfBarang
+
+=> modals export data. id = modal_export
+=> form export data. id = form_modal_export
+=> field modal jenis. id = fmJenis
+=> field modal tanggal. id = fmTgl
+=> field modal bulan. id = fmBln
+=> btn submit modal. id = btn_export_submit
+
+--------------------------------
+
