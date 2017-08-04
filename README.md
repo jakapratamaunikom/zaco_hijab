@@ -1,4 +1,7 @@
-<h1><b>Aplikasi Penjualan Bernasis WEB</b></h1>
+<h2>Aplikasi Penjualan Berbasis WEB</h2>
 
--Menggunakan Template AdminLTE<br>
--Native
+Menggunakan :
+<ul>
+	<li>Template: AdminLTE</li>
+	<li>Metode: Native</li>
+</ul>
