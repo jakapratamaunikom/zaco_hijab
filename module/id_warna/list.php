@@ -8,8 +8,10 @@
 	
 <!-- css -->
 <!-- DataTables -->
-	<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
-	<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
+<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+<!-- Datepicker -->
+<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
 <!-- -->
 
 <!-- header dan breadcrumb -->
@@ -45,11 +47,11 @@
                                     <i class="fa fa-plus"></i> Tambah
                                 </button>
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-success">
+                                <button type="button" class="btn btn-success" id="exportExcel">
                                     <i class="fa fa-file-excel-o"></i> Export Excel
                                 </button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-danger">
+                                <button type="button" class="btn btn-danger" id="exportPdf">
                                     <i class="fa fa-file-pdf-o"></i> Export Pdf
                                 </button>
                             </div>
@@ -90,7 +92,7 @@
                 <h4 class="modal-title">Form Id Warna</h4>
             </div>
             <div class="modal-body">
-                <form role=form>
+                <form id="form_modal_idWarna" role=form>
                     <!-- field id warna -->
                     <div class="form-group">
                         <label for="fId_warna">Id Warna</label>
@@ -103,12 +105,15 @@
                     </div>
             </div>
             <div class="box-footer">
-                <button id="submit_idWarna" type="button" class="btn btn-info pull-right">Tambah</button>
+                <button id="submit_idWarna" type="submit" class="btn btn-info pull-right">Tambah</button>
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- modal ekspor data -->
+<?php include_once("pages/modals/modal_export.php"); ?>
 
 <!-- js -->
 <!-- DataTables -->
@@ -116,6 +121,9 @@
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"; ?>"></script>
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
+
+ <!-- js datepicker -->
+<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 <script type="text/javascript">
 	//setting datatable
 	$(function(){
@@ -136,11 +144,40 @@
 		});
 
 
+        // btn tambah id barang onclick
         $("#btn_tambahIdWarna").click(function(){
             // tampilkan modal
             $("#modal_idWarna").modal('show');
+            $('#form_modal_idWarna').trigger('reset'); // bersihkan form
+        });
+
+        // submit form modal tambah id barang
+        $("#form_modal_idWarna").submit(function(){
+            var id_barang = $("#fId_warna").val().trim();
+            var nama = $("#fNama_idWarna").val().trim();
+
+            // validasi
+            if(id_barang === "" || nama === ""){ // jika salah satu field kosong
+                swal("Pesan", "Harap Field Id Warna dan Nama Diisi", "warning");
+                return false;
+            }
+            else{
+                // cek panjang karakter id barang
+                if(id_barang.length > 3){ // jika melebihi ketentuan
+                    swal("Pesan", "Id Warna Maksimal Diisi 3 Karakter", "error");
+                    return false;
+                }
+                else{
+                    swal("doing ajax");
+                }
+            }
+
+            return false;
         });
 
 	});
 </script>
+
+<!-- js modal export -->
+<script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
 <!-- -->

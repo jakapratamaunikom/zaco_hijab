@@ -1,0 +1,13 @@
+# Module Id Warna
+================================
+1. List
+=> button tambah data id warna. id = btn_tambahIdWarna
+=> Ekspor Excel. id = exportExcel
+=> Ekspor PDF. id = exportPdf
+=> Tabel Warna. id = tabel_id_warna
+=> Modal tambah/edit warna. id = modal_idWarna
+=> Field Id Warna. id/name = fId_warna (didalam modals)
+=> Field Nama. id/name = fNama_idWarna (didalam modals)
+=> Button submit. id = submit_idWarna
+
+--------------------------------
