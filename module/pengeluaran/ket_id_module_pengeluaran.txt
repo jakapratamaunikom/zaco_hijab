@@ -17,3 +17,7 @@
 => Nominal. id/name = fNominal
 => Button Tambah Pengeluaran. id/name = fTambah_pengeluaran (Sebelah field nominal)
 => Tabel Item. id = tabel_item_pengeluaran
+
+--------------------------------
+3. View
+=> Tabel Lihat Pengeluaran. id = tabel_lihat_pengeluaran
