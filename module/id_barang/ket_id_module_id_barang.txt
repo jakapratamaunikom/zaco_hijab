@@ -10,12 +10,7 @@
 => field id barang. id/name = fId_barang
 => field nama id barang. id/name = fNama_idBarang
 => button submit tambah data. id = btn_submit_idBarang
-=> modals export data. id = modal_exportIdBarang
-=> form export data. id = form_modal_exportIdBarang
-=> field modal jenis. id = fmJenis
-=> field modal tanggal. id = fmTgl
-=> field modal bulan. id = fmBln
-=> btn submit modal. id = btn_export_submit
+
 
 --------------------------------
 
