@@ -107,45 +107,7 @@
     </div>
 
     <!-- modal export -->
-    <div class="modal fade" id="modal_exportIdBarang">
-        <div class="modal-dialog modal-sm">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <!-- button close -->
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
-                    <!-- header modal -->
-                    <h4 class="modal-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <form id="form_modal_exportIdBarang" role=form>
-                        <!-- field jenis -->
-                        <div class="form-group">
-                            <label for="fmJenis">Jenis</label>
-                            <select id="fmJenis" class="form-control">
-                                <option value="">-- Pilih Jenis --</option>
-                                <option value="harian">Harian</option>
-                                <option value="bulanan">Bulanan</option>
-                            </select>
-                        </div>
-                       <!-- tanggal -->
-                        <div class="form-group">
-                            <label for="fmTgl">Tanggal</label>
-                            <input type="text" name="fmTgl" id="fmTgl" class="form-control datepicker">
-                        </div>
-                        <!-- bulan - tahun -->
-                        <div class="form-group">
-                            <label for="fmBln">Bulan</label>
-                            <input type="text" name="fmBln" id="fmBln" class="form-control datepicker">
-                        </div>
-                </div>
-                <div class="box-footer">
-                    <button class="btn pull-right" type="submit" id="btn_export_submit">Export</button>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
-                </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <?php include_once("pages/modals/modal_export.php"); ?>
 
     <!-- js -->
         <!-- DataTables -->
@@ -233,30 +195,30 @@
                 // btn excelBarang onclick
                 $("#excelBarang").click(function(){
                     set_allBtn_disable(); // disable semua btn modal
-                    $('#form_modal_exportIdBarang').trigger('reset'); // reset form modal
+                    $('#form_modal_export').trigger('reset'); // reset form modal
                     // tampilkan modal
                     $("#btn_export_submit").addClass("btn-success");
                     $("#btn_export_submit").removeClass("btn-danger");
-                    $("#modal_exportIdBarang .modal-title").html("Export Excel"); // setting header
-                    $("#modal_exportIdBarang").modal();
+                    $("#modal_export .modal-title").html("Export Excel"); // setting header
+                    $("#modal_export").modal();
                 });
 
                 // btn pdfBarang onclick
                 $("#pdfBarang").click(function(){
                     set_allBtn_disable(); // disable semua btn modal
-                    $('#form_modal_exportIdBarang').trigger('reset'); // reset form modal
+                    $('#form_modal_export').trigger('reset'); // reset form modal
                     // tampilkan modal
                     $("#btn_export_submit").addClass("btn-danger");
                     $("#btn_export_submit").removeClass("btn-success");
-                    $("#modal_exportIdBarang .modal-title").html("Export Pdf"); // setting header
-                    $("#modal_exportIdBarang").modal();
+                    $("#modal_export .modal-title").html("Export Pdf"); // setting header
+                    $("#modal_export").modal();
                 });
 
                 // pilihan jenis export
                 $("#fmJenis").change(function(){
                     var value = this.value;
                     if(value === ""){ // jika tidak dipilih 
-                        $('#form_modal_exportBarang').trigger('reset'); // reset form modal
+                        $('#form_modal_export').trigger('reset'); // reset form modal
                         // semua field disable
                         set_allBtn_disable();
                     }
@@ -277,7 +239,7 @@
                 });
 
                 // submit form modal export
-                $("#form_modal_exportIdBarang").submit(function(){
+                $("#form_modal_export").submit(function(){
                     var jenis = $("#fmJenis").val().trim();
                     // validasi
                     if(jenis === ""){ // jika tidak dipilih
