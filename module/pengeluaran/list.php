@@ -28,7 +28,7 @@
 				<div class="box-header">
                     <div class="row">
                         <div class="col-sm-6 col-xs-12">
-                            <h3 class="box-title">Pengeluaran</h3>
+                            <h3 class="box-title">Data Pengeluaran</h3>
                         </div>
                     </div>
                     <!-- panel button -->
@@ -37,12 +37,16 @@
                             <div class="btn-group">
                                 <!-- tambah -->
                                 <a href="<?= base_url."index.php?m=pengeluaran&p=form" ?>" type="button" class="btn btn-default" role="button">
-                                	Tambah
+                                	<i class="fa fa-plus"></i> Tambah
                                 </a>
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-default" id="excelPengeluaran">Export Excel</button>
+                                <button type="button" class="btn btn-default" id="excelPengeluaran">
+                                    <i class="fa fa-file-excel-o"></i> Export Excel
+                                </button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-default" id="pdfPengeluaran">Export Pdf</button>
+                                <button type="button" class="btn btn-default" id="pdfPengeluaran">
+                                    <i class="fa fa-file-pdf-o"></i> Export Pdf
+                                </button>
                             </div>
                         </div>
                     </div>

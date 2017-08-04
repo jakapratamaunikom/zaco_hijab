@@ -31,7 +31,7 @@
 				<div class="box-header">
                     <div class="row">
                         <div class="col-sm-6 col-xs-12">
-                            <h3 class="box-title">Pembelian</h3>
+                            <h3 class="box-title">Data Pembelian</h3>
                         </div>
                     </div>
                     <!-- panel button -->
@@ -39,11 +39,17 @@
                         <div class="col-md-12 col-xs-12">
                             <div class="btn-group">
                                 <!-- tambah -->
-                                <a href="<?= base_url."index.php?m=pembelian&p=form" ?>" class="btn btn-default" role="button">Tambah</a>
+                                <a href="<?= base_url."index.php?m=pembelian&p=form" ?>" class="btn btn-default" role="button">
+                                	<i class="fa fa-plus"></i> Tambah
+                                </a>
                                 <!-- export excel -->
-                                <button type="button" id="excelPembelian" class="btn btn-default">Export Excel</button>
+                                <button type="button" id="excelPembelian" class="btn btn-default">
+                                	<i class="fa fa-file-excel-o"></i> Export Excel
+                                </button>
                                 <!-- export pdf -->
-                                <button type="button" id="pdfPembelian" class="btn btn-default">Export Pdf</button>
+                                <button type="button" id="pdfPembelian" class="btn btn-default">
+                                	<i class="fa fa-file-pdf-o"></i> Export Pdf
+                                </button>
                             </div>
                         </div>
                     </div>
