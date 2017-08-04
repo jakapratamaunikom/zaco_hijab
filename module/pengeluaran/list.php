@@ -36,11 +36,13 @@
                         <div class="col-md-12 col-xs-12">
                             <div class="btn-group">
                                 <!-- tambah -->
-                                <button type="button" class="btn btn-default">Tambah</button>
+                                <a href="<?= base_url."index.php?m=pengeluaran&p=form" ?>" type="button" class="btn btn-default" role="button">
+                                	Tambah
+                                </a>
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-default">Export Excel</button>
+                                <button type="button" class="btn btn-default" id="excelPengeluaran">Export Excel</button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-default">Export Pdf</button>
+                                <button type="button" class="btn btn-default" id="pdfPengeluaran">Export Pdf</button>
                             </div>
                         </div>
                     </div>
