@@ -34,31 +34,31 @@
 		<!-- jQuery -->
 		<script src="<?= base_url."assets/plugins/jQuery/jquery-2.2.3.min.js"; ?>"></script>
 		<!-- CSS -->
-		<?php include_once("pages/css.php") ?>
+		<?php include_once("pages/template/css.php") ?>
 
 	</head>
 	<body class="hold-transition skin-red sidebar-mini">
 
 		<div class="wrapper">
 			<!-- Header -->
-			<?php include_once("pages/header.php") ?>
+			<?php include_once("pages/template/header.php") ?>
 
 			<!-- Sidebar -->
-			<?php include_once("pages/sidebar.php") ?>
+			<?php include_once("pages/template/sidebar.php") ?>
 
 			<!-- Content -->
-			<?php include_once("pages/content.php") ?>
+			<?php include_once("pages/template/content.php") ?>
 
 			<!-- Footer -->
-			<?php include_once("pages/footer.php") ?>
+			<?php include_once("pages/template/footer.php") ?>
 
 			<!-- Control Sidebar -->
-			<?php include_once("pages/control_sidebar.php") ?>
+			<?php include_once("pages/template/control_sidebar.php") ?>
 
 		</div>
 		<!-- ./wrapper -->
 
 		<!-- JavaScript -->
-		<?php include_once("pages/javascript.php") ?>
+		<?php include_once("pages/template/javascript.php") ?>
 	</body>
 </html>
