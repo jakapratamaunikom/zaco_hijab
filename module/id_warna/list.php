@@ -45,11 +45,11 @@
                                     <i class="fa fa-plus"></i> Tambah
                                 </button>
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-default">
+                                <button type="button" class="btn btn-success">
                                     <i class="fa fa-file-excel-o"></i> Export Excel
                                 </button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-default">
+                                <button type="button" class="btn btn-danger">
                                     <i class="fa fa-file-pdf-o"></i> Export Pdf
                                 </button>
                             </div>
@@ -102,9 +102,9 @@
                         <input type="text" name="fNama_idWarna" id="fNama_idWarna" class="form-control" placeholder="Masukkan Warna">
                     </div>
             </div>
-            <div class="modal-footer">
-                <button id="submit_idWarna" type="button" class="btn btn-default">Tambah</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+            <div class="box-footer">
+                <button id="submit_idWarna" type="button" class="btn btn-info pull-right">Tambah</button>
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>

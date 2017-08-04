@@ -40,11 +40,11 @@
                                 	<i class="fa fa-plus"></i> Tambah
                                 </a>
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-default" id="excelPengeluaran">
+                                <button type="button" class="btn btn-success" id="excelPengeluaran">
                                     <i class="fa fa-file-excel-o"></i> Export Excel
                                 </button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-default" id="pdfPengeluaran">
+                                <button type="button" class="btn btn-danger" id="pdfPengeluaran">
                                     <i class="fa fa-file-pdf-o"></i> Export Pdf
                                 </button>
                             </div>

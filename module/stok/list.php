@@ -38,9 +38,13 @@
                         <div class="col-md-12 col-xs-12">
                             <div class="btn-group">
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-default">Export Excel</button>
+                                <button type="button" class="btn btn-success">
+                                    <i class="fa fa-file-excel-o"></i> Export Excel
+                                </button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-default">Export Pdf</button>
+                                <button type="button" class="btn btn-danger">
+                                    <i class="fa fa-file-pdf-o"></i> Export Pdf
+                                </button>
                             </div>
                         </div>
                     </div>
