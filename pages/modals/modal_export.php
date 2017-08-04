@@ -9,7 +9,7 @@
                 <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
-                <form id="form_modal_export" role=form>
+                <form id="form_modal_export" role="form" enctype="multipart/form-data">
                     <!-- field jenis -->
                     <div class="form-group">
                         <label for="fmJenis">Jenis</label>
