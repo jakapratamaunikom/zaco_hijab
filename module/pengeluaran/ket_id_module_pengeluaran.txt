@@ -12,8 +12,8 @@
 => Kode Pengeluaran. id/name = fKd_pengeluaran
 => Tanggal. id/name = fTgl
 => Jenis Pengeluaran. id/name = fJenis
-=> Nama Barang. id/name = fNama_barang
+=> Keterangan. id/name = fKet
 => Qty. id/name = fQty
-=> Harga. id/name = fHarga
-=> Button Tambah Pengeluaran. id/name = fTambah_pengeluaran (Sebelah kolom harga)
+=> Nominal. id/name = fNominal
+=> Button Tambah Pengeluaran. id/name = fTambah_pengeluaran (Sebelah field nominal)
 => Tabel Item. id = tabel_item_pengeluaran

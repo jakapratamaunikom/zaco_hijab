@@ -1,0 +1,18 @@
+# Module Pengeluaran
+================================
+1. List
+=> button export excel. id = excelPembelian
+=> button export pdf. id = pdfPembelian
+=> tabel. id = tabel_pembelian
+
+
+--------------------------------
+
+2. Form
+=> Kode Pembelian. id/name = fKd_pembelian
+=> Tanggal. id/name = fTgl
+=> Kode Barang. id/name = fKd_barang
+=> Qty. id/name = fQty
+
+=> Button Tambah Pembelian. id/name = fTambah_pembelian (Sebelah field harga)
+=> Tabel Item. id = tabel_item_pembelian

@@ -14,7 +14,7 @@
     <h1>Pengeluaran</h1>
     <ol class="breadcrumb">
         <li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i> Zaco Hijab</a></li>
-        <li class="active"><a href="<?= base_url."index.php?m=pengeuaran&p=list"; ?>">Pengeluaran</a></li>
+        <li class="active"><a href="<?= base_url."index.php?m=pengeluaran&p=list"; ?>">Pengeluaran</a></li>
         <li>Form Data Pengeluaran</li>
     </ol>
 </section>
@@ -39,12 +39,13 @@
                     	<form enctype="multipart/form-data" role="form">
                     		<!-- fieldset data pengeluaran -->
                     		<div class="col-md-6 col-xs-12">
+                    			<!-- Fieldset Data Pengeluaran -->
                     			<fieldset>
                         			<legend>Data Pengeluaran</legend>
                         			<!-- kode pengeluaran -->
                         			<div class="form-group">
-                        				<label for="fKd_pengeluaran">Masukkan Kode Pengeluaran</label>
-                        				<input type="text" name="fKd_pengeluaran" id="fKd_pengeluaran" class="form-control" placeholder="Kode Pengeluaran">
+                        				<label for="fKd_pengeluaran">Kode Pengeluaran</label>
+                        				<input type="text" name="fKd_pengeluaran" id="fKd_pengeluaran" class="form-control" placeholder="Masukkan Kode Pengeluaran">
                         			</div>
 
                         			<!-- tanggal -->
@@ -56,38 +57,31 @@
                         			<!-- jenis pengeluaran -->
                         			<div class="form-group">
                         				<label for="fJenis">Jenis Pengeluaran</label>
-                        				<select id="fJenis" name="fJenis" class="form-control">
+                        				<select id="fJenis" name="fJenis" class="form-control select2" style="width: 100%;">
                         					<option value="">-- Pilih Jenis Pengeluaran --</option>
                         				</select>
                         			</div>
-                        		</fieldset>
 
-
-            					<fieldset>
-                        			<legend>Data Barang</legend>
-                        			<!-- nama -->
-                        			<!-- nama barang - qty -->
+                        			<!-- Keterangan -->
                         			<div class="form-group">
                         				<div class="row">
                         					<div class="col-md-8">
-                        						<label for="fNama_barang">Nama Barang</label>
-		                        				<input type="text" name="fNama_barang" id="fNama_barang" class="form-control" placeholder="Masukkan Nama Barang">
+                        						<label for="fKet">Keterangan</label>
+		                        				<input type="text" name="fKet" id="fKet" class="form-control" placeholder="Masukkan Keterangan">
                         					</div>
                         					<div class="col-md-4">
                         						<label for="fQty">Qty</label>
-                        						<div class="input-group">
-			                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0">
-			                      				</div>
+		                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0">
                         					</div>
                         				</div>
                         			</div>
 
 
-                        			<!-- Harga -->
+                        			<!-- Nominal -->
           							<div class="form-group">
           								<div class="row">
           									<div class="col-md-12 col-xs-12">
-          										<label for="fHarga">Harga</label>
+          										<label for="fNominal">Nominal</label>
           									</div>
           								</div>
           								<div class="row">
@@ -96,7 +90,7 @@
 	          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">
 	          											Rp. 
 	          										</span>
-	          										<input class="form-control" placeholder="Masukkan Harga" id="fHarga" name="fHarga" type="text">
+	          										<input class="form-control" placeholder="Masukkan Nominal" id="fNominal" name="fNominal" type="text">
 	          										<span class="input-group-addon">,00</span>
 	          										<span class="input-group-btn">
 			                        					<button type="button" id="fTambah_pengeluaran" name="fTambah_pengeluaran" class="btn btn-default">
@@ -107,7 +101,9 @@
 	       									</div>
           								</div>		
           							</div>
-                        		</fieldset>	
+                        		</fieldset>
+
+                        		
 
 
                     		</div>
@@ -124,8 +120,8 @@
 				                        				<thead>
 				                        					<tr>
 				                        						<th style="width: 15px">No</th>
-				                        						<th>Item</th>
-				                        						<th>Harga</th>
+				                        						<th>Keterangan</th>
+				                        						<th>Nominal</th>
 				                        						<th>Qty</th>
 				                        						<th>Aksi</th>
 				                        					</tr>
