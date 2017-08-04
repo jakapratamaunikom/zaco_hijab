@@ -1,8 +1,8 @@
 # Module Barang
 ================================
 1. List
-=> button export excel. id = excelBarang
-=> button export pdf. id = pdfBarang
+=> button export excel. id = exportExcel
+=> button export pdf. id = exportPdf
 => tabel. id = tabel_barang
 => modal export. id = modal_exportBarang
 => form export data. id = form_modal_exportBarang

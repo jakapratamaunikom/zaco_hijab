@@ -2,8 +2,8 @@
 ================================
 1. List
 => button tambah data id barang. id = btn_tambahIdBarang
-=> button export excel. id = excelBarang
-=> button export pdf. id = pdfBarang
+=> button export excel. id = exportExcel
+=> button export pdf. id = exportPdf
 => tabel id barang. id = tabel_id_barang
 => modals tambah data. id = modal_idBarang
 => form modals tambah data. id = form_modal_idBarang

@@ -42,9 +42,9 @@
 								<!-- tambah -->
 	          					<a href="<?= base_url."index.php?m=barang&p=form" ?>" class="btn btn-default" role="button">Tambah Data</a>
 	          					<!-- export excel -->
-	          					<button type="button" class="btn btn-success" id="excelBarang"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+	          					<button type="button" class="btn btn-success" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 	          					<!-- export pdf -->
-	          					<button type="button" class="btn btn-danger" id="pdfBarang"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
+	          					<button type="button" class="btn btn-danger" id="exportPdf"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
 	            			</div>
 						</div>	
 					</div>

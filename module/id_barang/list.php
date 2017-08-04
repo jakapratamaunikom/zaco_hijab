@@ -44,9 +44,9 @@
                                     <!-- tambah -->
                                     <button type="button" id="btn_tambahIdBarang" class="btn btn-default"><i class="fa fa-plus"></i> Tambah</button>
                                     <!-- export excel -->
-                                    <button type="button" class="btn btn-success" id="excelBarang"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                                    <button type="button" class="btn btn-success" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                                     <!-- export pdf -->
-                                    <button type="button" class="btn btn-danger" id="pdfBarang"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
+                                    <button type="button" class="btn btn-danger" id="exportPdf"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
                                 </div>
                             </div>
                         </div>

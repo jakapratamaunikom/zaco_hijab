@@ -5,8 +5,8 @@
 # Modals Export
 ================================
 1. Modals
-=> button export excel. id = excelBarang
-=> button export pdf. id = pdfBarang
+=> button export excel. id = exportExcel
+=> button export pdf. id = exportPdf
 
 => modals export data. id = modal_export
 => form export data. id = form_modal_export

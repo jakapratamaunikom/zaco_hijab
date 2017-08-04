@@ -20,7 +20,7 @@ $(function(){
     });
 
     // btn excelBarang onclick
-    $("#excelBarang").click(function(){
+    $("#exportExcel").click(function(){
         set_allBtn_disable(); // disable semua btn modal
         $('#form_modal_export').trigger('reset'); // reset form modal
         // tampilkan modal
@@ -31,7 +31,7 @@ $(function(){
     });
 
     // btn pdfBarang onclick
-    $("#pdfBarang").click(function(){
+    $("#exportPdf").click(function(){
         set_allBtn_disable(); // disable semua btn modal
         $('#form_modal_export').trigger('reset'); // reset form modal
         // tampilkan modal
