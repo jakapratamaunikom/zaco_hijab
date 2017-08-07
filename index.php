@@ -4,6 +4,7 @@
 
 	// include semua fungsi
 	include_once("function/helper.php");
+	include_once("function/koneksi.php");
 
 	// start session
 	session_start();
@@ -14,13 +15,7 @@
 
 	$m = isset($_GET['m']) ? $_GET['m'] : false; // untuk get menu
 	$p = isset($_GET['p']) ? $_GET['p'] : false; // untuk get page
-	
-	// if(isset($_GET['m'])){
-	// 	$m = $_GET['m'];
-	// }
-	// else{
-	// 	$m = false;
-	// }
+		
 
 ?>
 <!DOCTYPE html>
@@ -57,7 +52,7 @@
 
 		</div>
 		<!-- ./wrapper -->
-
+		
 		<!-- JavaScript -->
 		<?php include_once("pages/template/javascript.php") ?>
 	</body>
