@@ -11,5 +11,5 @@
 		<!-- AdminLTE for demo purposes -->
 		<script src="<?= base_url."assets/dist/js/demo.js"; ?>"></script>
 		<script type="text/javascript" src="<?= base_url."assets/plugins/sweet-alert/sweet-alert.min.js"; ?>"></script>
-
+		 <script type="text/javascript" src="<?= base_url."assets/plugins/alertifyjs/alertify.min.js"; ?>"></script>
 	<!-- end JS -->

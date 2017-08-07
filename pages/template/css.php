@@ -14,7 +14,7 @@
 		<link rel="stylesheet" href="<?= base_url."assets/dist/css/skins/_all-skins.min.css"; ?>">
 
 		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/sweet-alert/sweet-alert.min.css"; ?>">
-
+		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/alertifyjs/css/alertify.min.css"; ?>"/>
 		
 		<style type="text/css">
 			legend{
