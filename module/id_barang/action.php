@@ -171,3 +171,89 @@
 
 		echo json_encode($result);
 	}
+
+	// fungsi action edit
+	function actionEdit($koneksi){
+		$id = isset($_POST['id']) ? $_POST['id'] : false;
+		$id_barang = isset($_POST['fId_barang']) ? $_POST['fId_barang'] : false;
+		$nama = isset($_POST['fNama_idBarang']) ? $_POST['fNama_idBarang'] : false;
+
+		// validasi
+			// inisialisasi
+			$cek = true;
+			$pesanError = $id_barangError = $namaBarangError = $set_value = "";
+			// inisialisasi pemanggilan fungsi validasi
+			$validIdBarang = validString("ID Barang", $id_barang, 1, 4, true);
+			$validNamaBarang = validString("Nama Barang", $nama, 1, 25, true);
+
+			// cek valid
+			if(!$validIdBarang['cek']){
+				$cek = false;
+				$id_barangError = $validIdBarang['error'];
+			}
+
+			if(!$validNamaBarang['cek']){
+				$cek = false;
+				$namaBarangError = $validNamaBarang['error'];
+			}
+		// ==================================== //
+
+		if($cek){
+			$id_barang = validInputan($id_barang, false, false);
+			$nama = validInputan($nama, false, false);
+
+			$tabel = "id_barang";
+			$query = "UPDATE $tabel SET id_barang = :id_barang, nama = :nama WHERE id = :id";
+
+			// prepare
+			$statement = $koneksi->prepare($query);
+			// bind
+			$statement->bindParam(':id_barang', $id_barang);
+			$statement->bindParam(':nama', $nama);
+			$statement->bindParam(':id', $id);
+			// execute
+			$result = $statement->execute(
+				array(
+					':id_barang' => $id_barang,
+					':nama' => $nama,
+					':id' => $id,
+				)
+			);
+			
+			// jika query berhasil
+			if($result){
+				$output = array(
+					'status' => true,
+					'errorDb' => false,
+				);
+			} 
+			else{
+				$output = array(
+					'status' => false,
+					'errorDb' => true,
+				);
+			}
+
+			echo json_encode($output);
+		}
+		else{
+			$pesanError = array(
+				'id_barangError' => $id_barangError,
+				'namaBarangError' => $namaBarangError, 
+			);
+
+			$set_value = array(
+				'id_barang' => $id_barang,
+				'namaBarang' => $nama,
+			);
+
+			$output = array(
+				'status' => false,
+				'errorDb' => false,
+				'pesanError' => $pesanError,
+				'set_value' => $set_value,
+			);
+
+			echo json_encode($output);
+		}
+	}

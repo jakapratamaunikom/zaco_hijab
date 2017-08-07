@@ -87,6 +87,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="form_modal_idBarang" role=form>
+                        <input type="hidden" name="id" id="id">
                         <!-- field id barang -->
                         <div class="form-group">
                             <label for="fId_barang">Id Barang</label>
@@ -189,6 +190,7 @@
                 $("#form_modal_idBarang").submit(function(e){
                     e.preventDefault();
 
+                    var id = $("#id").val().trim();
                     var id_barang = $("#fId_barang").val().trim();
                     var nama = $("#fNama_idBarang").val().trim();
                     var submit = $("#btn_submit_idBarang").val();
@@ -198,6 +200,7 @@
                         type: "post",
                         dataType: "json",
                         data: {
+                            "id" : id,
                             "fId_barang" : id_barang,
                             "fNama_idBarang" : nama,
                             "action" : submit,
@@ -205,7 +208,7 @@
                         success: function(hasil){
                             if(hasil.status){ // jika status true
                                 $('#form_modal_idBarang').trigger('reset');
-                                $("#form_modal_idBarang").modal('hide');
+                                $("#modal_idBarang").modal('hide');
                                 if(submit.toLowerCase()==="edit") alertify.success('Data Berhasil Diedit');
                                 else alertify.success('Data Berhasil Ditambah');
                                 tabel_id_barang.ajax.reload();
@@ -275,6 +278,7 @@
 
                         // tampilkan modal
                         $("#modal_idBarang .modal-title").html("Form Edit Data Id Barang");
+                        $("#id").val(data.id);
                         $("#fId_barang").val(data.id_barang);
                         // $("#fId_barang").prop("disabled", true);
                         $("#fNama_idBarang").val(data.nama);
