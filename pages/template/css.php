@@ -22,8 +22,27 @@
 			}
 			/*.rp{
 				background-color: #dd4b39;
-				/*border-color: #d73925;*/
+				border-color: #d73925;
 			}*/
+			.loadingPage{
+				display: none;
+				position: fixed;
+				z-index: 1000;
+				top: 0;
+				left: 0;
+				height: 100%;
+				width: 100%;
+				background: rgba( 255, 255, 255, .8 ) 
+                			url('pages/template/loading2.gif') 
+                			50% 50% 
+                			no-repeat;
+			}
+			body.loading_gif {
+    			overflow: hidden;   
+			}
+			body.loading_gif .loadingPage{
+				display: block;
+			}
 		</style>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
