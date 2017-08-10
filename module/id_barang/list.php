@@ -121,12 +121,13 @@
         <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
         <!-- js datepicker -->
         <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
-        <!-- js modal export -->
-        <script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
+        
         <!-- js list -->
         <script type="text/javascript">
             var base_url = "<?php print base_url; ?>";
         </script>
+        <!-- js modal export -->
+        <script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
         <script type="text/javascript" src="<?= base_url."module/id_barang/init.js"; ?>"></script>
         
     <!-- -->    
