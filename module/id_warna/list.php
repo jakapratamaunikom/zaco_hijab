@@ -93,24 +93,30 @@
             </div>
             <div class="modal-body">
                 <form id="form_modal_idWarna" role=form>
+                    <input type="hidden" name="id" id="id">
                     <!-- field id warna -->
                     <div class="form-group">
                         <label for="fId_warna">Id Warna</label>
                         <input type="text" name="fId_warna" id="fId_warna" class="form-control" placeholder="Masukkan ID Warna">
+                        <span class="help-block small"></span>
                     </div>
                     <!-- field nama -->
                     <div class="form-group">
                         <label for="fNama_idWarna">Nama</label>
                         <input type="text" name="fNama_idWarna" id="fNama_idWarna" class="form-control" placeholder="Masukkan Warna">
+                        <span class="help-block small"></span>
                     </div>
             </div>
             <div class="box-footer">
-                <button id="submit_idWarna" type="submit" class="btn btn-info pull-right">Tambah</button>
+                <input class="btn btn-info pull-right" type="submit" id="submit_idWarna" name="action" value="Tambah">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Batal</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
+
+<div class="loadingPage"></div>
 
 <!-- modal ekspor data -->
 <?php include_once("pages/modals/modal_export.php"); ?>
@@ -124,60 +130,10 @@
 
  <!-- js datepicker -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
+<!-- js list -->
 <script type="text/javascript">
-	//setting datatable
-	$(function(){
-		$("#tabel_id_warna").DataTable({
-			"language" : {
-				"lengthMenu": "Tampilkan _MENU_ data/page",
-	            "zeroRecords": "Data Tidak Ada",
-	            "info": "Page _PAGE_ dari _PAGES_",
-	            "infoEmpty": "Data Kosong",
-	            "search": "Pencarian:",
-	            "paginate": {
-			        "first": "Pertama",
-			        "last": "Terakhir",
-			        "next": "Selanjutnya",
-			        "previous": "Sebelumnya"
-			    }
-			}
-		});
-
-
-        // btn tambah id barang onclick
-        $("#btn_tambahIdWarna").click(function(){
-            // tampilkan modal
-            $("#modal_idWarna").modal('show');
-            $('#form_modal_idWarna').trigger('reset'); // bersihkan form
-        });
-
-        // submit form modal tambah id barang
-        $("#form_modal_idWarna").submit(function(){
-            var id_barang = $("#fId_warna").val().trim();
-            var nama = $("#fNama_idWarna").val().trim();
-
-            // validasi
-            if(id_barang === "" || nama === ""){ // jika salah satu field kosong
-                swal("Pesan", "Harap Field Id Warna dan Nama Diisi", "warning");
-                return false;
-            }
-            else{
-                // cek panjang karakter id barang
-                if(id_barang.length > 3){ // jika melebihi ketentuan
-                    swal("Pesan", "Id Warna Maksimal Diisi 3 Karakter", "error");
-                    return false;
-                }
-                else{
-                    swal("doing ajax");
-                }
-            }
-
-            return false;
-        });
-
-	});
+    var base_url = "<?php print base_url; ?>";
 </script>
-
 <!-- js modal export -->
 <script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
-<!-- -->
+<script type="text/javascript" src="<?= base_url."module/id_warna/init.js"; ?>"></script>
