@@ -1,7 +1,5 @@
 <?php
     Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
-    // session_start();
-    // var_dump($_SESSION['notif']);
 ?>
 
     <!-- List -->
@@ -110,10 +108,10 @@
         </div>
     </div>
 
-    <div class="loadingPage"></div>
-
     <!-- modal export -->
     <?php include_once("pages/modals/modal_export.php"); ?>
+
+    <div class="loadingPage"></div>
 
     <!-- js -->
         <!-- DataTables -->
