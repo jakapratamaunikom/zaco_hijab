@@ -77,9 +77,12 @@
 		$id_barang = isset($_POST['fId_barang']) ? $_POST['fId_barang'] : false;
 		$nama = isset($_POST['fNama_idBarang']) ? $_POST['fNama_idBarang'] : false;
 
-		// validasi
+		// validasi inputan
 			// inisialisasi
 			$cek = true;
+			$status = false;
+			$errorDb = false;
+			$duplikat = false;
 			$pesanError = $id_barangError = $namaBarangError = $set_value = "";
 			// inisialisasi pemanggilan fungsi validasi
 			$validIdBarang = validString("ID Barang", $id_barang, 1, 4, true);
@@ -95,44 +98,7 @@
 				$cek = false;
 				$namaBarangError = $validNamaBarang['error'];
 			}
-		// ==================================== //
-		if($cek){
-			$id_barang = validInputan($id_barang, false, false);
-			$nama = validInputan($nama, false, false);
 
-			$tabel = "id_barang";
-			$query = "INSERT INTO $tabel (id_barang, nama) VALUES (:id_barang, :nama)";
-
-			// prepare
-			$statement = $koneksi->prepare($query);
-			// bind
-			$statement->bindParam(':id_barang', $id_barang);
-			$statement->bindParam(':nama', $nama);
-			// execute
-			$result = $statement->execute(
-				array(
-					':id_barang' => $id_barang,
-					':nama' => $nama,
-				)
-			);
-			
-			// jika query berhasil
-			if($result){
-				$output = array(
-					'status' => true,
-					'errorDb' => false,
-				);
-			} 
-			else{
-				$output = array(
-					'status' => false,
-					'errorDb' => true,
-				);
-			}
-
-			echo json_encode($output);
-		}
-		else{
 			$pesanError = array(
 				'id_barangError' => $id_barangError,
 				'namaBarangError' => $namaBarangError, 
@@ -143,15 +109,65 @@
 				'namaBarang' => $nama,
 			);
 
-			$output = array(
-				'status' => false,
-				'errorDb' => false,
-				'pesanError' => $pesanError,
-				'set_value' => $set_value,
+		// ==================================== //
+		if($cek){
+			$id_barang = validInputan($id_barang, false, false);
+			$nama = validInputan($nama, false, false);
+
+			// cek duplikat id barang
+			$config_duplikat = array(
+				'tabel' => 'id_barang',
+				'field' => 'id_barang',
+				'value' => $id_barang,
 			);
 
-			echo json_encode($output);
+			if(cekDuplikat($koneksi, $config_duplikat)){ // jika ada yg sama
+				$status = false;
+				$errorDb = false;
+				$duplikat = true;
+			}
+			else{
+				$duplikat = false;
+
+				$tabel = "id_barang";
+				$query = "INSERT INTO $tabel (id_barang, nama) VALUES (:id_barang, :nama)";
+
+				// prepare
+				$statement = $koneksi->prepare($query);
+				// bind
+				$statement->bindParam(':id_barang', $id_barang);
+				$statement->bindParam(':nama', $nama);
+				// execute
+				$result = $statement->execute(
+					array(
+						':id_barang' => $id_barang,
+						':nama' => $nama,
+					)
+				);
+				
+				// jika query berhasil
+				if($result){
+					$status = true;
+					$errorDb = false;
+				} 
+				else{
+					$status = false;
+					$errorDb = true;
+				}
+			}
 		}
+		else $status = false;
+
+		// output lempar ke client
+		$output = array(
+			'status' => $status,
+			'errorDb' => $errorDb,
+			'duplikat' => $duplikat,
+			'pesanError' => $pesanError,
+			'set_value' => $set_value,
+		);
+
+		echo json_encode($output);
 	}
 
 	// fungsi get data edit
@@ -181,6 +197,10 @@
 		// validasi
 			// inisialisasi
 			$cek = true;
+			$cek = true;
+			$status = false;
+			$errorDb = false;
+			$duplikat = false;
 			$pesanError = $id_barangError = $namaBarangError = $set_value = "";
 			// inisialisasi pemanggilan fungsi validasi
 			$validIdBarang = validString("ID Barang", $id_barang, 1, 4, true);
@@ -196,6 +216,16 @@
 				$cek = false;
 				$namaBarangError = $validNamaBarang['error'];
 			}
+
+			$pesanError = array(
+				'id_barangError' => $id_barangError,
+				'namaBarangError' => $namaBarangError, 
+			);
+
+			$set_value = array(
+				'id_barang' => $id_barang,
+				'namaBarang' => $nama,
+			);
 		// ==================================== //
 
 		if($cek){
@@ -222,38 +252,24 @@
 			
 			// jika query berhasil
 			if($result){
-				$output = array(
-					'status' => true,
-					'errorDb' => false,
-				);
+				$status = true;
+				$errorDb = false;
 			} 
 			else{
-				$output = array(
-					'status' => false,
-					'errorDb' => true,
-				);
+				$status = false;
+				$errorDb = true;
 			}
-
-			echo json_encode($output);
 		}
-		else{
-			$pesanError = array(
-				'id_barangError' => $id_barangError,
-				'namaBarangError' => $namaBarangError, 
-			);
+		else $status = false;
 
-			$set_value = array(
-				'id_barang' => $id_barang,
-				'namaBarang' => $nama,
-			);
+		// output lempar ke client
+		$output = array(
+			'status' => $status,
+			'errorDb' => $errorDb,
+			'duplikat' => $duplikat,
+			'pesanError' => $pesanError,
+			'set_value' => $set_value,
+		);
 
-			$output = array(
-				'status' => false,
-				'errorDb' => false,
-				'pesanError' => $pesanError,
-				'set_value' => $set_value,
-			);
-
-			echo json_encode($output);
-		}
+		echo json_encode($output);
 	}
