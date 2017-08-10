@@ -54,7 +54,7 @@ $(document).ready(function(){
     $("#form_modal_idBarang").submit(function(e){
         e.preventDefault();
 
-        var id = $("#id").val().trim();
+        var id = $("#id_barang").val().trim();
         var id_barang = $("#fId_barang").val().trim();
         var nama = $("#fNama_idBarang").val().trim();
         var submit = $("#btn_submit_idBarang").val();
@@ -163,7 +163,7 @@ function edit_id_barang(id){
             reset_form();
             // tampilkan modal
             $("#modal_idBarang .modal-title").html("Form Edit Data Id Barang");
-            $("#id").val(data.id);
+            $("#id_barang").val(data.id);
             $("#fId_barang").val(data.id_barang);
             $("#fNama_idBarang").val(data.nama);
             $("#fId_barang").prop("disabled", true);

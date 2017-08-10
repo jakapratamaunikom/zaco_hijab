@@ -27,9 +27,9 @@
 	// function list datatable (server-side)
 	function list_idWarna($koneksi){
 		/* 
-			configurasi tabel id barang
+			configurasi tabel id warna
 			=> kolom yg ditampilkan di datatable:
-				-> no, id_barang, nama, aksi (berisi id)
+				-> no, id_warna, nama, aksi (berisi id)
 		*/
 		$config_db = array(
 			'tabel' => 'id_warna',

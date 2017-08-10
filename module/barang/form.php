@@ -1,14 +1,16 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
+	$id = isset($_GET['id']) ? $_GET['id'] : false;
+
+	if($id) $btn = "edit";
+	else $btn = "tambah";
 ?>
 
 	<!-- form -->
 
 	<!-- css -->
-		<!-- DataTables -->
-  		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
-  		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+
 	<!-- -->
 
 	<!-- isi konten -->
@@ -40,7 +42,7 @@
     				<div class="box-body">
     					<!-- fieldset data barang -->
     					<div class="row">
-	    					<form>
+	    					<form id="form_barang" role="form" enctype="multipart/form-data">
 	    						<!-- data barang  -->
 	    						<div class="col-md-6">
 	    							<fieldset>
@@ -54,12 +56,12 @@
 	          								</div>
 	          								<div class="row">
 	          									<div class="col-md-9 col-xs-12">
-	          										<select id="fId_barang" name="fId_barang" class="form-control">
+	          										<select id="fId_barang" name="fId_barang" class="form-control select2">
 			          									<option value="">-- Pilih Id Barang --</option>
 			          								</select>
 	          									</div>
 	          									<div class="col-md-3 col-xs-12">
-	          										<button type="button" class="btn btn-default pull-right">Tambah Id Barang</button>
+	          										<button type="button" class="btn btn-default pull-right" id="btn_tambah_idBarang">Tambah Id Barang</button>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -73,12 +75,12 @@
 	          								</div>
 	          								<div class="row">
 	          									<div class="col-md-9 col-xs-12">
-	          										<select id="fId_warna" name="fId_barang" class="form-control">
+	          										<select id="fId_warna" name="fId_barang" class="form-control select2">
 			          									<option value="">-- Pilih Id Warna --</option>
 			          								</select>
 	          									</div>
 	          									<div class="col-md-3 col-xs-12">
-	          										<button type="button" class="btn btn-default pull-right">Tambah Id Warna</button>
+	          										<button type="button" class="btn btn-default pull-right" id="btn_tambah_idWarna">Tambah Id Warna</button>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -223,44 +225,120 @@
 	          							</div>
 	          						</fieldset>
 	    						</div>
-	    					</form>
     					</div>	
     				</div>
 	    			<div class="box-footer text-right">
-						<button type="submit" class="btn btn-default btn-lg"><i class="fa fa-plus"></i>  Tambah</button>
-						<a href="<?=base_url."index.php?m=barang&p=list" ?>" class="btn btn-default btn-lg"><i class="fa fa-reply"></i>  Batal</button>
+	    				<div class="form-group">
+	    					<button type="submit" class="btn btn-default btn-lg" id="btn_submit_barang" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
+							<a href="<?=base_url."index.php?m=barang&p=list" ?>" class="btn btn-default btn-lg"><i class="fa fa-reply"></i>  Batal</a>
+	    				</div>
+	    				</form>
 					</div>		
     			</div>
     		</div>
     	</div>	
 	</section>
 
-	
+	<!-- modal tambah data id barang -->
+    <?php include("pages/modals/modal_id_barang.php"); ?>
+
+    <!-- modal tambah data id warna -->
+    <?php include_once("pages/modals/modal_id_warna.php"); ?>
 
 	<!-- js -->
-    	<!-- DataTables -->
-		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js"; ?>"></script>
-		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"; ?>"></script>
-		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
-		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
+		<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
+		<script type="text/javascript">
+            var base_url = "<?php print base_url; ?>";
+        </script>
 		<script type="text/javascript">
 			//setting datatable
-			$(function(){
-				$("#tabel_barang").DataTable({
-					"language" : {
-						"lengthMenu": "Tampilkan _MENU_ data/page",
-			            "zeroRecords": "Data Tidak Ada",
-			            "info": "Page _PAGE_ dari _PAGES_",
-			            "infoEmpty": "Data Kosong",
-			            "search": "Pencarian:",
-			            "paginate": {
-					        "first": "Pertama",
-					        "last": "Terakhir",
-					        "next": "Selanjutnya",
-					        "previous": "Sebelumnya"
-					    }
-					}
+			$(document).ready(function(){
+				$(".select2").select2();
+
+				setSelect("id_barang", $("#fId_barang"));
+				setSelect("id_warna", $("#fId_warna"));
+
+				// button tambah id barang onclick
+				$("#btn_tambah_idBarang").click(function(){
+					// reset pesan error
+			        reset_form("#form_modal_idBarang");
+			        // tampilkan modal
+			        $("#modal_idBarang .modal-title").html("Form Tambah Data Id Barang"); // ganti heade form
+			        $("#btn_submit_idBarang").prop("value", "Tambah");
+			        $("#modal_idBarang").modal();
+				});
+
+				// button tambah id barang onclick
+				$("#btn_tambah_idWarna").click(function(){
+					// reset pesan error
+			        reset_form("#form_modal_idWarna");
+			        // tampilkan modal
+			        $("#modal_idWarna .modal-title").html("Form Tambah Data Id Warna"); // ganti heade form
+			        $("#submit_idWarna").prop("value", "Tambah");
+			        $("#modal_idWarna").modal();
 				});
 			});
+
+			// funsgi set isi select id_barang dan id_warna
+			function setSelect(select, idSelect){
+				// reset ulang select
+				if(select === "id_barang") var text = "-- Pilih Id Barang --";
+				else var text = "-- Pilih Id Warna --";
+
+				idSelect.find('option').remove().end().
+					append($('<option>',
+						{value: "", text:text}));
+				$.ajax({
+					url: base_url+"module/barang/action.php",
+			        type: "post",
+			        dataType: "json",
+			        data: {
+			            "select" : select,
+			            "action" : "getSelect",
+			        },
+			        success: function(data){
+			        	$.each(data, function(index, item){
+							idSelect.append($("<option>", {
+								value: item.id,
+								text: item[1]+" - "+item.nama,
+							}));					
+						});
+			        },
+			        error: function (jqXHR, textStatus, errorThrown) // error handling
+			        {
+			            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+			            console.log(jqXHR, textStatus, errorThrown);
+			            // location.reload();
+			        }
+				})
+			}
+
+			function reset_form(form){
+
+			    // reset pesan error
+			    if(form === "#form_barang"){
+
+			    }
+			    else if(form === "#form_modal_idBarang"){
+			    	$("#fId_barang").parent().find('.help-block').text("");
+				    $("#fId_barang").closest('div').removeClass('has-error');
+				    $("#fNama_idBarang").parent().find('.help-block').text("");
+				    $("#fNama_idBarang").closest('div').removeClass('has-error');
+				  	// $('#form_modal_idBarang').trigger('reset');
+
+			    }
+			    else if(form === "#form_modal_idWarna"){
+			    	$("#fId_warna").parent().find('.help-block').text("");
+				    $("#fId_warna").closest('div').removeClass('has-error');
+				    $("#fNama_idWarna").parent().find('.help-block').text("");
+				    $("#fNama_idWarna").closest('div').removeClass('has-error');
+				    // $("#form_modal_idWarna").trigger('reset');
+			    }
+				
+			    // bersihkan form
+			    $(form).trigger('reset');
+			}
+
+
 		</script>
     <!-- -->

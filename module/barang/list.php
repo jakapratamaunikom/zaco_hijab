@@ -19,7 +19,8 @@
   		<ol class="breadcrumb">
     		<li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i>Zaco Hijab</a></li>
     		<li>Data Master</li>
-    		<li><a href="<?= base_url."index.php?m=barang&p=list" ?>"><i class="active"></i>Data Barang</a></li>
+    		<li><a href="<?= base_url."index.php?m=barang&p=list" ?>"><i class="active"></i>Barang</a></li>
+    		<li>Data Barang</li>
   		</ol>
 	</section>
 
@@ -40,7 +41,7 @@
                     	<div class="col-md-12 col-xs-12">
 							<div class="btn-group">
 								<!-- tambah -->
-	          					<a href="<?= base_url."index.php?m=barang&p=form" ?>" class="btn btn-default" role="button">Tambah Data</a>
+	          					<a href="<?= base_url."index.php?m=barang&p=form" ?>" class="btn btn-default" role="button"><i class="fa fa-plus"></i> Tambah Data</a>
 	          					<!-- export excel -->
 	          					<button type="button" class="btn btn-success" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 	          					<!-- export pdf -->
@@ -59,10 +60,9 @@
 	                            	<tr>
 		                                <th style="width: 15px">No</th>
 		                                <th>Kode Barang</th>
-		                                <th>Id Barang</th>
-		                                <th>Id Warna</th>
-		                                <th>Id Warna</th>
+		                               	<th>Nama Barang</th>
 		                                <th>HPP</th>
+		                                <th>Harga Pasar</th>
 		                                <th>Market Place</th>
 		                                <th>Harga IG</th>
 		                                <th>Keterangan</th>
@@ -90,27 +90,51 @@
 		<!-- js datepicker -->
 		<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 		<!-- js list -->
+	 	<script type="text/javascript">
+            var base_url = "<?php print base_url; ?>";
+        </script>
+        <!-- js modal export -->
+        <script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
 		<script type="text/javascript">
 			// setting datatable
 			$(document).ready(function(){
 				// setting datatable
-				$("#tabel_barang").DataTable({
+				var tabel_barang = $("#tabel_barang").DataTable({
 					"language" : {
-						"lengthMenu": "Tampilkan _MENU_ data/page",
+			            "lengthMenu": "Tampilkan _MENU_ data/page",
 			            "zeroRecords": "Data Tidak Ada",
-			            "info": "Page _PAGE_ dari _PAGES_",
-			            "infoEmpty": "Data Kosong",
+			            "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
+			            "infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
 			            "search": "Pencarian:",
+			            "loadingRecords": "Loading...",
+			            "processing": "Processing...",
 			            "paginate": {
-					        "first": "Pertama",
-					        "last": "Terakhir",
-					        "next": "Selanjutnya",
-					        "previous": "Sebelumnya"
-					    }
-					}
-				});
+			                "first": "Pertama",
+			                "last": "Terakhir",
+			                "next": "Selanjutnya",
+			                "previous": "Sebelumnya"
+			            }
+			        },
+			        "lengthMenu": [ 25, 50, 75, 100 ],
+			        "pageLength": 25,
+			        order: [],
+			        processing: true,
+			        serverSide: true,
+			        ajax: {
+			            url: base_url+"module/barang/action.php",
+			            type: 'POST',
+			            data: {
+			                "action" : "list",
+			            }
+			        },
+			        "columnDefs": [
+			            {
+			                "targets":[0, 7, 8], // disable order di kolom 1 dan 3
+			                "orderable":false,
+			            }
+			        ],
+			    });
 			});
 		</script>
-		<!-- js modal export -->
-        <script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
+		
     <!-- -->

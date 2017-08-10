@@ -1,6 +1,7 @@
-//setting datatable
 $(document).ready(function(){
-	var tabel_id_warna = $("#tabel_id_warna").DataTable({
+	
+    //setting datatable
+    var tabel_id_warna = $("#tabel_id_warna").DataTable({
 		"language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
             "zeroRecords": "Data Tidak Ada",
@@ -50,7 +51,7 @@ $(document).ready(function(){
     $("#form_modal_idWarna").submit(function(e){
         e.preventDefault();
 
-        var id = $("#id").val().trim();
+        var id = $("#id_warna").val().trim();
         var id_warna = $("#fId_warna").val().trim();
         var nama = $("#fNama_idWarna").val().trim();
         var submit = $("#submit_idWarna").val();
@@ -158,7 +159,7 @@ function edit_id_warna(id){
             reset_form();
             // tampilkan modal
             $("#modal_idWarna .modal-title").html("Form Edit Data Id Warna");
-            $("#id").val(data.id);
+            $("#id_warna").val(data.id);
             $("#fId_warna").val(data.id_warna);
             $("#fNama_idWarna").val(data.nama);
             $("#fId_warna").prop("disabled", true);
@@ -183,5 +184,5 @@ function reset_form(){
     $("#fNama_idWarna").closest('div').removeClass('has-error');
     // bersihkan form
     $('#form_modal_idWarna').trigger('reset');
-    $("#form_modal_idWarna").prop("disabled", false);
+    $("#fId_warna").prop("disabled", false);
 }
