@@ -85,19 +85,18 @@
 
 	                        			<!-- diskon -->
 	                        			<div class="form-group">
-	          								<div class="row">
-	          									<div class="col-md-12 col-xs-12">
+	          								
 	          										<label for="fDiskon">Diskon</label>
-	          									</div>
-	          								</div>
-	          								<div class="row">
-	          									<div class="col-md-12 col-xs-12">
+	          									
+	          								
+	          								
+	          									
 		          									<div class="input-group">
 		          										<input class="form-control" placeholder="Masukkan Diskon" id="fDiskon" name="fDiskon">
 		          										<span class="input-group-addon"> %</span>
 		          									</div>
-	          									</div>
-	          								</div>		
+	          									
+	          								
 	          							</div>
 
 	                        			<!-- status transaksi -->

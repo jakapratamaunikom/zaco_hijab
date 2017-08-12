@@ -44,6 +44,23 @@
 			body.loading_gif .loadingPage{
 				display: block;
 			}
+
+			.fileUpload{
+				position: relative;
+				overflow: hidden;
+				/*margin: 10px;*/
+			}
+			.fileUpload input.upload{
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 0;
+				padding: 0;
+				font-size: 20px;
+				cursor: pointer;
+				opacity: 0;
+				filter: alpha(opacity=0);
+			}
 		</style>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
