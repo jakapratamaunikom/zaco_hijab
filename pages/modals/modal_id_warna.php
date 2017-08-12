@@ -12,14 +12,14 @@
                     <input type="hidden" name="id_warna" id="id_warna">
                     <!-- field id warna -->
                     <div class="form-group">
-                        <label for="fId_warna">Id Warna</label>
-                        <input type="text" name="fId_warna" id="fId_warna" class="form-control" placeholder="Masukkan ID Warna">
+                        <label for="fmId_warna">Id Warna</label>
+                        <input type="text" name="fmId_warna" id="fmId_warna" class="form-control" placeholder="Masukkan ID Warna">
                         <span class="help-block small"></span>
                     </div>
                     <!-- field nama -->
                     <div class="form-group">
-                        <label for="fNama_idWarna">Nama</label>
-                        <input type="text" name="fNama_idWarna" id="fNama_idWarna" class="form-control" placeholder="Masukkan Warna">
+                        <label for="fmNama_idWarna">Nama</label>
+                        <input type="text" name="fmNama_idWarna" id="fmNama_idWarna" class="form-control" placeholder="Masukkan Warna">
                         <span class="help-block small"></span>
                     </div>
             </div>

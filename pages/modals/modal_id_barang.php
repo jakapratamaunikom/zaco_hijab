@@ -12,14 +12,14 @@
                     <input type="hidden" name="id_barang" id="id_barang">
                     <!-- field id barang -->
                     <div class="form-group">
-                        <label for="fId_barang">Id Barang</label>
-                        <input type="text" name="fId_barang" id="fId_barang" class="form-control" placeholder="Masukkan ID Barang">
+                        <label for="fmId_barang">Id Barang</label>
+                        <input type="text" name="fmId_barang" id="fmId_barang" class="form-control" placeholder="Masukkan ID Barang">
                         <span class="help-block small"></span>
                     </div>
                     <!-- field nama -->
                     <div class="form-group">
-                        <label for="fNama_idBarang">Nama</label>
-                        <input type="text" name="fNama_idBarang" id="fNama_idBarang" class="form-control" placeholder="Masukkan Nama Barang">
+                        <label for="fmNama_idBarang">Nama</label>
+                        <input type="text" name="fmNama_idBarang" id="fmNama_idBarang" class="form-control" placeholder="Masukkan Nama Barang">
                         <span class="help-block small"></span>
                     </div>
             </div>

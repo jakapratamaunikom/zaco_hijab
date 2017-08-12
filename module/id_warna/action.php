@@ -74,8 +74,8 @@
 
 	// fungsi action add
 	function actionAdd($koneksi){
-		$id_warna = isset($_POST['fId_warna']) ? $_POST['fId_warna'] : false;
-		$nama = isset($_POST['fNama_idWarna']) ? $_POST['fNama_idWarna'] : false;
+		$id_warna = isset($_POST['fmId_warna']) ? $_POST['fmId_warna'] : false;
+		$nama = isset($_POST['fmNama_idWarna']) ? $_POST['fmNama_idWarna'] : false;
 
 		// validasi inputan
 			// inisialisasi
@@ -191,8 +191,8 @@
 	// fungsi action edit
 	function actionEdit($koneksi){
 		$id = isset($_POST['id']) ? $_POST['id'] : false;
-		$id_warna = isset($_POST['fId_warna']) ? $_POST['fId_warna'] : false;
-		$nama = isset($_POST['fNama_idWarna']) ? $_POST['fNama_idWarna'] : false;
+		$id_warna = isset($_POST['fmId_warna']) ? $_POST['fmId_warna'] : false;
+		$nama = isset($_POST['fmNama_idWarna']) ? $_POST['fmNama_idWarna'] : false;
 
 		// validasi
 			// inisialisasi
