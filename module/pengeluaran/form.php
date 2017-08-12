@@ -57,7 +57,7 @@
                         			<!-- jenis pengeluaran -->
                         			<div class="form-group">
                         				<label for="fJenis">Jenis Pengeluaran</label>
-                        				<select id="fJenis" name="fJenis" class="form-control select2" style="width: 100%;">
+                        				<select id="fJenis" name="fJenis" class="form-control" style="width: 100%;">
                         					<option value="">-- Pilih Jenis Pengeluaran --</option>
                         				</select>
                         			</div>
@@ -126,6 +126,7 @@
 				                        						<th>Aksi</th>
 				                        					</tr>
 				                        				</thead>
+                                                        <tbody></tbody>
 				                        			</table>
 		                        				</div>
 		                        				<div class="col-md-12">
@@ -142,7 +143,7 @@
                 </div>
                 <!-- footer box -->
                 <div class="box-footer text-right">
-                	<button type="button" class="btn btn-default btn-lg"><i class="fa fa-plus"></i> Tambah</button>
+                	<button type="button" class="btn btn-default btn-lg" onclick="addPengeluaran()"><i class="fa fa-plus"></i> Tambah</button>
                 	<button type="button" class="btn btn-default btn-lg">Batal</button>
                 </div>
             </div>
@@ -153,13 +154,9 @@
 <!-- js -->
 <!-- js datepicker -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
-<!-- Select2 -->
-<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
+
 <script type="text/javascript">
 	$(function(){
-		//Initialize Select2 Elements
-		$(".select2").select2();
-
 		//setting datepicker
 		$(".datepicker").datepicker({
 			autoclose: true,
@@ -170,4 +167,47 @@
 	        todayHighlight: true,
 		});
 	});
+
+    // aksi tambah pengeluaran (tampilan)
+    $("#fTambah_pengeluaran").click(function() {
+        $('#tabel_item_pengeluaran > tbody:last-child').append(
+            '<tr id="baris">'+
+                '<td></td>'+
+                '<td>Dummy</td>'+
+                '<td>Dummy</td>'+
+                '<td>Dummy</td>'+
+                '<td><button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list"><i class="fa fa-trash"</button></td>'+
+            '</tr>'
+        );
+
+        // penyesuaian kolom No pada tampilan ketika list ditambah
+        numberingList();
+    })
+
+    // aksi delete List pengenluaran
+    function delList() {
+        $('#baris').remove();
+
+        // penyesuaian kolom No pada tampilan ketika list dihapus
+        numberingList();
+    }
+
+    // penyesuaian kolom No pada tampilan ketika list dihapus atau ditambah
+    function numberingList() {
+        $('#tabel_item_pengeluaran tbody tr').each(function (index) {
+            $(this).children("td:eq(0)").html(index + 1);
+        });
+    }
+
+    // menampilkan data dari list
+    function addPengeluaran() {
+        $('#tabel_item_pengeluaran tbody tr').each(function (index) {
+            //menampilkan isi dari kolom no
+            console.log($(this).children("td:eq(0)").html());
+        });
+    }
+
+    
+
+    
 </script>

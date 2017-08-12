@@ -84,7 +84,11 @@
                                         <td>Dummy</td> 
                                         <td>Dummy</td> 
                                         <td>Dummy</td> 
-                                        <td><a href="<?= base_url."index.php?m=pengeluaran&p=view" ?>">ViewDummy</a></td>   
+                                        <td>
+                                            <a href="<?= base_url."index.php?m=pengeluaran&p=view" ?>" class="btn bg-maroon btn-flat">
+                                                <i class="fa fa-eye"></i> Detail
+                                            </a>
+                                        </td>   
                                     </tr>
                                 </tbody>
                             </table>

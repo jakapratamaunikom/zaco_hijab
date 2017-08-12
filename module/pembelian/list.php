@@ -6,8 +6,10 @@
 <!-- css -->
 <!-- DataTables -->
 <link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
-
 <link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+
+<!-- Datepicker -->
+<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
 <!-- -->
 
 
@@ -43,11 +45,11 @@
                                 	<i class="fa fa-plus"></i> Tambah
                                 </a>
                                 <!-- export excel -->
-                                <button type="button" id="excelPembelian" class="btn btn-success">
+                                <button type="button" id="exportExcel" class="btn btn-success">
                                 	<i class="fa fa-file-excel-o"></i> Export Excel
                                 </button>
                                 <!-- export pdf -->
-                                <button type="button" id="pdfPembelian" class="btn btn-danger">
+                                <button type="button" id="exportPdf" class="btn btn-danger">
                                 	<i class="fa fa-file-pdf-o"></i> Export Pdf
                                 </button>
                             </div>
@@ -73,6 +75,23 @@
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Dummy</td>
+                                        <td>Dummy</td> 
+                                        <td>Dummy</td> 
+                                        <td>Dummy</td> 
+                                        <td>Dummy</td> 
+                                        <td>Dummy</td> 
+                                        <td>Dummy</td> 
+                                        <td>
+                                        <a href="<?= base_url."index.php?m=pembelian&p=view" ?>" class="btn bg-maroon btn-flat">
+                                                <i class="fa fa-eye"></i> Detail
+                                            </a>
+                                        </td>   
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -83,7 +102,8 @@
 </section>
 
 
-
+<!-- modal ekspor data -->
+<?php include_once("pages/modals/modal_export.php"); ?>
 
 <!-- js -->
 <!-- DataTables -->
@@ -91,6 +111,10 @@
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"; ?>"></script>
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
+
+<!-- js datepicker -->
+<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
+
 <script type="text/javascript">
 	//setting datatable
 	$(function(){
@@ -111,6 +135,10 @@
 		});
 	});
 </script>
+
+<!-- js modal export -->
+<script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
+
 <!-- -->
 
     

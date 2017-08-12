@@ -16,3 +16,7 @@
 
 => Button Tambah Pembelian. id/name = fTambah_pembelian (Sebelah field harga)
 => Tabel Item. id = tabel_item_pembelian
+
+3. View
+=> Tabel Lihat Pengeluaran. id = tabel_lihat_pembelian
+=> Ekspor Pdf. id = pdfPembelian

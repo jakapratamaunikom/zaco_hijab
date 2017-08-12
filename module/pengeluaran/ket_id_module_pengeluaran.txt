@@ -17,6 +17,7 @@
 => Nominal. id/name = fNominal
 => Button Tambah Pengeluaran. id/name = fTambah_pengeluaran (Sebelah field nominal)
 => Tabel Item. id = tabel_item_pengeluaran
+=> Baris dari Item List. id = baris
 
 --------------------------------
 3. View
