@@ -20,3 +20,4 @@
 3. View
 => Tabel Lihat Pengeluaran. id = tabel_lihat_pembelian
 => Ekspor Pdf. id = pdfPembelian
+
