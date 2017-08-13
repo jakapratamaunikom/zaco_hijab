@@ -1,6 +1,8 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
-	
+
+	$notif = isset($_SESSION['notif']) ? $_SESSION['notif'] : false;
+	unset($_SESSION['notif']);
 ?>
 
 	<!-- List -->
@@ -95,9 +97,24 @@
         </script>
         <!-- js modal export -->
         <script type="text/javascript" src="<?= base_url."pages/modals/modal_export.js"; ?>"></script>
+        <?php 
+        	if($notif){
+        		?>
+        		<script>var notif = "<?php echo $notif; ?>";</script>
+        		<?php
+        	}
+        	else{
+        		?>
+        		<script>var notif = false;</script>
+        		<?php
+        	} 
+        ?>
 		<script type="text/javascript">
 			// setting datatable
 			$(document).ready(function(){
+				if(notif == "gagal") alertify.error("Data Tidak Ditemukan");
+				else if(notif != false) alertify.success(notif);
+    		
 				// setting datatable
 				var tabel_barang = $("#tabel_barang").DataTable({
 					"language" : {
