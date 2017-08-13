@@ -169,8 +169,14 @@
 <!-- Select2 -->
 <script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
 <script type="text/javascript">
+
+
     var base_url = "<?php print base_url; ?>";
+
+    // variabel untuk menampung data yang terhapus dari list
     var data_edit_hapus = [];
+
+
 	$(function(){
 		//Initialize Select2 Elements
 		$(".select2").select2();
@@ -192,12 +198,16 @@
     $("#fTambah_pembelian").click(function() {
         var item_text = $("#fKd_barang option:selected").text();
         var item_val = $("#fKd_barang").val();
+
+        // cek jika value option barang masih default set text kosong
         if(item_val.length <= 0){
             item_text = "";
         }
+
         var qty = $("#fQty").val();
         var harga = $("#fHarga").val();
 
+        // Penambahan baris pada list barang
         $('#tabel_item_pembelian > tbody:last-child').append(
             '<tr id="baris">'+
                 '<td></td>'+
@@ -219,11 +229,13 @@
 
         // penyesuaian kolom No pada tampilan ketika list ditambah
         numberingList();
-        afterAddList();
+        clearBarang();
     });
 
-    function afterAddList() {
-        $('#fKd_barang').select2().val('').trigger('change'); // masih error (kembalikan posisi select ke drfault)
+    // bersihkan kolom yg data barang
+    function clearBarang() {
+
+        $('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
         $("#fQty").val('');
         $("#fHarga").val('');
 
@@ -242,8 +254,10 @@
 
     // aksi delete List pengenluaran
     function delList() {
+        // menghapus baris
         $('#baris').remove();
         
+        // menyimpan data ke array saat barang dihapus dari list
         data_edit_hapus.push({
             kd_pembelian : $('#fKd_pembelian').val(),
             kd_barang : $('#baris').children("td:eq(1)").children().html()
@@ -255,15 +269,19 @@
 
     // penyesuaian kolom No pada tampilan ketika list dihapus atau ditambah
     function numberingList() {
+        // variabel untuk menhitung total barang
         var total = 0;
         var hrg = 0;
+
         $('#tabel_item_pembelian tbody tr').each(function (index) {
             $(this).children("td:eq(0)").html(index + 1);
+
+            // operasi untuk menghitung total
             hrg = $(this).children("td:eq(2)").html().substr(4);
             total += parseInt(hrg);
         });
         
-
+        // menampilkan total
         $('#tampilHarga').children().html('Total: Rp. '+total+',00');
     }
 
@@ -272,6 +290,7 @@
 
         var data = [];
         
+        // menyimpan data ke array ketika data akan ditambah
         $('#tabel_item_pembelian tbody tr').each(function (index) {
             //menampilkan isi dari kolom no
             data.push({
@@ -284,7 +303,6 @@
             
         });
 
-        
         
     }
 
