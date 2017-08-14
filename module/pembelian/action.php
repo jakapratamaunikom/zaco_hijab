@@ -71,6 +71,9 @@
 		$status = true;
 		$errorDb = false;
 
+		// tempat test
+		getKdPengeluaran($koneksi);
+
 		// cek data barang kosong
 		// if(sizeOf($listBarang)<1){
 		// 		$status = false;
@@ -138,9 +141,27 @@
 			// jika tidak ada error saat penambahan detail
 			// tambah data ke tabel pengeluaran
 			if(!$errorDb){
-				// $query = "CALL tambah_pengeluaran_pembelian('PG-20170813-1','PB-20170813-1', '2017-08-13', 'admin');";
-				// // prepare
-				// $statement = $koneksi->prepare($query);
+				$kd_pengeluaran = getKdPengeluaran($koneksi);
+				$query = "CALL tambah_pengeluaran_pembelian(:kd_pengeluaran,:kd_pembelian, :tgl, 'admin');";
+				// prepare
+				$statement = $koneksi->prepare($query);
+
+				$statement->bindParam(':kd_pengeluaran', $kd_pengeluaran);
+				$statement->bindParam(':kd_pembelian', $kd_pembelian);
+				$statement->bindParam(':tgl', $tgl);
+
+				$result = $statement->execute(
+					array(
+						':kd_pengeluaran' => $kd_pengeluaran,
+						':kd_pembelian' => $kd_pembelian,
+						':tgl' => $tgl,
+					)
+				);
+
+				if(!$result){
+					$errorDb = true;
+					$status = false;
+				}
 			}
 
 
@@ -168,7 +189,7 @@
 
 	// fungsi get data select
 	function getSelect($koneksi){
-		$query = "SELECT id, nama FROM v_barang";
+		$query = "SELECT id, nama FROM barang";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
@@ -182,7 +203,7 @@
 	// mendapatkan kode pembelian terakhir pada hari ini
 	function getKdPembelian($koneksi){
 		$kode = date("Y").date("m").date("d");
-		$query = "SELECT kd_pembelian FROM pembelian WHERE kd_pembelian LIKE '%".$kode."%' ORDER BY kd_pembelian desc LIMIT 1";
+		$query = "SELECT kd_pembelian FROM pembelian WHERE kd_pembelian LIKE '%".$kode."%' ORDER BY id desc LIMIT 1";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
@@ -192,18 +213,28 @@
 		echo json_encode($result);
 	}
 
-	// // mendapatkan kode pengeluaran terakhir pada hari ini
+	// mendapatkan kode pengeluaran terakhir pada hari ini (internal)
 	function getKdPengeluaran($koneksi){
 		$kode = date("Y").date("m").date("d");
-		$query = "SELECT kd_pengeluaran FROM pengeluaran WHERE kd_pengeluaran LIKE '%".$kode."%' ORDER BY kd_pengeluaran desc LIMIT 1";
+		$query = "SELECT kd_pengeluaran FROM pengeluaran WHERE kd_pengeluaran LIKE '%".$kode."%' ORDER BY id desc LIMIT 1";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
 		// execute
 		$statement->execute();
-		$result = $statement->fetchAll();
+		$result = $statement->fetch();
+
+		$kd_pengeluaran = "";
+		if(sizeOf($result)<1){
+			$kd_pengeluaran = 'PG-'.$kode.'-1';
+		}else{
+			$iterasi = explode("-", $result['kd_pengeluaran']);
+			// var_dump($iterasi);
+			$count = $iterasi[2] + 1;
+			$kd_pengeluaran = $kd_pengeluaran = 'PG-'.$kode.'-'.$count;
+		}
 		
-		// membuat kode pengeluaran
+		return $kd_pengeluaran;
 	}
 
 	//cek validasi pada saat menambahkan list

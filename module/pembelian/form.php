@@ -268,7 +268,7 @@
         });
     });
 
-    // bersihkan kolom yg data barang
+    // bersihkan kolom data barang
     function clearBarang() {
 
         $('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
@@ -324,7 +324,10 @@
     // 
     function addPembelian() {
 
-        var data = new Array();
+        // inisialisasi
+        // data -> untuk menampung list barang
+        // cek -> untuk validasi textfield pada listbarang
+        var data = new Array(); 
         var cek = true;
         var kd_pembelian = $('#fKd_pembelian').val().trim();
         var tgl = $('#fTgl').val().trim();
@@ -358,7 +361,14 @@
                 tgl : tgl,
                 listBarang : data,
             }
-            getResponseAddPembelian(dataPembelian);
+
+            // fungsi ajax untuk action add
+            if(data.length>0){
+                getResponseAddPembelian(dataPembelian);
+            }else{
+                alertify.error('List Item Kosong');
+            }
+            
         }else{
             alertify.error('Qty pada list ada yang kosong atau tidak sesuai');
         }
@@ -402,7 +412,7 @@
         })
     }
 
-    // fungsi set kode pembelian (bug kode > 10)
+    // fungsi set kode pembelian
     function setKdPembelian(idSelect){
 
         $.ajax({
@@ -447,9 +457,8 @@
         return [year, month, day].join('-');
     }
 
-
+    // memmanggil fungsi actionAdd
     function getResponseAddPembelian(data){
-
         $.ajax({
             url : base_url+"module/pembelian/action.php",
             type : "post",
@@ -461,6 +470,8 @@
             success: function(hasil){
                 if(hasil.status){
                     alertify.success('pembelian & detil sukses')
+                }else{
+                    if(hasil.listKosong) alertify.error(hasil.listKosong);
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) // error handling
