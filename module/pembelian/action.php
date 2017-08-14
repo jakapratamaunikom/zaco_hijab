@@ -71,15 +71,7 @@
 		$status = true;
 		$errorDb = false;
 
-		// tempat test
-		getKdPengeluaran($koneksi);
-
-		// cek data barang kosong
-		// if(sizeOf($listBarang)<1){
-		// 		$status = false;
-		// }else{
-		// 		
-		// }
+		
 
 		// tambah ke tabel pembelian (dummy ket,username)
 		$query = "INSERT INTO pembelian(kd_pembelian, tgl, ket, username) VALUES(:kd_pembelian, :tgl, '-', 'admin');";
@@ -105,6 +97,8 @@
 			// insert data ke detail pembelian
 			for($i=0;$i<sizeOf($listBarang);$i++){
 
+				$harga = $listBarang[$i]['harga'] / $listBarang[$i]['qty'];
+
 				$query = "CALL tambah_pembelian(:kd_pembelian, :tgl, :kd_barang, :harga, :qty, :subtotal, :ket)";
 				// prepare
 				$statement = $koneksi->prepare($query);
@@ -112,7 +106,7 @@
 				$statement->bindParam(':kd_pembelian', $kd_pembelian);
 				$statement->bindParam(':tgl', $tgl);
 				$statement->bindParam(':kd_barang', $listBarang[$i]['kd_barang']);
-				$statement->bindParam(':harga', $listBarang[$i]['harga']);
+				$statement->bindParam(':harga', $harga);
 				$statement->bindParam(':qty', $listBarang[$i]['qty']);
 				$statement->bindParam(':subtotal', $listBarang[$i]['harga']);
 				$statement->bindParam(':ket', $listBarang[$i]['ket']);
@@ -122,7 +116,7 @@
 						':kd_pembelian' => $kd_pembelian,
 						':tgl' => $tgl,
 						':kd_barang' => $listBarang[$i]['kd_barang'],
-						':harga' => $listBarang[$i]['harga'],
+						':harga' => $harga,
 						':qty' => $listBarang[$i]['qty'],
 						':subtotal' => $listBarang[$i]['harga'],
 						':ket' => $listBarang[$i]['ket'],
@@ -223,9 +217,9 @@
 		// execute
 		$statement->execute();
 		$result = $statement->fetch();
-
+		
 		$kd_pengeluaran = "";
-		if(sizeOf($result)<1){
+		if(empty($result)){
 			$kd_pengeluaran = 'PG-'.$kode.'-1';
 		}else{
 			$iterasi = explode("-", $result['kd_pengeluaran']);
@@ -253,7 +247,7 @@
 
 		$validKd_barang = validString('Barang',$kd_barang,1,5,true);
 		$validQty = validAngka('Qty',$qty,1,6,true);
-		$validHarga = validAngka('Harga',$harga,1,6,true);
+		$validHarga = validAngka('Harga',$harga,1,10,true);
 
 		// cek valid
 		if(!$validKd_barang['cek']){
