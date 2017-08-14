@@ -310,7 +310,7 @@
                     }));
 		    	});
 
-		    	$("#dataPembeli").css("display", "none");
+		    	setDataPembeli(true);
 		    }
 
 		    function setDataPembeli(jenis=false){
