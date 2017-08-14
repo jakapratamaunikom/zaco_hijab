@@ -283,136 +283,9 @@ $(document).ready(function(){
 	    					$("#fKd_barang").closest('div').addClass('has-error');
 						}
 						else{
-							// set error fId_barang
-               				// jika ada pesan error
-               				if(!jQuery.isEmptyObject(hasil.pesanError.id_barangError)){
-                                $("#fId_barang").parent().find('.help-block').text(hasil.pesanError.id_barangError);
-                                $("#fId_barang").parent().parent().parent().closest('div').addClass('has-error');
-                                $("#fKd_barang").parent().find('.help-block').text("Kode Barang Harus Diisi");
-                                $("#fKd_barang").closest('div').addClass('has-error');
-                            }
-                            else{
-                                $("#fId_barang").parent().find('.help-block').text("");
-                                $("#fId_barang").parent().parent().parent().closest('div').removeClass('has-error');
-                                $("#fKd_barang").parent().find('.help-block').text("");
-                                $("#fKd_barang").closest('div').removeClass('has-error');
-                            }
-
-                            // set error fId_warna
-               				// jika ada pesan error
-               				if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
-                                $("#fId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
-                                $("#fId_warna").parent().parent().parent().closest('div').addClass('has-error');
-                                $("#fKd_barang").parent().find('.help-block').text("Kode Barang Harus Diisi");
-                                $("#fKd_barang").closest('div').addClass('has-error');
-                            }
-                            else{
-                                $("#fId_warna").parent().find('.help-block').text("");
-                                $("#fId_warna").parent().parent().parent().closest('div').removeClass('has-error');
-                                $("#fKd_barang").parent().find('.help-block').text("");
-                                $("#fKd_barang").closest('div').removeClass('has-error');
-                            }
-
-                            // set error fNama_barang
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
-                                $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
-	    						$("#fNama_barang").closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fNama_barang").parent().find('.help-block').text("");
-	    						$("#fNama_barang").closest('div').removeClass('has-error');
-                            }
-
-                            // set error fFoto
-                            // jika ada pesan error
-                            /*if(!jQuery.isEmptyObject(hasil.pesanError.fotoError)){
-                                $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.fotoError);
-	    						$("#fNama_barang").closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fNama_barang").parent().find('.help-block').text("");
-	    						$("#fNama_barang").closest('div').removeClass('has-error');
-                            }*/
-
-                            // set error fKet
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.ketError)){
-	    						$("#fKet").parent().find('.help-block').text(hasil.pesanError.ketError);
-	   							$("#fKet").closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fKet").parent().find('.help-block').text("");
-	   							$("#fKet").closest('div').removeClass('has-error');
-                            }
-
-                            // set error fHpp
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.hppError)){
-	   							$("#fHpp").parent().parent().find('.help-block').text(hasil.pesanError.hppError);
-	    						$("#fHpp").parent().parent().closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fHpp").parent().parent().find('.help-block').text("");
-	    						$("#fHpp").parent().parent().closest('div').removeClass('has-error');
-                            }
-
-                           	// set error harga pasar
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.harga_pasarError)){
-	   							$("#fHarga_pasar").parent().parent().find('.help-block').text(hasil.pesanError.harga_pasarError);
-	    						$("#fHarga_pasar").parent().parent().closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fHarga_pasar").parent().parent().find('.help-block').text("");
-	    						$("#fHarga_pasar").parent().parent().closest('div').removeClass('has-error');
-                            }
-
-                            // set error harga market place
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.market_placeError)){
-	   							$("#fHarga_market").parent().parent().find('.help-block').text(hasil.pesanError.market_placeError);
-	    						$("#fHarga_market").parent().parent().closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fHarga_market").parent().parent().find('.help-block').text("");
-	    						$("#fHarga_market").parent().parent().closest('div').removeClass('has-error');
-                            }
-
-                            // set error harga ig
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.harga_igError)){
-	   							$("#fHarga_ig").parent().parent().find('.help-block').text(hasil.pesanError.harga_igError);
-	    						$("#fHarga_ig").parent().parent().closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fHarga_ig").parent().parent().find('.help-block').text("");
-	    						$("#fHarga_ig").parent().parent().closest('div').removeClass('has-error');
-                            }
-
-                            // set error stok awal
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.stokAwalError)){
-	   							$("#fStokAwal").parent().parent().find('.help-block').text(hasil.pesanError.stokAwalError);
-	    						$("#fStokAwal").parent().parent().closest('div').addClass('has-error');
-                            }
-                            else{
-                            	$("#fStokAwal").parent().parent().find('.help-block').text("");
-	    						$("#fStokAwal").parent().parent().closest('div').removeClass('has-error');
-                            }
+							setError(hasil);
 						}
-						// set value
-						$("#fId_barang").select2().val(hasil.set_value.id_barang).trigger('change');
-						$("#fId_warna").select2().val(hasil.set_value.id_warna).trigger('change');
-						$("#fKd_barang").val(hasil.set_value.kd_barang);
-						$("#fNama_barang").val(hasil.set_value.namaBarang);
-						$("#fFoto").val(hasil.set_value.foto);
-						$("#fKet").val(hasil.set_value.ket);
-						$("#fHpp").val(parseFloat(hasil.set_value.hpp));
-						$("#fHarga_pasar").val(parseFloat(hasil.set_value.harga_pasar));
-						$("#fHarga_market").val(parseFloat(hasil.set_value.market_place));
-						$("#fHarga_ig").val(parseFloat(hasil.set_value.harga_ig));
-						$("#fStokAwal").val(parseFloat(hasil.set_value.stokAwal));
+						setValue(hasil);
 					}
 				}
 				console.log(hasil);
@@ -514,7 +387,7 @@ function edit_barang(id){
 
 				$("#fId_barang").prop("disabled", true);
 				$("#fId_warna").prop("disabled", true);
-				$("#fKd_barang").prop("disabled", true);
+				$("#fKd_barang").prop("readonly", true);
 				$("#btn_tambah_idWarna").prop("disabled", true);
 				$("#btn_tambah_idBarang").prop("disabled", true);
 			}
@@ -597,4 +470,146 @@ function reset_form(form){
 	
     // bersihkan form
     $(form).trigger('reset');
+}
+
+function setError(hasil){
+	// set error fId_barang
+	// jika ada pesan error
+	if(!jQuery.isEmptyObject(hasil.pesanError.id_barangError)){
+        $("#fId_barang").parent().find('.help-block').text(hasil.pesanError.id_barangError);
+        $("#fId_barang").parent().parent().parent().closest('div').addClass('has-error');
+        $("#fKd_barang").parent().find('.help-block').text("Kode Barang Harus Diisi");
+        $("#fKd_barang").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fId_barang").parent().find('.help-block').text("");
+        $("#fId_barang").parent().parent().parent().closest('div').removeClass('has-error');
+        $("#fKd_barang").parent().find('.help-block').text("");
+        $("#fKd_barang").closest('div').removeClass('has-error');
+    }
+
+    // set error fId_warna
+		// jika ada pesan error
+		if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
+        $("#fId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
+        $("#fId_warna").parent().parent().parent().closest('div').addClass('has-error');
+        $("#fKd_barang").parent().find('.help-block').text("Kode Barang Harus Diisi");
+        $("#fKd_barang").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fId_warna").parent().find('.help-block').text("");
+        $("#fId_warna").parent().parent().parent().closest('div').removeClass('has-error');
+        $("#fKd_barang").parent().find('.help-block').text("");
+        $("#fKd_barang").closest('div').removeClass('has-error');
+    }
+
+    // set error fNama_barang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
+        $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
+		$("#fNama_barang").closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fNama_barang").parent().find('.help-block').text("");
+		$("#fNama_barang").closest('div').removeClass('has-error');
+    }
+
+    // set error fFoto
+    // jika ada pesan error
+    /*if(!jQuery.isEmptyObject(hasil.pesanError.fotoError)){
+        $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.fotoError);
+		$("#fNama_barang").closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fNama_barang").parent().find('.help-block').text("");
+		$("#fNama_barang").closest('div').removeClass('has-error');
+    }*/
+
+    // set error fKet
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.ketError)){
+		$("#fKet").parent().find('.help-block').text(hasil.pesanError.ketError);
+			$("#fKet").closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fKet").parent().find('.help-block').text("");
+			$("#fKet").closest('div').removeClass('has-error');
+    }
+
+    // set error fHpp
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.hppError)){
+			$("#fHpp").parent().parent().find('.help-block').text(hasil.pesanError.hppError);
+		$("#fHpp").parent().parent().closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fHpp").parent().parent().find('.help-block').text("");
+		$("#fHpp").parent().parent().closest('div').removeClass('has-error');
+    }
+
+   	// set error harga pasar
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.harga_pasarError)){
+			$("#fHarga_pasar").parent().parent().find('.help-block').text(hasil.pesanError.harga_pasarError);
+		$("#fHarga_pasar").parent().parent().closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fHarga_pasar").parent().parent().find('.help-block').text("");
+		$("#fHarga_pasar").parent().parent().closest('div').removeClass('has-error');
+    }
+
+    // set error harga market place
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.market_placeError)){
+			$("#fHarga_market").parent().parent().find('.help-block').text(hasil.pesanError.market_placeError);
+		$("#fHarga_market").parent().parent().closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fHarga_market").parent().parent().find('.help-block').text("");
+		$("#fHarga_market").parent().parent().closest('div').removeClass('has-error');
+    }
+
+    // set error harga ig
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.harga_igError)){
+			$("#fHarga_ig").parent().parent().find('.help-block').text(hasil.pesanError.harga_igError);
+		$("#fHarga_ig").parent().parent().closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fHarga_ig").parent().parent().find('.help-block').text("");
+		$("#fHarga_ig").parent().parent().closest('div').removeClass('has-error');
+    }
+
+    // set error stok awal
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.stokAwalError)){
+			$("#fStokAwal").parent().parent().find('.help-block').text(hasil.pesanError.stokAwalError);
+		$("#fStokAwal").parent().parent().closest('div').addClass('has-error');
+    }
+    else{
+    	$("#fStokAwal").parent().parent().find('.help-block').text("");
+		$("#fStokAwal").parent().parent().closest('div').removeClass('has-error');
+    }
+}
+
+function setValue(hasil){
+	// set value
+	$("#fId_barang").select2().val(hasil.set_value.id_barang).trigger('change');
+	$("#fId_warna").select2().val(hasil.set_value.id_warna).trigger('change');
+	$("#fKd_barang").val(hasil.set_value.kd_barang);
+	$("#fNama_barang").val(hasil.set_value.namaBarang);
+	$("#fFoto").val(hasil.set_value.foto);
+	$("#fKet").val(hasil.set_value.ket);
+
+	var hpp = parseFloat(hasil.set_value.hpp) ? parseFloat(hasil.set_value.hpp) : hasil.set_value.hpp;
+	var harga_pasar = parseFloat(hasil.set_value.harga_pasar) ? parseFloat(hasil.set_value.harga_pasar) : hasil.set_value.harga_pasar;
+	var harga_ig = parseFloat(hasil.set_value.harga_ig) ? parseFloat(hasil.set_value.harga_ig) : hasil.set_value.harga_ig;
+	var market_place = parseFloat(hasil.set_value.market_place) ? parseFloat(hasil.set_value.market_place) : hasil.set_value.market_place;
+	var stokAwal = parseFloat(hasil.set_value.stokAwal) ? parseFloat(hasil.set_value.stokAwal) : hasil.set_value.stokAwal;
+
+	$("#fHpp").val(hpp);
+	$("#fHarga_pasar").val(harga_pasar);
+	$("#fHarga_market").val(market_place);
+	$("#fHarga_ig").val(harga_ig);
+	$("#fStokAwal").val(stokAwal);
 }

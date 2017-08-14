@@ -13,16 +13,41 @@
 	// $action = "list";
 
 	// proteksi halaman
-	if(!$action) die("Dilarang Akses Halaman Ini !!");
-	else{
-		if(strtolower($action) === "list") list_idWarna($koneksi); // list datatable
-		else if(strtolower($action) === "tambah") actionAdd($koneksi); // aksi tambah
-		else if(strtolower($action) === "getedit"){ // get data untuk edit
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			getEdit($koneksi, $id);
+	switch (strtolower($action)) {
+			case 'list':
+				list_idWarna($koneksi); // list datatable
+				break;
+
+			case 'tambah':
+				actionAdd($koneksi); // aksi tambah
+				break;
+
+			case 'getedit':
+				// get data untuk edit
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				getEdit($koneksi, $id);
+				break;
+
+			case 'edit':
+				actionEdit($koneksi); // aksi edit
+				break;
+			
+			default:
+				die();
+				break;
 		}
-		else if(strtolower($action) === "edit") actionEdit($koneksi); // aksi edit
-	}
+
+
+	// if(!$action) die("Dilarang Akses Halaman Ini !!");
+	// else{
+	// 	if(strtolower($action) === "list") list_idWarna($koneksi); // list datatable
+	// 	else if(strtolower($action) === "tambah") actionAdd($koneksi); // aksi tambah
+	// 	else if(strtolower($action) === "getedit"){ // get data untuk edit
+	// 		$id = isset($_POST['id']) ? $_POST['id'] : false;
+	// 		getEdit($koneksi, $id);
+	// 	}
+	// 	else if(strtolower($action) === "edit") actionEdit($koneksi); // aksi edit
+	// }
 
 	// function list datatable (server-side)
 	function list_idWarna($koneksi){

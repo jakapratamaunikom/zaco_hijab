@@ -14,16 +14,34 @@
 	// proteksi halaman
 	if(!$action) die("Dilarang Akses Halaman Ini !!");
 	else{
-		if(strtolower($action) === "list") list_Barang($koneksi); // list datatable
-		else if(strtolower($action) === "tambah") actionAdd($koneksi); // aksi tambah
-		else if(strtolower($action) === "getedit"){ // get data untuk edit
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			getEdit($koneksi, $id);
-		}
-		else if(strtolower($action) === "edit") actionEdit($koneksi); // aksi edit
-		else if(strtolower($action) === "getselect"){ // aksi set select dinamis
-			$select = isset($_POST['select']) ? $_POST['select'] : false;
-			getSelect($koneksi, $select);
+		switch (strtolower($action)) {
+			case 'list':
+				list_Barang($koneksi); // list datatable
+				break;
+
+			case 'tambah':
+				actionAdd($koneksi); // aksi tambah
+				break;
+
+			case 'getedit':
+				// get data untuk edit
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				getEdit($koneksi, $id);
+				break;
+
+			case 'edit':
+				actionEdit($koneksi); // aksi edit
+				break;
+
+			case 'getselect':
+				// aksi set select dinamis
+				$select = isset($_POST['select']) ? $_POST['select'] : false;
+				getSelect($koneksi, $select);
+				break;
+			
+			default:
+				die();
+				break;
 		}
 	}
 
@@ -203,7 +221,7 @@
 			$id_warna = validInputan($id_warna, false, false);
 			$kd_barang = validInputan($kd_barang, false, false);
 			$namaBarang = validInputan($namaBarang, false, false);
-			$foto = validInputan($foto, false, false);
+			// $foto = validInputan($foto, false, false);
 			$ket = validInputan($ket, false, false);
 			$hpp = validInputan($hpp, false, false);
 			$harga_pasar = validInputan($harga_pasar, false, false);
