@@ -44,7 +44,7 @@
                         			<!-- kode pembelian -->
                         			<div class="form-group">
                         				<label for="fKd_pembelian">Kode Pembelian</label>
-                        				<input type="text" name="fKd_pembelian" id="fKd_pembelian" class="form-control" placeholder="Masukkan Kode Pembelian">
+                        				<input type="text" name="fKd_pembelian" id="fKd_pembelian" class="form-control" placeholder="Masukkan Kode Pembelian" readonly>
                         			</div>
 
                         			<!-- tanggal -->
@@ -66,16 +66,13 @@
                         				<div class="row">
                         	
 		                        			<div class="col-md-8">
-                        						<label for="fKd_barang">Item</label>
+                        						<label for="fKd_barang">Barang</label>
 		                        				<select id="fKd_barang" name="fKd_barang" class="form-control select2" style="width: 100%;">
-		                        					<option value="">-- Pilih Item --</option>
-                                                    <option value="1">Satu</option>
-                                                    <option value="2">dua</option>
-                                                    <option value="3">Tiga</option>
+		                        					<option value="">-- Pilih Barang --</option>
 		                        				</select>
                         					</div>
                         					<div class="col-md-4">
-                        						<label for="fQty">Qty</label>
+                        						<label for="fQty">Qty (pcs)</label>
 		                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0">
 
                         					</div>	
@@ -189,9 +186,14 @@
 	        orientation: "bottom auto",
 	        todayBtn: true,
 	        todayHighlight: true,
+
 		});
 	});
 
+    // inisialisasi awal field
+    $('#fTgl').val(getTanggal); // set default tanggal ke hari ini
+    setSelect($('#fKd_barang')); // set isi select kd_barang
+    setKdPembelian($('#fKd_pembelian')); // set kode pembelian
 
 
     // aksi tambah pembelian (tampilan)
@@ -220,9 +222,6 @@
                         '<i class="fa fa-trash">'+
                     '</button>'+
 
-                    // '<button type="button" class="btn bg-maroon btn-sm" title="Hapus dari list">'+
-                    //     '<i class="fa fa-edit">'+
-                    // '</button>'+
                 '</td>'+
             '</tr>'
         );
@@ -301,9 +300,88 @@
 
             });
             
-        });
+        });    
+    }
 
+    // funsgi set isi select id_barang dan id_warna
+    function setSelect(idSelect){
+        // reset ulang select
         
+        idSelect.find('option')
+            .remove()
+            .end()
+            .append($('<option>',{
+                value: "", 
+                text: "-- Pilih Barang --"
+            }));
+
+        $.ajax({
+            url: base_url+"module/pembelian/action.php",
+            type: "post",
+            dataType: "json",
+            data: {
+                "action" : "getSelect",
+            },
+            success: function(data){
+                $.each(data, function(index, item){
+                    idSelect.append($("<option>", {
+                        value: item.id,
+                        text: item.nama,
+                    }));                    
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) // error handling
+            {
+                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                console.log(jqXHR, textStatus, errorThrown);
+                // location.reload();
+            }
+        })
+    }
+
+    // fungsi set kode pembelian
+    function setKdPembelian(idSelect){
+
+        $.ajax({
+            url: base_url+"module/pembelian/action.php",
+            type: "post",
+            dataType: "json",
+            data: {
+                "action" : "getKdPembelian",
+            },
+            success: function(data){
+                var tanggal = getTanggal().replace(/-/g,"");
+
+                // cek apakah ada kode pembelian pada hari ini
+                if(!data[0]){
+                    idSelect.val('PB-'+tanggal+'-1'); 
+                }else{
+                    iterasi = data[0].kd_pembelian.split("-");
+                    count = parseInt(iterasi[2]) + 1;
+                    idSelect.val('PB-'+tanggal+'-'+count.toString());
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) // error handling
+            {
+                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                console.log(jqXHR, textStatus, errorThrown);
+                // location.reload();
+            }
+        })
+    }
+
+    // mendapatkan tanggal hari ini
+    function getTanggal(){
+
+        var d = new Date();
+        var month = '' + (d.getMonth() + 1);
+        var day = '' + d.getDate();
+        var year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('-');
     }
 
 
