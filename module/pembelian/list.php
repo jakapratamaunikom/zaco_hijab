@@ -129,12 +129,12 @@
 	//setting datatable
     var base_url = "<?php print base_url; ?>";
     
-    if(notif == "gagal") 
-        alertify.error("Data Tidak Ditemukan");
-    else if(notif != false) 
-        alertify.success(notif);
 
 	$(function(){
+        if(notif == "gagal") 
+            alertify.error("Data Tidak Ditemukan");
+        else if(notif != false) 
+            alertify.success(notif);
 		$("#tabel_pembelian").DataTable({
 			"language" : {
 				"lengthMenu": "Tampilkan _MENU_ data/page",
