@@ -117,33 +117,31 @@
                     		<div class="col-md-6 col-xs-12">
                     			
                     			<!-- fieldset list item -->
-                    			<div class="row">
-                    				<div class="col-md-12 col-xs-12">
-                    					<fieldset>
-		                        			<legend>List Item</legend>
-		                        			<div class="row">
-		                        				<div class="col-md-12">
-		                        					<table id="tabel_item_pembelian" class="table table-bordered table-hover">
-				                        				<thead>
-				                        					<tr>
-				                        						<th style="width: 15px">No</th>
-				                        						<th>Item</th>
-				                        						<th>Harga</th>
-				                        						<th>Qty</th>
-				                        						<th>Keterangan</th>
-				                        						<th>Aksi</th>
-				                        					</tr>
-				                        				</thead>
-                                                        <tbody></tbody>
-				                        			</table>
-		                        				</div>
-		                        				<div class="col-md-12" id="tampilHarga">
-		                        					<h4 class="text-right">Total: Rp. -,00</h4>
-		                        				</div>
-		                        			</div>	
-		                        		</fieldset>
+
+            					<fieldset>
+                        			<legend>List Item</legend>
+                                    <!-- <div style="overflow-x: scroll;"> -->
+                    					<table id="tabel_item_pembelian" class="table table-bordered table-hover">
+                            				<thead>
+                            					<tr>
+                            						<th style="width: 15px">No</th>
+                            						<th>Item</th>
+                            						<th>Harga</th>
+                            						<th>Qty</th>
+                            						<th>Keterangan</th>
+                            						<th>Aksi</th>
+                            					</tr>
+                            				</thead>
+                                            <!-- tbody agar bisa ditambah saat button +barang di klik -->
+                                            <tbody></tbody>
+                            			</table>
+                    				<!-- </div> -->
+                    				<div id="tampilHarga">
+                    					<h4 class="text-right">Total: Rp. -,00</h4>
                     				</div>
-                    			</div>
+                        				
+                        		</fieldset>
+
                     		</div>
                         </form>		
                     	
@@ -228,26 +226,34 @@
             success: function(hasil){
                 
                 if(hasil.status){
-                    // Penambahan baris pada list barang
-                    $('#tabel_item_pembelian > tbody:last-child').append(
-                        '<tr id="baris">'+
-                            '<td></td>'+
-                            '<td><div style="display: none;">'+item_val+'</div>'+item_text+'</td>'+
-                            '<td>Rp. '+harga+'</td>'+
-                            '<td>'+fieldQty(qty)+'</td>'+
-                            '<td>'+fieldKeterangan()+'</td>'+
-                            '<td>'+
-                                '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
-                                    '<i class="fa fa-trash">'+
-                                '</button>'+
+                    // Penambahan baris pada list barang 
+                    // buat <tbody></tbody> sebelum digunakan
+                    
+                    // cek apakah barang sudah ada pada list
+                    if(validBarang(item_val)){
+                        alertify.error(item_text+' sudah ada di list');
+                    }else{
+                        $('#tabel_item_pembelian > tbody:last-child').append(
+                            '<tr id="baris">'+
+                                '<td></td>'+
+                                '<td><div style="display: none;">'+item_val+'</div>'+item_text+'</td>'+
+                                '<td>Rp. '+harga+'</td>'+
+                                '<td>'+fieldQty(qty)+'</td>'+
+                                '<td>'+fieldKeterangan()+'</td>'+
+                                '<td>'+
+                                    '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
+                                        '<i class="fa fa-trash">'+
+                                    '</button>'+
 
-                            '</td>'+
-                        '</tr>'
-                    );
+                                '</td>'+
+                            '</tr>'
+                        );
 
-                    // penyesuaian kolom No pada tampilan ketika list ditambah
-                    numberingList();
-                    clearBarang();
+                        // penyesuaian kolom No pada tampilan ketika list ditambah
+                        numberingList();
+                        clearBarang();
+                    }
+                    
                 }else{
                     // jika ada pesan error
                     if(!jQuery.isEmptyObject(hasil.pesanError.kd_barangError)){
@@ -321,7 +327,7 @@
         $('#tampilHarga').children().html('Total: Rp. '+total+',00');
     }
 
-    // 
+    // fungsi tambah pembelian
     function addPembelian() {
 
         // inisialisasi
@@ -371,9 +377,22 @@
             
         }else{
             alertify.error('Qty pada list ada yang kosong atau tidak sesuai');
-        }
-   
-          
+        }   
+    }
+
+    // cek barang pada list
+    function validBarang(barangIn){
+        var ada = false;
+        $('#tabel_item_pembelian tbody tr').each(function (index) {
+
+            //mendapatkan kd barang dari list
+            var barangList = $(this).children("td:eq(1)").children().html().trim();
+
+            // cek apakah barang yg akan ditambahkan ke list sudah ada di list
+            if(barangIn==barangList) ada = true;
+        });
+
+        return ada;
     }
 
     // funsgi set isi select id_barang dan qty
@@ -469,9 +488,11 @@
             },
             success: function(hasil){
                 if(hasil.status){
-                    alertify.success('pembelian & detil sukses')
+                    document.location=base_url+"index.php?m=pembelian&p=list";
                 }else{
-                    if(hasil.listKosong) alertify.error(hasil.listKosong);
+                    if(hasil.errorDb){ // jika ada error database
+                        swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error");
+                    }
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) // error handling

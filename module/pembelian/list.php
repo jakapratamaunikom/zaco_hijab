@@ -1,5 +1,8 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+
+    $notif = isset($_SESSION['notif']) ? $_SESSION['notif'] : false;
+    unset($_SESSION['notif']);
 	
 ?>
 
@@ -65,13 +68,10 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 15px">No</th>
-                                        <th>Kode Pembelian</th>
+                                        <th>Kode Pengeluaran</th>
                                         <th>Tanggal</th>
-                                        <th>Item</th>
-                                        <th>Qty</th>
-                                        <th>Harga</th>
                                         <th>Total</th>
-                                        <th>Keterangan</th>
+                                        <th>Jenis</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -81,12 +81,9 @@
                                         <td>Dummy</td>
                                         <td>Dummy</td> 
                                         <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
+                                        <td>Dummy</td>  
                                         <td>
-                                        <a href="<?= base_url."index.php?m=pembelian&p=view" ?>" class="btn bg-maroon btn-flat">
+                                            <a href="<?= base_url."index.php?m=pembelian&p=view" ?>" class="btn bg-maroon btn-flat">
                                                 <i class="fa fa-eye"></i> Detail
                                             </a>
                                         </td>   
@@ -115,8 +112,28 @@
 <!-- js datepicker -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 
+<?php 
+    if($notif){
+        ?>
+        <script>var notif = "<?php echo $notif; ?>";</script>
+        <?php
+    }
+    else{
+        ?>
+        <script>var notif = false;</script>
+        <?php
+    } 
+?>
+
 <script type="text/javascript">
 	//setting datatable
+    var base_url = "<?php print base_url; ?>";
+    
+    if(notif == "gagal") 
+        alertify.error("Data Tidak Ditemukan");
+    else if(notif != false) 
+        alertify.success(notif);
+
 	$(function(){
 		$("#tabel_pembelian").DataTable({
 			"language" : {
@@ -131,8 +148,29 @@
 			        "next": "Selanjutnya",
 			        "previous": "Sebelumnya"
 			    }
-			}
+			},
+            "lengthMenu": [ 25, 50, 75, 100 ],
+            "pageLength": 25,
+            order: [],
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: base_url+"module/pembelian/action.php",
+                type: 'POST',
+                data: {
+                    "action" : "list",
+                }
+            },
+            "columnDefs": [
+                {
+                    "targets":[0], // disable order di kolom 1
+                    "orderable":false,
+                }
+            ],
+                
 		});
+
+
 	});
 </script>
 
