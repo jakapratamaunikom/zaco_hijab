@@ -1,6 +1,10 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
+    $id = isset($_GET['id']) ? $_GET['id'] : false;
+
+    if($id) $btn = "edit";
+    else $btn = "tambah";
 ?>
 
 <!-- form -->
@@ -149,8 +153,8 @@
                 </div>
                 <!-- footer box -->
                 <div class="box-footer text-right">
-                	<button type="button" class="btn btn-default btn-lg" onclick="addPembelian()">
-                        <i class="fa fa-plus"></i> Tambah
+                	<button type="button" class="btn btn-default btn-lg" id="btnSubmit" value="<?= $btn ?>">
+                        <i class="fa fa-plus"></i> <?= ucfirst($btn); ?>
                     </button>
                 	<button type="button" class="btn btn-default btn-lg">Batal</button>
                 </div>
@@ -169,6 +173,7 @@
 
 
     var base_url = "<?php print base_url; ?>";
+    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
 
     // variabel untuk menampung data yang terhapus dari list
     var data_edit_hapus = [];
@@ -193,6 +198,11 @@
     $('#fTgl').val(getTanggal); // set default tanggal ke hari ini
     setSelect($('#fKd_barang')); // set isi select kd_barang
     setKdPembelian($('#fKd_pembelian')); // set kode pembelian
+
+    // inisialisasi jika edit
+    if(!jQuery.isEmptyObject(urlParams.id)){ // jika ada parameter get
+        getInfoPembelian(urlParams.id);
+    }
 
 
     // aksi tambah list pembelian (tampilan)
@@ -274,58 +284,14 @@
         });
     });
 
-    // bersihkan kolom data barang
-    function clearBarang() {
-
-        $('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
-        $("#fQty").val('');
-        $("#fHarga").val('');
-
-        $("#fKd_barang").focus();
-    }
-
-    function fieldKeterangan(){
-        var field = '<textarea id="ketList" class="form-control row="2"></textarea>';
-        return field;
-    }
-
-    function fieldQty(qty){
-        var field = '<input type="number" min="2" id="qtyList" style="width: 5em" class="form-control" value="'+qty+'">';
-        return field;
-    }
-
-    // aksi delete List pembelian
-    function delList() {
-        // menghapus baris
-        $('#baris').remove();
-        
-        // menyimpan data ke array saat barang dihapus dari list
-        data_edit_hapus.push({
-            kd_pembelian : $('#fKd_pembelian').val(),
-            kd_barang : $('#baris').children("td:eq(1)").children().html()
-        });
-
-        // penyesuaian kolom No pada tampilan ketika list dihapus
-        numberingList();
-    }
-
-    // penyesuaian kolom No pada tampilan ketika list dihapus atau ditambah
-    function numberingList() {
-        // variabel untuk menhitung total barang
-        var total = 0;
-        var hrg = 0;
-
-        $('#tabel_item_pembelian tbody tr').each(function (index) {
-            $(this).children("td:eq(0)").html(index + 1);
-
-            // operasi untuk menghitung total
-            hrg = $(this).children("td:eq(2)").html().substr(4);
-            total += parseInt(hrg);
-        });
-        
-        // menampilkan total
-        $('#tampilHarga').children().html('Total: Rp. '+total+',00');
-    }
+    $("#btnSubmit").click(function() {
+        if($(this).val()==="tambah"){
+            addPembelian();
+        }else if($(this).val()==="edit"){
+            
+            
+        }
+    });
 
     // fungsi tambah pembelian
     function addPembelian() {
@@ -380,6 +346,110 @@
         }   
     }
 
+    // mendapatkan informasi pembelian (edit)
+    function getInfoPembelian(id) {
+        // alertify.success("edit");
+        // 
+        $.ajax({
+            url: base_url+"module/pembelian/action.php",
+            type: "post",
+            dataType: "json",
+            data: {
+                "id" : id,
+                "action" : "getEdit",
+            },
+            success: function(data){
+                $('#fKd_pembelian').val(data.info[0][0].kd_pembelian);
+                $('#fTgl').val(data.info[0][0].tgl);
+
+                // mendapatkan list barang dan menampilkannya
+                $.each(data.info[1],function(i,val){
+                    console.log(val);
+
+                    $('#tabel_item_pembelian > tbody:last-child').append(
+                        '<tr id="baris">'+
+                            '<td></td>'+
+                            '<td><div style="display: none;">'+val.kd_barang+'</div>'+val.nama+'</td>'+
+                            '<td>Rp. '+val.subtotal+'</td>'+
+                            '<td>'+fieldQty(val.qty)+'</td>'+
+                            '<td>'+fieldKeterangan()+'</td>'+
+                            '<td>'+
+                                '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
+                                    '<i class="fa fa-trash">'+
+                                '</button>'+
+
+                            '</td>'+
+                        '</tr>'
+                    );
+
+                    // penyesuaian kolom No pada tampilan ketika list ditambah
+                    numberingList();
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) // error handling
+            {
+                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                console.log(jqXHR, textStatus, errorThrown);
+                // location.reload();
+            }
+        })
+    }
+
+    // aksi delete List pembelian
+    function delList() {
+        // menghapus baris
+        $('#baris').remove();
+        
+        // menyimpan data ke array saat barang dihapus dari list
+        data_edit_hapus.push({
+            kd_pembelian : $('#fKd_pembelian').val(),
+            kd_barang : $('#baris').children("td:eq(1)").children().html()
+        });
+
+        // penyesuaian kolom No pada tampilan ketika list dihapus
+        numberingList();
+    }
+
+    // bersihkan kolom data barang
+    function clearBarang() {
+
+        $('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
+        $("#fQty").val('');
+        $("#fHarga").val('');
+
+        $("#fKd_barang").focus();
+    }
+
+    // membuat textfield keterangan pada list
+    function fieldKeterangan(){
+        var field = '<textarea id="ketList" class="form-control row="2"></textarea>';
+        return field;
+    }
+
+    // membuat textfield qty pada list
+    function fieldQty(qty){
+        var field = '<input type="number" min="2" id="qtyList" style="width: 5em" class="form-control" value="'+qty+'">';
+        return field;
+    }
+
+    // penyesuaian kolom No pada tampilan ketika list dihapus atau ditambah
+    function numberingList() {
+        // variabel untuk menhitung total barang
+        var total = 0;
+        var hrg = 0;
+
+        $('#tabel_item_pembelian tbody tr').each(function (index) {
+            $(this).children("td:eq(0)").html(index + 1);
+
+            // operasi untuk menghitung total
+            hrg = $(this).children("td:eq(2)").html().substr(4);
+            total += parseInt(hrg);
+        });
+        
+        // menampilkan total
+        $('#tampilHarga').children().html('Total: Rp. '+total+',00');
+    }
+
     // cek barang pada list
     function validBarang(barangIn){
         var ada = false;
@@ -428,7 +498,7 @@
                 console.log(jqXHR, textStatus, errorThrown);
                 // location.reload();
             }
-        })
+        });
     }
 
     // fungsi set kode pembelian

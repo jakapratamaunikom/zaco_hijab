@@ -70,24 +70,14 @@
                                         <th style="width: 15px">No</th>
                                         <th>Kode Pengeluaran</th>
                                         <th>Tanggal</th>
+                                        <th>Keterangan</th>
                                         <th>Total</th>
                                         <th>Jenis</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Dummy</td>
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td>  
-                                        <td>
-                                            <a href="<?= base_url."index.php?m=pembelian&p=view" ?>" class="btn bg-maroon btn-flat">
-                                                <i class="fa fa-eye"></i> Detail
-                                            </a>
-                                        </td>   
-                                    </tr>
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -128,6 +118,7 @@
 <script type="text/javascript">
 	//setting datatable
     var base_url = "<?php print base_url; ?>";
+
     
 
 	$(function(){
@@ -135,6 +126,7 @@
             alertify.error("Data Tidak Ditemukan");
         else if(notif != false) 
             alertify.success(notif);
+
 		$("#tabel_pembelian").DataTable({
 			"language" : {
 				"lengthMenu": "Tampilkan _MENU_ data/page",

@@ -30,10 +30,11 @@
 
 			case 'getedit':
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				getEdit($koneksi, $id);
 				break;
 
 			case 'edit':
-				getEdit($koneksi, $id);
+				actionEdit($koneksi);
 				break;
 
 			case 'getselect':
@@ -55,7 +56,7 @@
 		}
 	}
 
-	// function list datatable (server-side)
+	// function list datatable (pengeluaran)
 	function listPengeluaran($koneksi){
 		/* 
 			configurasi tabel barang
@@ -64,7 +65,7 @@
 		*/
 		$config_db = array(
 			'tabel' => 'pengeluaran',
-			'kolomOrder' => array(null, 'kd_pengeluaran', null, 'tgl',null, null, null, 'total', 'jenis', null),
+			'kolomOrder' => array(null, 'kd_pengeluaran', null, 'tgl','ket', null, null, 'total', 'jenis', null),
 			'kolomCari' => array('kd_pengeluaran', 'tgl', 'total', 'jenis'),
 			'orderBy' => array('id' => 'desc'),
 		);
@@ -82,16 +83,31 @@
 		$no_urut = $_POST['start'];
 		foreach($result as $row){
 			$no_urut++;
-			$aksi = '<a role="button" class="btn btn-success btn-flat" href="'.base_url.'index.php?m=pembelian&p=form&id='.$row["id"].'">
+			
+			// cek jenis
+			// jika jenis->NON PRODUKSI set tombol edit ke pengeluaran
+			// jika jenis->PRODUKSI set tombol edit ke pembelian
+			$aksi = '<a role="button" class="btn btn-success btn-flat" href="'.base_url.'index.php?m=pengeluaran&p=form&id='.$row["id"].'">
 						Edit
 					</a>';
+			if($row['jenis']=='PRODUKSI'){
+				$aksi = '<a role="button" class="btn btn-success btn-flat" href="'.base_url.'index.php?m=pembelian&p=form&id='.$row["id"].'">
+							Edit
+						</a>';
+			}
 			$aksi .= '<a href="'.base_url.'index.php?m=pembelian&p=view" class="btn bg-maroon btn-flat">
 	                        Detail
 	                 </a>';
+
+	        // agar keterangan kebawah
+	        $tempKet = explode(', ',$row['ket']);
+	        $ketRapih = implode('<br>', $tempKet);         
+
 			$dataRow = array();
 			$dataRow[] = $no_urut;
 			$dataRow[] = $row['kd_pengeluaran'];
 			$dataRow[] = $row['tgl'];
+			$dataRow[] = $ketRapih;
 			$dataRow[] = $row['total'];
 			$dataRow[] = $row['jenis'];
 			$dataRow[] = $aksi;
@@ -223,11 +239,73 @@
 		);
 
 		echo json_encode($output);
-
 	}
 
 	// fungsi get data edit
 	function getEdit($koneksi, $id){
+
+		// inisialisasi
+		//    status -> untuk lihat sukses/tidak
+		//    errorDb -> untuk lihat db error/tidak
+		//    pesanError -> untuk menampung pesan error jika terjadi kesalahan
+		//    dataPembelian -> untuk menampung data hasil query
+		//    
+		$status = true;
+		$errorDb = false;
+		$pesanError = "";
+		$dataPembelian = [];
+		$id = (int)$id;
+
+		// dapatkan informasi pembelian (dari tabel pembelian)
+		$query = 'select * from pembelian WHERE id='.$id;
+		$statement = $koneksi->prepare($query);
+		$statement->execute();
+		$result = $statement->fetchAll();
+
+		if($result) {
+
+			// tambahkan data ke array jika query diatas sukses
+			array_push($dataPembelian,$result);
+
+			// query mendapatkan list barang
+			//  ->tabel detail_pengeluaran
+			//  ->tabel barang
+			$query = 'SELECT dp.id, dp.kd_pembelian ,dp.kd_barang, b.nama, dp.qty, dp.subtotal';
+			$query .= ' FROM detail_pembelian dp';
+			$query .= ' JOIN barang b ON dp.kd_barang=b.id';
+			$query .= ' WHERE dp.kd_pembelian='.$id;
+			
+			$statement = $koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			if($result){
+				// tambahkan data ke array jika query diatas sukses
+				array_push($dataPembelian,$result);
+			}else{
+				$status = false;
+			}
+
+		}else{
+			$status = false;
+		}
+
+		if(!$status){
+			$errorDb = true;
+			$pesanError = "Gagal mendapatkan info pembelian";
+		}
+
+		// data yg dikeluarkan ke user
+		$output = array(
+			'status' => $status,
+			'errorDb' => $errorDb,
+			'pesanError' => $pesanError,
+			'info' => $dataPembelian,
+			'id'=> $id, 
+		);
+
+		echo json_encode($output);
+
 	}
 
 	// fungsi action edit
