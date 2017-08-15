@@ -78,10 +78,8 @@
 	                        					<div class="col-md-4">
 	                        						<label for="fQty">Qty</label>
 	                        						<div class="input-group">
-				                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0">
-				                        				<span class="input-group-btn">
-				                        					<button type="button" class="btn btn-default"><i class="fa fa-plus"></i></button>
-				                        				</span>
+				                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0" placeholder="Masukkan Qty">
+				                        				<span class="input-group-addon">pcs</span>
 			                        				</div>
 	                        					</div>
 	                        				</div>
@@ -91,8 +89,11 @@
 	                        			<div class="form-group">
       										<label for="fDiskon">Diskon</label>
           									<div class="input-group">
-          										<input class="form-control" placeholder="Masukkan Diskon" id="fDiskon" name="fDiskon">
+          										<input type="number" class="form-control" placeholder="Masukkan Diskon" id="fDiskon" name="fDiskon" min="0" max="100">
           										<span class="input-group-addon"> %</span>
+          										<span class="input-group-btn">
+		                        					<button type="button" class="btn btn-default" id="fTambah_barang"><i class="fa fa-plus"></i></button>
+		                        				</span>
           									</div>
 	          							</div>
 
@@ -139,20 +140,22 @@
 			                        			<legend>List Item</legend>
 			                        			<div class="row">
 			                        				<div class="col-md-12">
-			                        					<table class="table table-bordered table-hover">
+			                        					<table id="tabel_item_penjualan" class="table table-bordered table-hover">
 					                        				<thead>
 					                        					<tr>
 					                        						<th style="width: 15px">No</th>
 					                        						<th>Item</th>
 					                        						<th>Harga</th>
 					                        						<th>Qty</th>
+					                        						<th>Diskon</th>
 					                        						<th>Keterangan</th>
 					                        						<th>Aksi</th>
 					                        					</tr>
 					                        				</thead>
+					                        				<tbody></tbody>
 					                        			</table>
 			                        				</div>
-			                        				<div class="col-md-12">
+			                        				<div class="col-md-12" id="tampilHarga">
 			                        					<h4 class="text-right">Total: Rp. -,00</h4>
 			                        				</div>
 			                        			</div>	
@@ -198,6 +201,8 @@
 			        todayHighlight: true,
 				});
 
+				var listItem = [];
+
 				$('#fTgl').val(getTanggal); // set field tanggal
 				setKdPenjualan($('#fKd_penjualan')); // set kd_penjualan
 				setSelect($('#fKd_barang'));
@@ -212,7 +217,121 @@
 					else setDataPembeli(true);
 				});
 
+				// on click tambah list item
+				$("#fTambah_barang").click(function(){
+					// var komponen = [];
+					var item_text = $("#fKd_barang option:selected").text();
+					var item_val = $("#fKd_barang").val(); // id barang
+
+					// cek jika value option barang masih default set text kosong
+			        if(item_val.length <= 0){
+			            item_text = "";
+			        }
+
+			        var qty = $("#fQty").val().trim();
+			        var diskon = $("#fDiskon").val().trim();
+			        // var harga = 10000;
+
+			        var dataItem = {
+			        	kd_barang : item_val,
+			        	qty : qty,
+			        	diskon : diskon,
+			        };
+
+			        $.ajax({
+			        	url : base_url+"module/penjualan/action.php",
+			        	type : "post",
+			        	dataType : "json",
+			        	data : {
+			        		"dataItem" : dataItem,
+			        		"action" : 'addList',
+			        	},
+			        	success: function(hasil){
+			        		if(hasil.status){
+			        			$("#tabel_item_penjualan > tbody:last-child").append(
+						        	'<tr id="baris">'+
+			                            '<td></td>'+
+			                            '<td><div style="display: none;">'+item_val+'</div>'+item_text+'</td>'+
+			                            '<td>Rp. '+hasil.harga.harga_pasar+'</td>'+
+			                            '<td>'+fieldQty(qty)+'</td>'+
+			                            '<td>'+fieldDiskon(diskon)+'</td>'+
+			                            '<td>'+fieldKeterangan()+'</td>'+
+			                            '<td>'+
+			                                '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
+			                                    '<i class="fa fa-trash">'+
+			                                '</button>'+
+			                            '</td>'+
+			                        '</tr>'
+						        );
+			        		}
+			        		else{
+			        			// jika ada pesan error
+			                    if(!jQuery.isEmptyObject(hasil.pesanError.kd_barangError)){
+			                        alertify.error(hasil.pesanError.kd_barangError);
+			                    } else if(!jQuery.isEmptyObject(hasil.pesanError.qtyError)){
+			                        alertify.error(hasil.pesanError.qtyError);
+			                    } else if(!jQuery.isEmptyObject(hasil.pesanError.diskonError)){
+			                        alertify.error(hasil.pesanError.diskonError);
+			                    }
+			        		}
+			        	},
+			        	error: function (jqXHR, textStatus, errorThrown) // error handling
+			            {
+			                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+			                // clearBarang();
+			                console.log(jqXHR, textStatus, errorThrown);
+			            } 
+			        })
+
+
+			        
+
+			        // listItem.push(dataItem);
+			        // console.log(listItem);
+
+			        
+			        // numberingList();
+				});
+
+
 			});
+
+			// fungsi nomor di tabel
+			// function numberingList(){
+			// 	// variabel untuk menhitung total barang
+		 //        var total = 0;
+		 //        var hrg = 0;
+		 //        // var qty =
+
+		 //        $('#tabel_item_penjualan tbody tr').each(function (index) {
+		 //            $(this).children("td:eq(0)").html(index + 1);
+
+		 //            // operasi untuk menghitung total
+		 //            hrg = $(this).children("td:eq(2)").html().substr(4);
+		 //            qty = $(this).children("td:eq(3)").html();
+		 //            total += parseFloat(hrg)*parseInt(qty);
+		 //        });
+		        
+		 //        // menampilkan total
+		 //        $('#tampilHarga').children().html('Total: Rp. '+total+',00');
+			// }
+
+			// fungsi cetak field qty di tabel
+			function fieldQty(qty){
+				var field = '<input type="number" min="0" id="qtyList" style="width: 5em" class="form-control input-sm" value="'+qty+'">';
+        		return field;
+			}
+
+			// fungsi cetak field keterangan di tabel
+			function fieldKeterangan(){
+		        var field = '<textarea id="ketList" class="form-control input-sm" row="2"></textarea>';
+		        return field;
+		    }
+
+		    function fieldDiskon(diskon){
+		    	var field = '<input type="number" min="0" max="100" id="diskonList" style="width: 5em" class="form-control input-sm" value="'+diskon+'">';
+		        return field;
+		    }
 
 			// fungsi set kode pembelian (bug kode > 10)
 		    function setKdPenjualan(idSelect){

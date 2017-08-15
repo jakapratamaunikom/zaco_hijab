@@ -37,6 +37,9 @@
 			// 	$select = isset($_POST['select']) ? $_POST['select'] : false;
 			// 	getSelect($koneksi, $select);
 			// 	break;
+			case 'addlist':
+				validList($koneksi);
+				break;
 
 			case 'getkdpenjualan':
 				getKdPenjualan($koneksi);
@@ -104,16 +107,85 @@
 		echo json_encode($output);
 	}
 
+	// fungsi validasi list item
+	function validList($koneksi){
+		$dataItem = isset($_POST['dataItem']) ? $_POST['dataItem'] : false;
+
+		// pecah array
+		$kd_barang = $dataItem['kd_barang'];
+		$qty = $dataItem['qty'];
+		$diskon = $dataItem['diskon'];
+		
+		$cek = true;
+		$status = false;
+		$kd_barangError = $qtyError = $diskonError = "";
+		$pesanError = "";
+
+		$validKd_barang = validAngka('Barang',$kd_barang,1,5,true);
+		$validQty = validAngka('Qty',$qty,1,6,true);
+		$validDiskon = validAngka('Diskon',$diskon,1,3,true);
+
+		// cek valid
+		if(!$validKd_barang['cek']){
+			$cek = false;
+			$kd_barangError = $validKd_barang['error'];
+		}
+
+		if(!$validQty['cek']){
+			$cek = false;
+			$qtyError = $validQty['error'];
+		}
+
+		if(!$validDiskon['cek']){
+			$cek = false;
+			$diskonError = $validDiskon['error'];
+		}
+
+		$pesanError = array(
+			'kd_barangError' => $kd_barangError,
+			'qtyError' => $qtyError,
+			'diskonError' => $diskonError, 
+		);
+
+		if($cek){
+			$status = true;
+		}
+
+		$harga = getHargaBarang($koneksi, $kd_barang);
+
+		$output = array(
+			'status' => $status,
+			'pesanError' => $pesanError,
+			'harga' => $harga, 
+		);
+
+		echo json_encode($output);
+	}
+
 	function getKdPenjualan($koneksi){
 		$kode = date("Y").date("m").date("d");
 		$query = "SELECT kd_penjualan FROM penjualan WHERE kd_penjualan LIKE '%".$kode."%' ORDER BY kd_penjualan desc LIMIT 1";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
+		
 		// execute
 		$statement->execute();
 		$result = $statement->fetchAll();
 		echo json_encode($result);
+	}
+
+	function getHargaBarang($koneksi, $id){
+		$query = "SELECT hpp, harga_pasar, market_place, harga_ig FROM barang WHERE id=:id";
+
+		// prepare
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':id', $id);
+		// execute
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+		return $result;
 	}
 
 	// fungsi get data select
