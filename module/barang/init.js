@@ -243,6 +243,7 @@ $(document).ready(function(){
 			fId_warna : $("#fId_warna").val().trim(),
 			fKd_barang : $("#fKd_barang").val().trim(),
 			fNama_barang : $("#fNama_barang").val().trim(),
+			// fFoto : $("#fFoto")[0].files[0],
 			fFoto : $("#fFoto").val().trim(),
 			fKet : $("#fKet").val().trim(),
 			fHpp : $("#fHpp").val().trim(),
@@ -251,6 +252,8 @@ $(document).ready(function(){
 			fHarga_ig : $("#fHarga_ig").val().trim(),
 			fStokAwal : $("#fStokAwal").val().trim(),
 		};
+		// var dataFoto = new FormData();
+
 		var submit = $("#btn_submit_barang").val();
 
 		$.ajax({
@@ -259,8 +262,12 @@ $(document).ready(function(){
 			dataType : "json",
 			data: {
 				"dataForm" : dataForm,
+				// "fFoto" : fFoto,
 				"action" : submit,
 			},
+			// contentType: false,
+   //  	    cache: false,
+			// processData: false,
 			success: function(hasil){
 				
 				// cek hasil dari ajax

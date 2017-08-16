@@ -68,6 +68,7 @@
 		                                <th>Market Place</th>
 		                                <th>Harga IG</th>
 		                                <th>Keterangan</th>
+		                                <th>Stok</th>
 		                                <th>Aksi</th>
 	                            	</tr>
 	                        	</thead>
@@ -146,7 +147,7 @@
 			        },
 			        "columnDefs": [
 			            {
-			                "targets":[0, 7, 8], // disable order di kolom 1 dan 3
+			                "targets":[0, 7, 9], // disable order di kolom 1 dan 3
 			                "orderable":false,
 			            }
 			        ],

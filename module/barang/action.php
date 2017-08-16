@@ -83,6 +83,7 @@
 			$dataRow[] = $row['market_place'];
 			$dataRow[] = $row['harga_ig'];
 			$dataRow[] = $row['ket'];
+			$dataRow[] = $row['stok'];
 			$dataRow[] = $aksi;
 
 			$data[] = $dataRow;
@@ -101,6 +102,7 @@
 	// fungsi action add
 	function actionAdd($koneksi){
 		$dataForm = isset($_POST['dataForm']) ? $_POST['dataForm'] : false;
+		// $foto = $_FILES['fFoto']['name'];
 
 		// pecah array dataForm
 		$id_barang = $dataForm['fId_barang'];

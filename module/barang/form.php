@@ -138,7 +138,7 @@
 			          								<label for="fHpp">HPP</label>
 		          									<div class="input-group">
 		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
-		          										<input type="text" class="form-control" placeholder="Masukkan HPP" id="fHpp" name="fHpp">
+		          										<input type="number" min="0" class="form-control" placeholder="Masukkan HPP" id="fHpp" name="fHpp">
 		          										<span class="input-group-addon">,00</span>
 		          									</div>
 		          									<span class="help-block small"></span>		
@@ -149,7 +149,7 @@
 			          								<label for="fHarga_pasar">Harga Pasar</label>
 		      										<div class="input-group">
 		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
-		      											<input type="text" class="form-control" placeholder="Masukkan Harga Pasar" id="fHarga_pasar" name="fHarga_pasar">
+		      											<input type="number" min="0" class="form-control" placeholder="Masukkan Harga Pasar" id="fHarga_pasar" name="fHarga_pasar">
 		      											<span class="input-group-addon">,00</span>
 		      										</div>
 		      										<span class="help-block small"></span>
@@ -160,7 +160,7 @@
 		      										<label for="fHarga_market">Harga Market Place</label>
 		      										<div class="input-group">
 		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
-		      											<input type="text" class="form-control" placeholder="Masukkan Harga Market Place" id="fHarga_market" name="fHarga_market">
+		      											<input type="number" min="0" class="form-control" placeholder="Masukkan Harga Market Place" id="fHarga_market" name="fHarga_market">
 		      											<span class="input-group-addon">,00</span>
 		      										</div>
 		      										<span class="help-block small"></span>
@@ -171,7 +171,7 @@
 			          								<label for="fHarga_ig">Harga IG</label>
 		      										<div class="input-group">
 		          										<span class="input-group-addon" style="background-color: #dd4b39; color: white;">Rp. </span>
-		      											<input type="text" class="form-control" placeholder="Masukkan Harga IG" id="fHarga_ig" name="fHarga_ig">
+		      											<input type="number" min="0" class="form-control" placeholder="Masukkan Harga IG" id="fHarga_ig" name="fHarga_ig">
 		      											<span class="input-group-addon">,00</span>
 		      										</div>
 		      										<span class="help-block small"></span>
@@ -187,7 +187,7 @@
 	    										<div class="form-group">
 	    											<label for="fStokAwal">Stok Awal</label>
 		          									<div class="input-group">
-		          										<input type="number" class="form-control" placeholder="Masukkan Stok Awal" id="fStokAwal" name="fStokAwal">
+		          										<input type="number" min="0" class="form-control" placeholder="Masukkan Stok Awal" id="fStokAwal" name="fStokAwal">
 		          										<span class="input-group-addon">pcs</span>
 		          									</div>
 		          									<span class="help-block small"></span>
