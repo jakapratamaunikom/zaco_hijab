@@ -175,8 +175,11 @@
     var base_url = "<?php print base_url; ?>";
     var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
 
-    // variabel untuk menampung data yang terhapus dari list
-    var data_edit_hapus = [];
+    // inisialisasui variabel untuk aksi edit
+    //    -> dataHapus, untuk menampung data yang terhapus dari list
+    //    -> tglEdit, untuk menampung tanggal pembelian yg diedit
+    var dataHapus = [];
+    var tglEdit = "";
 
 	$(function(){
 		//Initialize Select2 Elements
@@ -195,7 +198,7 @@
 	});
 
     // inisialisasi tamplian awal
-    $('#fTgl').val(getTanggal); // set default tanggal ke hari ini
+    $('#fTgl').val(getTanggal()); // set default tanggal ke hari ini
     setSelect($('#fKd_barang')); // set isi select kd_barang
     setKdPembelian($('#fKd_pembelian')); // set kode pembelian
 
@@ -207,7 +210,6 @@
 
     // aksi tambah list pembelian (tampilan)
     $("#fTambah_pembelian").click(function() {
-        var komponen = [];
         var item_text = $("#fKd_barang option:selected").text();
         var item_val = $("#fKd_barang").val();
 
@@ -234,7 +236,7 @@
                 "action" : 'addList',
             },
             success: function(hasil){
-                
+                var baris = -1;
                 if(hasil.status){
                     // Penambahan baris pada list barang 
                     // buat <tbody></tbody> sebelum digunakan
@@ -250,12 +252,7 @@
                                 '<td>Rp. '+harga+'</td>'+
                                 '<td>'+fieldQty(qty)+'</td>'+
                                 '<td>'+fieldKeterangan()+'</td>'+
-                                '<td>'+
-                                    '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
-                                        '<i class="fa fa-trash">'+
-                                    '</button>'+
-
-                                '</td>'+
+                                '<td><td>'+
                             '</tr>'
                         );
 
@@ -288,10 +285,11 @@
         if($(this).val()==="tambah"){
             addPembelian();
         }else if($(this).val()==="edit"){
-            
+            editPembelian();
             
         }
     });
+
 
     // fungsi tambah pembelian
     function addPembelian() {
@@ -346,66 +344,74 @@
         }   
     }
 
-    // mendapatkan informasi pembelian (edit)
-    function getInfoPembelian(id) {
-        // alertify.success("edit");
-        // 
-        $.ajax({
-            url: base_url+"module/pembelian/action.php",
-            type: "post",
-            dataType: "json",
-            data: {
-                "id" : id,
-                "action" : "getEdit",
-            },
-            success: function(data){
-                $('#fKd_pembelian').val(data.info[0][0].kd_pembelian);
-                $('#fTgl').val(data.info[0][0].tgl);
+    // fungsi aksi edit pembelian
+    function editPembelian(){
 
-                // mendapatkan list barang dan menampilkannya
-                $.each(data.info[1],function(i,val){
-                    console.log(val);
+        // cek apakah tgl dari db sama dengan tanggal sekarang
+        //    -> tglEdit, tanggal dari db pembelian
+        //    -> getTanggal, tanggal sekarang
+        if(tglEdit==getTanggal()){
 
-                    $('#tabel_item_pembelian > tbody:last-child').append(
-                        '<tr id="baris">'+
-                            '<td></td>'+
-                            '<td><div style="display: none;">'+val.kd_barang+'</div>'+val.nama+'</td>'+
-                            '<td>Rp. '+val.subtotal+'</td>'+
-                            '<td>'+fieldQty(val.qty)+'</td>'+
-                            '<td>'+fieldKeterangan()+'</td>'+
-                            '<td>'+
-                                '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
-                                    '<i class="fa fa-trash">'+
-                                '</button>'+
+            alertify.success('success');
 
-                            '</td>'+
-                        '</tr>'
-                    );
+            // $.ajax({
+            //     url : base_url+"module/pembelian/action.php",
+            //     type : "post",
+            //     dataType : "json",
+            //     data: {
+            //         "dataPembelian" : data,
+            //         "action" : 'tambah',
+            //     },
+            //     success: function(hasil){
+            //         if(hasil.status){
+            //             document.location=base_url+"index.php?m=pembelian&p=list";
+            //         }else{
+            //             if(hasil.errorDb){ // jika ada error database
+            //                 swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error");
+            //             }
+            //         }
+            //     },
+            //     error: function (jqXHR, textStatus, errorThrown) // error handling
+            //     {
+            //         swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+            //         clearBarang();
+            //         console.log(jqXHR, textStatus, errorThrown);
+            //     }              
+            // });
 
-                    // penyesuaian kolom No pada tampilan ketika list ditambah
-                    numberingList();
-                });
-            },
-            error: function (jqXHR, textStatus, errorThrown) // error handling
-            {
-                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-                console.log(jqXHR, textStatus, errorThrown);
-                // location.reload();
-            }
-        })
+        }else{   //jika beda tanggal tidak bisa edit
+            alertify.error('Hanya bisa edit pembelian pada hari ini');
+        }
     }
+    
 
     // aksi delete List pembelian
-    function delList() {
-        // menghapus baris
-        $('#baris').remove();
-        
-        // menyimpan data ke array saat barang dihapus dari list
-        data_edit_hapus.push({
-            kd_pembelian : $('#fKd_pembelian').val(),
-            kd_barang : $('#baris').children("td:eq(1)").children().html()
-        });
+    // dipanggil di fungsi numberingList
+    function delList(index) {
+       
+        var ada = false;
+        var barang = $(index).parent().parent().children("td:eq(1)").children().html().trim();
 
+        // cek apakah kode barang sudah ada pada dataHapus
+        for(var i=0;i<dataHapus.length;i++){
+            if(dataHapus[i].kd_barang==barang) {
+                ada = true;
+            }
+        }
+
+        // mencatat data yg dihapus untuk keperluan edit
+        // 
+        // jika dalam dataHapus tidak ada kode_barang yg sama -> push/catat
+        if(!ada){
+            dataHapus.push({
+                kd_pembelian : $('#fKd_pembelian').val(),
+                kd_barang : barang,
+            });
+        }
+
+        $(index).parent().parent().remove();
+
+        // console.log(dataHapus);
         // penyesuaian kolom No pada tampilan ketika list dihapus
         numberingList();
     }
@@ -440,6 +446,19 @@
 
         $('#tabel_item_pembelian tbody tr').each(function (index) {
             $(this).children("td:eq(0)").html(index + 1);
+
+            // membuat tombol hapuslist
+            var btn = '<button type="button" class="btn btn-danger btn-sm" id="hapusList'+index+'" title="Hapus dari list">'+
+                            '<i class="fa fa-trash">'+
+                      '</button>';
+
+
+            $(this).children("td:eq(5)").html(btn);
+
+            $('#hapusList'+index).click(function(){
+                // memanggil fungsi delList
+                delList(this);
+            });
 
             // operasi untuk menghitung total
             hrg = $(this).children("td:eq(2)").html().substr(4);
@@ -545,6 +564,59 @@
 
         return [year, month, day].join('-');
     }
+
+    // mendapatkan informasi pembelian (edit)
+    function getInfoPembelian(id) {
+    
+
+        $.ajax({
+            url: base_url+"module/pembelian/action.php",
+            type: "post",
+            dataType: "json",
+            data: {
+                "id" : id,
+                "action" : "getEdit",
+            },
+            success: function(data){
+
+                // mendapatkan data untukkeperluan aksi edit
+                //     -> tglEdit, tgl pembelian dari db 
+                //     
+                tglEdit = data.info[0][0].tgl;
+
+                // setting textfield dengan data dari tabel pembelian
+                $('#fKd_pembelian').val(data.info[0][0].kd_pembelian);
+                $('#fTgl').val(data.info[0][0].tgl);
+
+                 
+
+                // mendapatkan list barang dan menampilkannya pada list
+                $.each(data.info[1],function(i,val){
+
+                    $('#tabel_item_pembelian > tbody:last-child').append(
+                        '<tr id="baris">'+
+                            '<td></td>'+
+                            '<td><div style="display: none;">'+val.kd_barang+'</div>'+val.nama+'</td>'+
+                            '<td>Rp. '+val.subtotal+'</td>'+
+                            '<td>'+fieldQty(val.qty)+'</td>'+
+                            '<td>'+fieldKeterangan()+'</td>'+
+                            '<td></td>'+
+                        '</tr>'
+                    );
+
+                    // penyesuaian kolom No pada tampilan ketika list ditambah
+                    numberingList();
+                });
+            },
+            error: function (jqXHR, textStatus, errorThrown) // error handling
+            {
+                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                console.log(jqXHR, textStatus, errorThrown);
+                // location.reload();
+            }
+        })
+    }
+
 
     // memmanggil fungsi actionAdd
     function getResponseAddPembelian(data){
