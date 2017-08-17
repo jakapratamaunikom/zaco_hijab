@@ -36,111 +36,87 @@ $(document).ready(function(){
             }
         ],
     });
-    // console.log(tabel_id_barang);
 
     // setting form tambah id barang
+        // btn tambah id barang onclick
+        $("#btn_tambahIdBarang").click(function(){
+            // reset pesan error
+            reset_form();
+            // tampilkan modal
+            $("#modal_idBarang .modal-title").html("Form Tambah Data Id Barang"); // ganti heade form
+            $("#btn_submit_idBarang").prop("value", "Tambah");
+            $("#modal_idBarang").modal();
+        });
 
-    // btn tambah id barang onclick
-    $("#btn_tambahIdBarang").click(function(){
-        // reset pesan error
-        reset_form();
-        // tampilkan modal
-        $("#modal_idBarang .modal-title").html("Form Tambah Data Id Barang"); // ganti heade form
-        $("#btn_submit_idBarang").prop("value", "Tambah");
-        $("#modal_idBarang").modal();
-    });
+        // submit form modal tambah id barang
+        $("#form_modal_idBarang").submit(function(e){
+            e.preventDefault();
 
-    // submit form modal tambah id barang
-    $("#form_modal_idBarang").submit(function(e){
-        e.preventDefault();
+            var id = $("#id_barang").val().trim();
+            var id_barang = $("#fmId_barang").val().trim();
+            var nama = $("#fmNama_idBarang").val().trim();
+            var submit = $("#btn_submit_idBarang").val();
 
-        var id = $("#id_barang").val().trim();
-        var id_barang = $("#fmId_barang").val().trim();
-        var nama = $("#fmNama_idBarang").val().trim();
-        var submit = $("#btn_submit_idBarang").val();
+            // request action
+            $.ajax({
+                url: base_url+"module/id_barang/action.php",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "id" : id,
+                    "id_barang" : id_barang,
+                    "nama" : nama,
+                    "action" : submit,
+                },
+                success: function(hasil){
 
-        // request action
-        $.ajax({
-            url: base_url+"module/id_barang/action.php",
-            type: "post",
-            dataType: "json",
-            data: {
-                "id" : id,
-                "fmId_barang" : id_barang,
-                "fmNama_idBarang" : nama,
-                "action" : submit,
-            },
-            success: function(hasil){
-
-                // cek hasil dari ajax
-                // cek statusnya
-                if(hasil.status){ // jika status true
-                    reset_form(); 
-                    $("#modal_idBarang").modal('hide');
-                    // cek jenis actionya
-                    if(submit.toLowerCase()==="edit") alertify.success('Data Berhasil Diedit'); // jika edit
+                    // cek hasil dari ajax
+                    // cek statusnya
+                    if(hasil.status){ // jika status true
+                        reset_form(); 
+                        $("#modal_idBarang").modal('hide');
+                        // cek jenis actionya
+                        if(submit.toLowerCase()==="edit") alertify.success('Data Berhasil Diedit'); // jika edit
                         else alertify.success('Data Berhasil Ditambah'); // jika tambah
-                    tabel_id_barang.ajax.reload(); // reload tabel
-                }
-                else{ // jika status false
-                    // cek jenis error
-                    if(hasil.errorDb){ // jika ada error database
-                        swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
-                        reset_form();
-                        $("#form_modal_idBarang").modal('hide');
+                        tabel_id_barang.ajax.reload(); // reload tabel
                     }
-                    else{
-                        reset_form();
-                        // cek apakah duplikat
-                        if(hasil.duplikat){ // jika duplikat
-                            $("#fmId_barang").parent().find('.help-block').text("Id Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
-                            $("#fmId_barang").closest('div').addClass('has-error');
+                    else{ // jika status false
+                        // cek jenis error
+                        if(hasil.errorDb){ // jika ada error database
+                            swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+                            reset_form();
+                            $("#form_modal_idBarang").modal('hide');
                         }
                         else{
-                            // set error fmId_barang
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.id_barangError)){
-                                $("#fmId_barang").parent().find('.help-block').text(hasil.pesanError.id_barangError);
+                            reset_form();
+                            // cek apakah duplikat
+                            if(hasil.duplikat){ // jika duplikat
+                                $("#fmId_barang").parent().find('.help-block').text("Id Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
                                 $("#fmId_barang").closest('div').addClass('has-error');
                             }
                             else{
-                                $("#fmId_barang").parent().find('.help-block').text("");
-                                $("#fmId_barang").closest('div').removeClass('has-error');
+                                // set error
+                                if(submit.toLowerCase()==="edit") $("#fmId_barang").prop("disabled", true);
+                                setError(hasil);
                             }
-                            
-                            // set error fmNama_idBarang
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
-                                $("#fmNama_idBarang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
-                                $("#fmNama_idBarang").closest('div').addClass('has-error');
-                            }
-                            else{
-                                $("#fmNama_idBarang").parent().find('.help-block').text("");
-                                $("#fmNama_idBarang").closest('div').removeClass('has-error');
-                            }   
-                            
-                        }
-                        // set value
-                        $("#fmId_barang").val(hasil.set_value.id_barang);
-                        $("#fmNama_idBarang").val(hasil.set_value.namaBarang);
+                            // set value
+                            setValue(hasil);
 
-                    }   
+                        }   
+                    }
+
+                    console.log(hasil);
+                },
+                error: function (jqXHR, textStatus, errorThrown){ // error handling
+                    swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                    $("#modal_idBarang").modal('hide');
+                    reset_form();
+                    console.log(jqXHR, textStatus, errorThrown);
                 }
+            })
 
-                console.log(hasil);
-            },
-            error: function (jqXHR, textStatus, errorThrown) // error handling
-            {
-                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-                $("#modal_idBarang").modal('hide');
-                reset_form();
-                console.log(jqXHR, textStatus, errorThrown);
-            }
-        })
-
-        return false;
-    });
-
+            return false;
+        });
     //===================================================================//
 });
 
@@ -170,8 +146,7 @@ function edit_id_barang(id){
             $("#btn_submit_idBarang").prop("value", "Edit");
             $("#modal_idBarang").modal();
         },
-        error: function (jqXHR, textStatus, errorThrown) // error handling
-        {
+        error: function (jqXHR, textStatus, errorThrown){ // error handling
             swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
             $("#modal_idBarang").modal('hide');
             reset_form();
@@ -180,6 +155,7 @@ function edit_id_barang(id){
     })
 }
 
+// fungsi reset error, value, dll di form
 function reset_form(){
     // reset pesan error
     $("#fmId_barang").parent().find('.help-block').text("");
@@ -189,4 +165,35 @@ function reset_form(){
     // bersihkan form
     $('#form_modal_idBarang').trigger('reset');
     $("#fmId_barang").prop("disabled", false);
+}
+
+// fungsi set error
+function setError(hasil){
+    // set error fmId_barang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.id_barangError)){
+        $("#fmId_barang").parent().find('.help-block').text(hasil.pesanError.id_barangError);
+        $("#fmId_barang").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmId_barang").parent().find('.help-block').text("");
+        $("#fmId_barang").closest('div').removeClass('has-error');
+    }
+    
+    // set error fmNama_idBarang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
+        $("#fmNama_idBarang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
+        $("#fmNama_idBarang").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmNama_idBarang").parent().find('.help-block').text("");
+        $("#fmNama_idBarang").closest('div').removeClass('has-error');
+    }   
+}
+
+// fungsi set value
+function setValue(hasil){
+    $("#fmId_barang").val(hasil.set_value.id_barang);
+    $("#fmNama_idBarang").val(hasil.set_value.namaBarang);
 }

@@ -100,8 +100,8 @@
 
 	// fungsi action add
 	function actionAdd($koneksi){
-		$id_barang = isset($_POST['fmId_barang']) ? $_POST['fmId_barang'] : false;
-		$nama = isset($_POST['fmNama_idBarang']) ? $_POST['fmNama_idBarang'] : false;
+		$id_barang = isset($_POST['id_barang']) ? $_POST['id_barang'] : false;
+		$nama = isset($_POST['nama']) ? $_POST['nama'] : false;
 
 		// validasi inputan
 			// inisialisasi
@@ -217,8 +217,8 @@
 	// fungsi action edit
 	function actionEdit($koneksi){
 		$id = isset($_POST['id']) ? $_POST['id'] : false;
-		$id_barang = isset($_POST['fmId_barang']) ? $_POST['fmId_barang'] : false;
-		$nama = isset($_POST['fmNama_idBarang']) ? $_POST['fmNama_idBarang'] : false;
+		$id_barang = isset($_POST['id_barang']) ? $_POST['id_barang'] : false;
+		$nama = isset($_POST['nama']) ? $_POST['nama'] : false;
 
 		// validasi
 			// inisialisasi
