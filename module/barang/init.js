@@ -5,16 +5,21 @@ $(document).ready(function(){
 
 	var cekEdit = false;
 
-	$(".select2").select2();
-
-	setSelect("id_barang", $("#fId_barang"));
-	setSelect("id_warna", $("#fId_warna"));
-
 	// cek status form, tambah/edit
 	if(!jQuery.isEmptyObject(urlParams.id)){ // jika ada parameter get
-		edit_barang(urlParams.id);
+		// edit_barang(urlParams.id);
 		cekEdit = true;
 	}
+
+	$("#fId_barang").select2();
+	$("#fId_warna").select2();
+
+	if(!cekEdit){
+		setSelect("id_barang", $("#fId_barang"));
+		setSelect("id_warna", $("#fId_warna"));
+	}
+
+	if(cekEdit) edit_barang(urlParams.id);
 
 	// event id_barang dan id_warna
 		// button tambah id barang onclick
@@ -122,54 +127,7 @@ $(document).ready(function(){
 	// submit barang
 	$("#form_barang").submit(function(e){
 		e.preventDefault();
-		var data = getDataForm();
-
-		$.ajax({
-			url : base_url+"module/barang/action.php",
-			type : "post",
-			dataType : "json",
-			data: data,
-			contentType: false,
-    	    cache: false,
-			processData: false,
-			success: function(hasil){
-				
-				// cek hasil dari ajax
-    			// cek statusnya
-				// if(hasil.status){ // jika status true
-				// 	// arahkan ke page list
-				// 	document.location=base_url+"index.php?m=barang&p=list";
-				// }
-				// else{ // jika status false
-				// 	// cek jenis error
-				// 	if(hasil.errorDb){ // jika ada error database
-				// 		swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
-    //                     reset_form("#form_barang");
-				// 	}
-				// 	else{
-				// 		reset_form("#form_barang");
-				// 		// cek apakah duplikat
-				// 		if(hasil.duplikat){ // jika duplikat
-				// 			$("#fKd_barang").parent().find('.help-block').text("Kode Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
-	   //  					$("#fKd_barang").closest('div').addClass('has-error');
-				// 		}
-				// 		else{
-				// 			setError(hasil);
-				// 		}
-				// 		setValue(hasil);
-				// 	}
-				// }
-				console.log(hasil);
-			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-                reset_form("#form_barang");
-                console.log(jqXHR, textStatus, errorThrown);
-            }
-		})
-
-
-		// console.log(submit);
+		submitBarang();
 
 		return false;
 	})
@@ -181,12 +139,19 @@ $(document).ready(function(){
 // funsgi set isi select id_barang dan id_warna
 function setSelect(select, idSelect){
 	// reset ulang select
-	if(select === "id_barang") var text = "-- Pilih Id Barang --";
-	else var text = "-- Pilih Id Warna --";
+	var text = "";
 
-	idSelect.find('option').remove().end().
-		append($('<option>',
-			{value: "", text:text}));
+	if(select === "id_barang"){
+		text = "-- Pilih Id Barang --";
+		var firstOption = new Option(text, "");
+	} 
+	else{
+		text = "-- Pilih Id Warna --";
+		var firstOption = new Option(text, "");
+	} 
+
+	idSelect.append(firstOption);
+
 	$.ajax({
 		url: base_url+"module/barang/action.php",
         type: "post",
@@ -197,14 +162,12 @@ function setSelect(select, idSelect){
         },
         success: function(data){
         	$.each(data, function(index, item){
-				idSelect.append($("<option>", {
-					value: item.id,
-					text: item[1]+" - "+item.nama,
-				}));					
+        		var text = item[1]+" - "+item.nama; 
+        		var newOption = new Option(text, item.id);
+				idSelect.append(newOption);			
 			});
         },
-        error: function (jqXHR, textStatus, errorThrown) // error handling
-        {
+        error: function (jqXHR, textStatus, errorThrown){ // error handling
             swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
             console.log(jqXHR, textStatus, errorThrown);
             // location.reload();
@@ -230,6 +193,7 @@ function setBarang(){
 function getDataForm(){
 	var data = new FormData();
 
+	data.append('id', $("#id").val().trim());
 	data.append('id_barang', $("#fId_barang").val().trim()); // data id barang
 	data.append('id_warna', $("#fId_warna").val().trim()); // data id warna
 	data.append('kd_barang', $("#fKd_barang").val().trim()); // data kd barang
@@ -246,6 +210,55 @@ function getDataForm(){
 	return data;
 }
 
+// fungsi submit barang
+function submitBarang(){
+	var data = getDataForm();
+
+	$.ajax({
+		url : base_url+"module/barang/action.php",
+		type : "post",
+		dataType : "json",
+		data: data,
+		contentType: false,
+	    cache: false,
+		processData: false,
+		success: function(hasil){
+			// cek hasil dari ajax
+			// cek status
+			if(hasil.status) document.location=base_url+"index.php?m=barang&p=list"; // jika berhasil
+			else{ // jika status false
+				// cek jenis error
+				if(hasil.errorDb){ // jika db error
+					swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+                    reset_form("#form_barang");
+				}
+				else{
+					// reset form
+					// cek apakah duplikat
+					if(hasil.duplikat){
+						$("#fKd_barang").parent().find('.help-block').text("Kode Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
+    					$("#fKd_barang").closest('div').addClass('has-error');
+					}
+					else{
+						// set error
+						setError(hasil);
+					}
+					// set value
+					setValue(hasil);
+				}
+
+			}
+
+			console.log(hasil);
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+            reset_form("#form_barang");
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+	})
+}
+
 // fungsi get data edit
 function edit_barang(id){
 	$.ajax({
@@ -259,20 +272,24 @@ function edit_barang(id){
 		success: function(data){
 			if(!data) document.location=base_url+"index.php?m=barang&p=list";
 			else{
-				$("#fStokAwal").parent().parent().parent().parent().parent().closest('div').css("display", "none");
-				$("#id").val(data.id);
-        		$("#fId_barang").select2().val(data.id_barang).trigger('change');
-				$("#fId_warna").select2().val(data.id_warna).trigger('change');
-				$("#fKd_barang").val(data.kd_barang);
-				$("#fNama_barang").val(data.nama);
-				// $("#fFoto").val(data.foto);
-				$("#fKet").val(data.ket);
+				var text_idBarang = data.id_idBarang+" - "+data.nama_idBarang;
+        		var option_idBarang = new Option(text_idBarang, data.id_barang, true, true);
+        		$("#fId_barang").append(option_idBarang);
 
-				var hpp = parseFloat(data.hpp) ? parseFloat(data.hpp) : data.hpp;
+        		var text_idWarna = data.id_idWarna+" - "+data.nama_idWarna;
+        		var option_idWarna = new Option(text_idWarna, data.id_warna, true, true);
+        		$("#fId_warna").append(option_idWarna);
+
+        		var hpp = parseFloat(data.hpp) ? parseFloat(data.hpp) : data.hpp;
 				var harga_pasar = parseFloat(data.harga_pasar) ? parseFloat(data.harga_pasar) : data.harga_pasar;
 				var harga_ig = parseFloat(data.harga_ig) ? parseFloat(data.harga_ig) : data.harga_ig;
 				var market_place = parseFloat(data.market_place) ? parseFloat(data.market_place) : data.market_place;
 
+				$("#fStokAwal").parent().parent().parent().parent().parent().closest('div').css("display", "none");
+				$("#id").val(data.id);
+				$("#fKd_barang").val(data.kd_barang);
+				$("#fNama_barang").val(data.nama);
+				$("#fKet").val(data.ket);
 				$("#fHpp").val(hpp);
 				$("#fHarga_pasar").val(harga_pasar);
 				$("#fHarga_market").val(market_place);
@@ -283,6 +300,7 @@ function edit_barang(id){
 				$("#fKd_barang").prop("readonly", true);
 				$("#btn_tambah_idWarna").prop("disabled", true);
 				$("#btn_tambah_idBarang").prop("disabled", true);
+				$("#field_foto").css("display", "none");
 			}
 				
 			console.log(data);
@@ -316,8 +334,8 @@ function reset_form(form){
 	    $("#fNama_barang").closest('div').removeClass('has-error');
 
 	    // foto
-	    $("#fFoto_text").parent().find('.help-block').text("");
-	    $("#fFoto_text").parent().parent().parent().closest('div').removeClass('has-error');
+	    // $("#fFoto_text").parent().find('.help-block').text("");
+	    // $("#fFoto_text").parent().parent().parent().closest('div').removeClass('has-error');
 
 	    // keterangan
 	    $("#fKet").parent().find('.help-block').text("");
@@ -348,7 +366,8 @@ function reset_form(form){
 	    $("#fmId_barang").closest('div').removeClass('has-error');
 	    $("#fmNama_idBarang").parent().find('.help-block').text("");
 	    $("#fmNama_idBarang").closest('div').removeClass('has-error');
-	  	// $('#form_modal_idBarang').trigger('reset');
+	  	 // bersihkan form
+    	$(form).trigger('reset');
 
     }
     else if(form === "#form_modal_idWarna"){
@@ -356,11 +375,9 @@ function reset_form(form){
 	    $("#fmId_warna").closest('div').removeClass('has-error');
 	    $("#fmNama_idWarna").parent().find('.help-block').text("");
 	    $("#fmNama_idWarna").closest('div').removeClass('has-error');
-	    // $("#form_modal_idWarna").trigger('reset');
+	    // bersihkan form
+    	$(form).trigger('reset');
     }
-	
-    // bersihkan form
-    $(form).trigger('reset');
 }
 
 // fungsi set error form barang
@@ -381,8 +398,8 @@ function setError(hasil){
     }
 
     // set error fId_warna
-		// jika ada pesan error
-		if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
+	// jika ada pesan error
+	if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
         $("#fId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
         $("#fId_warna").parent().parent().parent().closest('div').addClass('has-error');
         $("#fKd_barang").parent().find('.help-block').text("Kode Barang Harus Diisi");
@@ -397,8 +414,8 @@ function setError(hasil){
 
     // set error fNama_barang
     // jika ada pesan error
-    if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
-        $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
+    if(!jQuery.isEmptyObject(hasil.pesanError.namaError)){
+        $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.namaError);
 		$("#fNama_barang").closest('div').addClass('has-error');
     }
     else{
@@ -408,14 +425,14 @@ function setError(hasil){
 
     // set error fFoto
     // jika ada pesan error
-    /*if(!jQuery.isEmptyObject(hasil.pesanError.fotoError)){
-        $("#fNama_barang").parent().find('.help-block').text(hasil.pesanError.fotoError);
-		$("#fNama_barang").closest('div').addClass('has-error');
+    if(!jQuery.isEmptyObject(hasil.pesanError.fotoError)){
+        $("#fFoto_text").parent().parent().find('.help-block').text(hasil.pesanError.fotoError);
+		$("#fFoto_text").parent().parent().closest('div').addClass('has-error');
     }
     else{
-    	$("#fNama_barang").parent().find('.help-block').text("");
-		$("#fNama_barang").closest('div').removeClass('has-error');
-    }*/
+    	$("#fFoto_text").parent().parent().find('.help-block').text("");
+		$("#fFoto_text").parent().parent().closest('div').removeClass('has-error');
+    }
 
     // set error fKet
     // jika ada pesan error
@@ -431,7 +448,7 @@ function setError(hasil){
     // set error fHpp
     // jika ada pesan error
     if(!jQuery.isEmptyObject(hasil.pesanError.hppError)){
-			$("#fHpp").parent().parent().find('.help-block').text(hasil.pesanError.hppError);
+		$("#fHpp").parent().parent().find('.help-block').text(hasil.pesanError.hppError);
 		$("#fHpp").parent().parent().closest('div').addClass('has-error');
     }
     else{
@@ -442,7 +459,7 @@ function setError(hasil){
    	// set error harga pasar
     // jika ada pesan error
     if(!jQuery.isEmptyObject(hasil.pesanError.harga_pasarError)){
-			$("#fHarga_pasar").parent().parent().find('.help-block').text(hasil.pesanError.harga_pasarError);
+		$("#fHarga_pasar").parent().parent().find('.help-block').text(hasil.pesanError.harga_pasarError);
 		$("#fHarga_pasar").parent().parent().closest('div').addClass('has-error');
     }
     else{
@@ -453,7 +470,7 @@ function setError(hasil){
     // set error harga market place
     // jika ada pesan error
     if(!jQuery.isEmptyObject(hasil.pesanError.market_placeError)){
-			$("#fHarga_market").parent().parent().find('.help-block').text(hasil.pesanError.market_placeError);
+		$("#fHarga_market").parent().parent().find('.help-block').text(hasil.pesanError.market_placeError);
 		$("#fHarga_market").parent().parent().closest('div').addClass('has-error');
     }
     else{
@@ -464,7 +481,7 @@ function setError(hasil){
     // set error harga ig
     // jika ada pesan error
     if(!jQuery.isEmptyObject(hasil.pesanError.harga_igError)){
-			$("#fHarga_ig").parent().parent().find('.help-block').text(hasil.pesanError.harga_igError);
+		$("#fHarga_ig").parent().parent().find('.help-block').text(hasil.pesanError.harga_igError);
 		$("#fHarga_ig").parent().parent().closest('div').addClass('has-error');
     }
     else{
@@ -475,7 +492,7 @@ function setError(hasil){
     // set error stok awal
     // jika ada pesan error
     if(!jQuery.isEmptyObject(hasil.pesanError.stokAwalError)){
-			$("#fStokAwal").parent().parent().find('.help-block').text(hasil.pesanError.stokAwalError);
+		$("#fStokAwal").parent().parent().find('.help-block').text(hasil.pesanError.stokAwalError);
 		$("#fStokAwal").parent().parent().closest('div').addClass('has-error');
     }
     else{
@@ -487,19 +504,17 @@ function setError(hasil){
 // fungsi set value error form barang
 function setValue(hasil){
 	// set value
-	$("#fId_barang").select2().val(hasil.set_value.id_barang).trigger('change');
-	$("#fId_warna").select2().val(hasil.set_value.id_warna).trigger('change');
-	$("#fKd_barang").val(hasil.set_value.kd_barang);
-	$("#fNama_barang").val(hasil.set_value.namaBarang);
-	$("#fFoto").val(hasil.set_value.foto);
-	$("#fKet").val(hasil.set_value.ket);
-
 	var hpp = parseFloat(hasil.set_value.hpp) ? parseFloat(hasil.set_value.hpp) : hasil.set_value.hpp;
 	var harga_pasar = parseFloat(hasil.set_value.harga_pasar) ? parseFloat(hasil.set_value.harga_pasar) : hasil.set_value.harga_pasar;
 	var harga_ig = parseFloat(hasil.set_value.harga_ig) ? parseFloat(hasil.set_value.harga_ig) : hasil.set_value.harga_ig;
 	var market_place = parseFloat(hasil.set_value.market_place) ? parseFloat(hasil.set_value.market_place) : hasil.set_value.market_place;
 	var stokAwal = parseFloat(hasil.set_value.stokAwal) ? parseFloat(hasil.set_value.stokAwal) : hasil.set_value.stokAwal;
 
+	$("#fId_barang").select2().val(hasil.set_value.id_barang).trigger('change');
+	$("#fId_warna").select2().val(hasil.set_value.id_warna).trigger('change');
+	$("#fKd_barang").val(hasil.set_value.kd_barang);
+	$("#fNama_barang").val(hasil.set_value.nama);
+	$("#fKet").val(hasil.set_value.ket);
 	$("#fHpp").val(hpp);
 	$("#fHarga_pasar").val(harga_pasar);
 	$("#fHarga_market").val(market_place);

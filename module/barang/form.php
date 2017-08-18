@@ -58,7 +58,7 @@
 	          								<div class="row">
 	          									<div class="col-md-9 col-xs-12">
 	          										<select id="fId_barang" name="fId_barang" class="form-control select2" style="width: 100%;">
-			          									<option value="">-- Pilih Id Barang --</option>
+			          									
 			          								</select>
 			          								<span class="help-block small"></span>
 	          									</div>
@@ -77,8 +77,8 @@
 	          								</div>
 	          								<div class="row">
 	          									<div class="col-md-9 col-xs-12">
-	          										<select id="fId_warna" name="fId_barang" class="form-control select2" style="width: 100%;">
-			          									<option value="">-- Pilih Id Warna --</option>
+	          										<select id="fId_warna" name="fId_warna" class="form-control select2" style="width: 100%;">
+			          									
 			          								</select>
 			          								<span class="help-block small"></span>
 	          									</div>
@@ -103,7 +103,7 @@
 	          							</div>
 
 	          							<!-- foto -->
-						          		<div class="form-group">
+						          		<div class="form-group" id="field_foto">
 						          			<!-- preview foto -->
 						          			<label for="fFoto">Foto</label>
 						          			<div class="input-group image-preview">
@@ -121,19 +121,7 @@
 								                    </div>
 								                </span>
 								            </div>
-
-						          			<!-- <div class="row">
-						          				<div class="col-sm-2">
-						          					<div class="fileUpload btn btn-danger">
-								          				<span>Pilih Foto</span>
-								          				<input type="file" name="fFoto" id="fFoto" class="upload">
-								          			</div>
-						          				</div>
-							          			<div class="col-sm-10">
-	                    							<input type="text" class="form-control" id="fFoto_text" placeholder="Pilih File Foto.." disabled="disabled">
-	                    							<span class="help-block small"></span>
-	                  							</div>
-						          			</div> -->
+								            <span class="help-block small"></span>
 						                </div>
 
 						                <!-- keterangan -->
