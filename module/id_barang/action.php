@@ -35,19 +35,9 @@
 				break;
 			
 			default:
-				die();
+				die("Dilarang Akses Halaman Ini !!");
 				break;
 		}
-
-
-
-		// if(strtolower($action) === "list") list_idBarang($koneksi); // list datatable
-		// else if(strtolower($action) === "tambah") actionAdd($koneksi); // aksi tambah
-		// else if(strtolower($action) === "getedit"){ // get data untuk edit
-		// 	$id = isset($_POST['id']) ? $_POST['id'] : false;
-		// 	getEdit($koneksi, $id);
-		// }
-		// else if(strtolower($action) === "edit") actionEdit($koneksi); // aksi edit
 	}
 
 	// function list datatable (server-side)

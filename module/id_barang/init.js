@@ -101,7 +101,6 @@ $(document).ready(function(){
                             }
                             // set value
                             setValue(hasil);
-
                         }   
                     }
 

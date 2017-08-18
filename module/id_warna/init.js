@@ -37,107 +37,86 @@ $(document).ready(function(){
         ],
 	});
 
-    // btn tambah id barang onclick
-    $("#btn_tambahIdWarna").click(function(){
-        // reset pesan error
-        reset_form();
-        // tampilkan modal
-        $("#modal_idWarna .modal-title").html("Form Tambah Data Id Warna"); // ganti heade form
-        $("#submit_idWarna").prop("value", "Tambah");
-        $("#modal_idWarna").modal();
-    });
+    // setting form tambah id barang
+         // btn tambah id barang onclick
+        $("#btn_tambahIdWarna").click(function(){
+            // reset pesan error
+            reset_form();
+            // tampilkan modal
+            $("#modal_idWarna .modal-title").html("Form Tambah Data Id Warna"); // ganti heade form
+            $("#submit_idWarna").prop("value", "Tambah");
+            $("#modal_idWarna").modal();
+        });
 
-    // submit form modal tambah id barang
-    $("#form_modal_idWarna").submit(function(e){
-        e.preventDefault();
+        // submit form modal tambah id barang
+        $("#form_modal_idWarna").submit(function(e){
+            e.preventDefault();
 
-        var id = $("#id_warna").val().trim();
-        var id_warna = $("#fmId_warna").val().trim();
-        var nama = $("#fmNama_idWarna").val().trim();
-        var submit = $("#submit_idWarna").val();
+            var id = $("#id_warna").val().trim();
+            var id_warna = $("#fmId_warna").val().trim();
+            var nama = $("#fmNama_idWarna").val().trim();
+            var submit = $("#submit_idWarna").val();
 
-       // request action
-        $.ajax({
-            url: base_url+"module/id_warna/action.php",
-            type: "post",
-            dataType: "json",
-            data: {
-                "id" : id,
-                "fmId_warna" : id_warna,
-                "fmNama_idWarna" : nama,
-                "action" : submit,
-            },
-            success: function(hasil){
+           // request action
+            $.ajax({
+                url: base_url+"module/id_warna/action.php",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "id" : id,
+                    "id_warna" : id_warna,
+                    "nama" : nama,
+                    "action" : submit,
+                },
+                success: function(hasil){
 
-                // cek hasil dari ajax
-                // cek statusnya
-                if(hasil.status){ // jika status true
-                    reset_form(); 
-                    $("#modal_idWarna").modal('hide');
-                    // cek jenis actionya
-                    if(submit.toLowerCase()==="edit") alertify.success('Data Berhasil Diedit'); // jika edit
+                    // cek hasil dari ajax
+                    // cek statusnya
+                    if(hasil.status){ // jika status true
+                        reset_form(); 
+                        $("#modal_idWarna").modal('hide');
+                        // cek jenis actionya
+                        if(submit.toLowerCase()==="edit") alertify.success('Data Berhasil Diedit'); // jika edit
                         else alertify.success('Data Berhasil Ditambah'); // jika tambah
-                    tabel_id_warna.ajax.reload(); // reload tabel
-                }
-                else{ // jika status false
-                    // cek jenis error
-                    if(hasil.errorDb){ // jika ada error database
-                        swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
-                        reset_form();
-                        $("#form_modal_idWarna").modal('hide');
+                        tabel_id_warna.ajax.reload(); // reload tabel
                     }
-                    else{
-                        reset_form();
-                        // cek apakah duplikat
-                        if(hasil.duplikat){ // jika duplikat
-                            $("#fmId_warna").parent().find('.help-block').text("Id Warna Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
-                            $("#fmId_warna").closest('div').addClass('has-error');
+                    else{ // jika status false
+                        // cek jenis error
+                        if(hasil.errorDb){ // jika ada error database
+                            swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+                            reset_form();
+                            $("#form_modal_idWarna").modal('hide');
                         }
                         else{
-                            // set error fId_barang
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
-                                $("#fmId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
+                            reset_form();
+                            // cek apakah duplikat
+                            if(hasil.duplikat){ // jika duplikat
+                                $("#fmId_warna").parent().find('.help-block').text("Id Warna Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
                                 $("#fmId_warna").closest('div').addClass('has-error');
                             }
                             else{
-                                $("#fmId_warna").parent().find('.help-block').text("");
-                                $("#fmId_warna").closest('div').removeClass('has-error');
+                                if(submit.toLowerCase()==="edit") $("#fmId_warna").prop("disabled", true);
+                                setError(hasil);
                             }
-                            
-                            // set error fNama_idBarang
-                            // jika ada pesan error
-                            if(!jQuery.isEmptyObject(hasil.pesanError.namaWarnaError)){
-                                $("#fmNama_idWarna").parent().find('.help-block').text(hasil.pesanError.namaWarnaError);
-                                $("#fmNama_idWarna").closest('div').addClass('has-error');
-                            }
-                            else{
-                                $("#fmNama_idWarna").parent().find('.help-block').text("");
-                                $("#fmNama_idWarna").closest('div').removeClass('has-error');
-                            }   
-                            
-                        }
-                        // set value
-                        $("#fmId_warna").val(hasil.set_value.id_warna);
-                        $("#fmNama_idWarna").val(hasil.set_value.namaWarna);
+                            // set value
+                            setValue(hasil);
+                        }   
+                    }
 
-                    }   
+                    console.log(hasil);
+                },
+                error: function (jqXHR, textStatus, errorThrown) // error handling
+                {
+                    swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                    $("#modal_idWarna").modal('hide');
+                    reset_form();
+                    console.log(jqXHR, textStatus, errorThrown);
                 }
+            })
 
-                console.log(hasil);
-            },
-            error: function (jqXHR, textStatus, errorThrown) // error handling
-            {
-                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-                $("#modal_idWarna").modal('hide');
-                reset_form();
-                console.log(jqXHR, textStatus, errorThrown);
-            }
-        })
-
-        return false;
-    });
-
+            return false;
+        });
+    //===================================================================//
 });
 
 // fungsi get data edit
@@ -185,4 +164,35 @@ function reset_form(){
     // bersihkan form
     $('#form_modal_idWarna').trigger('reset');
     $("#fmId_warna").prop("disabled", false);
+}
+
+// fungsi set error
+function setError(hasil){
+    // set error fId_barang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
+        $("#fmId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
+        $("#fmId_warna").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmId_warna").parent().find('.help-block').text("");
+        $("#fmId_warna").closest('div').removeClass('has-error');
+    }
+    
+    // set error fNama_idBarang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.namaWarnaError)){
+        $("#fmNama_idWarna").parent().find('.help-block').text(hasil.pesanError.namaWarnaError);
+        $("#fmNama_idWarna").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmNama_idWarna").parent().find('.help-block').text("");
+        $("#fmNama_idWarna").closest('div').removeClass('has-error');
+    }   
+}
+
+// fungsi set value
+function setValue(hasil){
+    $("#fmId_warna").val(hasil.set_value.id_warna);
+    $("#fmNama_idWarna").val(hasil.set_value.namaWarna);
 }

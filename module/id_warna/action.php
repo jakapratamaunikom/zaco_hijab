@@ -13,7 +13,9 @@
 	// $action = "list";
 
 	// proteksi halaman
-	switch (strtolower($action)) {
+	if(!$action) die("Dilarang Akses Halaman Ini !!");
+	else{
+		switch (strtolower($action)) {
 			case 'list':
 				list_idWarna($koneksi); // list datatable
 				break;
@@ -33,22 +35,11 @@
 				break;
 			
 			default:
-				die();
+				die("Dilarang Akses Halaman Ini !!");
 				break;
 		}
-
-
-	// if(!$action) die("Dilarang Akses Halaman Ini !!");
-	// else{
-	// 	if(strtolower($action) === "list") list_idWarna($koneksi); // list datatable
-	// 	else if(strtolower($action) === "tambah") actionAdd($koneksi); // aksi tambah
-	// 	else if(strtolower($action) === "getedit"){ // get data untuk edit
-	// 		$id = isset($_POST['id']) ? $_POST['id'] : false;
-	// 		getEdit($koneksi, $id);
-	// 	}
-	// 	else if(strtolower($action) === "edit") actionEdit($koneksi); // aksi edit
-	// }
-
+	}
+		
 	// function list datatable (server-side)
 	function list_idWarna($koneksi){
 		/* 
@@ -99,8 +90,8 @@
 
 	// fungsi action add
 	function actionAdd($koneksi){
-		$id_warna = isset($_POST['fmId_warna']) ? $_POST['fmId_warna'] : false;
-		$nama = isset($_POST['fmNama_idWarna']) ? $_POST['fmNama_idWarna'] : false;
+		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : false;
+		$nama = isset($_POST['nama']) ? $_POST['nama'] : false;
 
 		// validasi inputan
 			// inisialisasi
@@ -216,8 +207,8 @@
 	// fungsi action edit
 	function actionEdit($koneksi){
 		$id = isset($_POST['id']) ? $_POST['id'] : false;
-		$id_warna = isset($_POST['fmId_warna']) ? $_POST['fmId_warna'] : false;
-		$nama = isset($_POST['fmNama_idWarna']) ? $_POST['fmNama_idWarna'] : false;
+		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : false;
+		$nama = isset($_POST['nama']) ? $_POST['nama'] : false;
 
 		// validasi
 			// inisialisasi
