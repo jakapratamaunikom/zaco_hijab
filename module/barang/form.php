@@ -91,7 +91,7 @@
 	          							<!-- kode barang -->
 	          							<div class="form-group">
 	          								<label for="fKd_barang">Kode Barang</label>
-	          								<input type="text" class="form-control" placeholder="Kode Barang" id="fKd_barang" name="fKd_barang" disabled="disabled">
+	          								<input type="text" class="form-control" placeholder="Kode Barang" id="fKd_barang" name="fKd_barang" readonly="readonly">
 	          								<span class="help-block small"></span>
 	          							</div>
 
@@ -104,7 +104,25 @@
 
 	          							<!-- foto -->
 						          		<div class="form-group">
-						          			<div class="row">
+						          			<!-- preview foto -->
+						          			<label for="fFoto">Foto</label>
+						          			<div class="input-group image-preview">
+								                <input type="text" id="fFoto_text" class="form-control image-preview-filename" disabled="disabled">
+								                <span class="input-group-btn">
+								                    <!-- image-preview-clear button -->
+								                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+								                        <span class="glyphicon glyphicon-remove"></span> Hapus
+								                    </button>
+								                    <!-- image-preview-input -->
+								                    <div class="btn btn-danger image-preview-input">
+								                        <span class="glyphicon glyphicon-folder-open"></span>
+								                        <span class="image-preview-input-title">Pilih Foto</span>
+								                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" /> <!-- rename it -->
+								                    </div>
+								                </span>
+								            </div>
+
+						          			<!-- <div class="row">
 						          				<div class="col-sm-2">
 						          					<div class="fileUpload btn btn-danger">
 								          				<span>Pilih Foto</span>
@@ -115,7 +133,7 @@
 	                    							<input type="text" class="form-control" id="fFoto_text" placeholder="Pilih File Foto.." disabled="disabled">
 	                    							<span class="help-block small"></span>
 	                  							</div>
-						          			</div>
+						          			</div> -->
 						                </div>
 
 						                <!-- keterangan -->

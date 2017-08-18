@@ -45,6 +45,7 @@
 				display: block;
 			}
 
+			/* upload versi 1 */
 			.fileUpload{
 				position: relative;
 				overflow: hidden;
@@ -60,6 +61,30 @@
 				cursor: pointer;
 				opacity: 0;
 				filter: alpha(opacity=0);
+			}
+
+			/* uplaod foto v2 */
+			.image-preview-input{
+				position: relative;
+				overflow: hidden;
+				margin: 0px;    
+			    color: #333;
+			    background-color: #fff;
+			    border-color: #ccc;
+			}
+			.image-preview-input input[type=file] {
+				position: absolute;
+				top: 0;
+				right: 0;
+				margin: 0;
+				padding: 0;
+				font-size: 20px;
+				cursor: pointer;
+				opacity: 0;
+				filter: alpha(opacity=0);
+			}
+			.image-preview-input-title {
+			    margin-left:2px;
 			}
 		</style>
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

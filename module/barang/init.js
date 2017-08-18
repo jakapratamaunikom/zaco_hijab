@@ -40,265 +40,128 @@ $(document).ready(function(){
 		// submit form modal tambah id barang
 	    $("#form_modal_idBarang").submit(function(e){
 	        e.preventDefault();
-
-	        var id = $("#id_barang").val().trim();
-	        var id_barang = $("#fmId_barang").val().trim();
-	        var nama = $("#fmNama_idBarang").val().trim();
-	        var submit = $("#btn_submit_idBarang").val();
-
-	        // request action
-	        $.ajax({
-	            url: base_url+"module/id_barang/action.php",
-	            type: "post",
-	            dataType: "json",
-	            data: {
-	                "id" : id,
-	                "fmId_barang" : id_barang,
-	                "fmNama_idBarang" : nama,
-	                "action" : submit,
-	            },
-	            success: function(hasil){
-
-	                // cek hasil dari ajax
-	                // cek statusnya
-	                if(hasil.status){ // jika status true
-	                    reset_form("#form_modal_idBarang"); 
-	                    $("#modal_idBarang").modal('hide');
-	                    // cek jenis actionya
-	                    alertify.success('Data Id Barang Berhasil Ditambah'); // jika tambah
-	                    setSelect("id_barang", $("#fId_barang")); // reload select
-	                }
-	                else{ // jika status false
-	                    // cek jenis error
-	                    if(hasil.errorDb){ // jika ada error database
-	                        swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
-	                        reset_form("#form_modal_idBarang");
-	                        $("#form_modal_idBarang").modal('hide');
-	                    }
-	                    else{
-	                        reset_form("#form_modal_idBarang");
-	                        // cek apakah duplikat
-	                        if(hasil.duplikat){ // jika duplikat
-	                            $("#fmId_barang").parent().find('.help-block').text("Id Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
-	                            $("#fmId_barang").closest('div').addClass('has-error');
-	                        }
-	                        else{
-	                            // set error fmId_barang
-	                            // jika ada pesan error
-	                            if(!jQuery.isEmptyObject(hasil.pesanError.id_barangError)){
-	                                $("#fmId_barang").parent().find('.help-block').text(hasil.pesanError.id_barangError);
-	                                $("#fmId_barang").closest('div').addClass('has-error');
-	                            }
-	                            else{
-	                                $("#fmId_barang").parent().find('.help-block').text("");
-	                                $("#fmId_barang").closest('div').removeClass('has-error');
-	                            }
-	                            
-	                            // set error fmNama_idBarang
-	                            // jika ada pesan error
-	                            if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
-	                                $("#fmNama_idBarang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
-	                                $("#fmNama_idBarang").closest('div').addClass('has-error');
-	                            }
-	                            else{
-	                                $("#fmNama_idBarang").parent().find('.help-block').text("");
-	                                $("#fmNama_idBarang").closest('div').removeClass('has-error');
-	                            }   
-	                            
-	                        }
-	                        // set value
-	                        $("#fmId_barang").val(hasil.set_value.id_barang);
-	                        $("#fmNama_idBarang").val(hasil.set_value.namaBarang);
-
-	                    }   
-	                }
-
-	                console.log(hasil);
-	            },
-	            error: function (jqXHR, textStatus, errorThrown) // error handling
-	            {
-	                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-	                $("#modal_idBarang").modal('hide');
-	                reset_form("#form_modal_idBarang");
-	                console.log(jqXHR, textStatus, errorThrown);
-	            }
-	        })
-
+	        tambah_idBarang();
 	        return false;
 	    });
 
 		// submit form modal tambah id barang
 	    $("#form_modal_idWarna").submit(function(e){
 	        e.preventDefault();
-
-	        var id = $("#id_warna").val().trim();
-	        var id_warna = $("#fmId_warna").val().trim();
-	        var nama = $("#fmNama_idWarna").val().trim();
-	        var submit = $("#submit_idWarna").val();
-
-	       // request action
-	        $.ajax({
-	            url: base_url+"module/id_warna/action.php",
-	            type: "post",
-	            dataType: "json",
-	            data: {
-	                "id" : id,
-	                "fmId_warna" : id_warna,
-	                "fmNama_idWarna" : nama,
-	                "action" : submit,
-	            },
-	            success: function(hasil){
-
-	                // cek hasil dari ajax
-	                // cek statusnya
-	                if(hasil.status){ // jika status true
-	                    reset_form("#form_modal_idWarna");
-	                    $("#modal_idWarna").modal('hide');
-	                    // cek jenis actionya
-	                    alertify.success('Data Id Warna Berhasil Ditambah'); // jika tambah
-	                    setSelect("id_warna", $("#fId_warna")); // reload select
-	                }
-	                else{ // jika status false
-	                    // cek jenis error
-	                    if(hasil.errorDb){ // jika ada error database
-	                        swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
-	                        setSelect("id_warna", $("#fId_warna"));
-	                        $("#form_modal_idWarna").modal('hide');
-	                    }
-	                    else{
-	                        setSelect("id_warna", $("#fId_warna"));
-	                        // cek apakah duplikat
-	                        if(hasil.duplikat){ // jika duplikat
-	                            $("#fmId_warna").parent().find('.help-block').text("Id Warna Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
-	                            $("#fmId_warna").closest('div').addClass('has-error');
-	                        }
-	                        else{
-	                            // set error fId_barang
-	                            // jika ada pesan error
-	                            if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
-	                                $("#fmId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
-	                                $("#fmId_warna").closest('div').addClass('has-error');
-	                            }
-	                            else{
-	                                $("#fmId_warna").parent().find('.help-block').text("");
-	                                $("#fmId_warna").closest('div').removeClass('has-error');
-	                            }
-	                            
-	                            // set error fNama_idBarang
-	                            // jika ada pesan error
-	                            if(!jQuery.isEmptyObject(hasil.pesanError.namaWarnaError)){
-	                                $("#fmNama_idWarna").parent().find('.help-block').text(hasil.pesanError.namaWarnaError);
-	                                $("#fmNama_idWarna").closest('div').addClass('has-error');
-	                            }
-	                            else{
-	                                $("#fmNama_idWarna").parent().find('.help-block').text("");
-	                                $("#fmNama_idWarna").closest('div').removeClass('has-error');
-	                            }   
-	                            
-	                        }
-	                        // set value
-	                        $("#fmId_warna").val(hasil.set_value.id_warna);
-	                        $("#fmNama_idWarna").val(hasil.set_value.namaWarna);
-
-	                    }   
-	                }
-
-	                console.log(hasil);
-	            },
-	            error: function (jqXHR, textStatus, errorThrown) // error handling
-	            {
-	                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-	                $("#modal_idWarna").modal('hide');
-	                reset_form("#form_modal_idWarna");
-	                console.log(jqXHR, textStatus, errorThrown);
-	            }
-	        })
-
+	        tambah_idWarna();
 	        return false;
 	    });
 	// ================================================== //
 		
 	// onchange id barang
-	$("#fId_barang").change(function(e){
-		e.preventDefault();
+	$("#fId_barang").change(function(){
 		if(!cekEdit) setBarang();
 	});
 	// onchange id warna
-	$("#fId_warna").change(function(e){
-		e.preventDefault();
+	$("#fId_warna").change(function(){
 		if(!cekEdit) setBarang();
 	});
 
 	// onchange foto
-	$("#fFoto").change(function(){
-		$("#fFoto_text").val(this.value);
-	});
+		$(document).on('click', '#close-preview', function(){ 
+		    $('.image-preview').popover('hide');
+		    // Hover befor close the preview
+		    $('.image-preview').hover(
+		        function () {
+		           $('.image-preview').popover('show');
+		        }, 
+		         function () {
+		           $('.image-preview').popover('hide');
+		        }
+		    );    
+		});
+		// Create the close button
+	    var closebtn = $('<button/>', {
+	        type:"button",
+	        text: 'x',
+	        id: 'close-preview',
+	        style: 'font-size: initial;',
+	    });
+	    closebtn.attr("class","close pull-right");
+	    // Set the popover default content
+	    $('.image-preview').popover({
+	        trigger:'manual',
+	        html:true,
+	        title: "<strong>Preview</strong>"+$(closebtn)[0].outerHTML,
+	        content: "Tidak Ada Foto",
+	        placement:'bottom'
+	    });
+	    // Clear event
+	    $('.image-preview-clear').click(function(){
+	        $('.image-preview').attr("data-content","").popover('hide');
+	        $('.image-preview-filename').val("");
+	        $('.image-preview-clear').hide();
+	        $('.image-preview-input input:file').val("");
+	        $(".image-preview-input-title").text("Pilih Foto"); 
+	    }); 
+	    // Create the preview image
+	    $("#fFoto").change(function (){
+	        var img = $('<img/>', {
+	            id: 'dynamic',
+	            width:250,
+	            height:200
+	        });      
+	        var file = this.files[0];
+	        var reader = new FileReader();
+	        // Set preview image into the popover data-content
+	        reader.onload = function (e) {
+	            $(".image-preview-input-title").text("Ganti");
+	            $(".image-preview-clear").show();
+	            $("#fFoto_text").val(file.name);            
+	            img.attr('src', e.target.result);
+	            $(".image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
+	        }        
+	        reader.readAsDataURL(file);
+	    });
+	// ================================================= //
 
 	// submit barang
 	$("#form_barang").submit(function(e){
 		e.preventDefault();
-		var dataForm = {
-			id : $("#id").val().trim(), 
-			fId_barang : $("#fId_barang").val().trim(),
-			fId_warna : $("#fId_warna").val().trim(),
-			fKd_barang : $("#fKd_barang").val().trim(),
-			fNama_barang : $("#fNama_barang").val().trim(),
-			// fFoto : $("#fFoto")[0].files[0],
-			fFoto : $("#fFoto").val().trim(),
-			fKet : $("#fKet").val().trim(),
-			fHpp : $("#fHpp").val().trim(),
-			fHarga_pasar : $("#fHarga_pasar").val().trim(),
-			fHarga_market : $("#fHarga_market").val().trim(),
-			fHarga_ig : $("#fHarga_ig").val().trim(),
-			fStokAwal : $("#fStokAwal").val().trim(),
-		};
-		// var dataFoto = new FormData();
-
-		var submit = $("#btn_submit_barang").val();
+		var data = getDataForm();
 
 		$.ajax({
 			url : base_url+"module/barang/action.php",
 			type : "post",
 			dataType : "json",
-			data: {
-				"dataForm" : dataForm,
-				// "fFoto" : fFoto,
-				"action" : submit,
-			},
-			// contentType: false,
-   //  	    cache: false,
-			// processData: false,
+			data: data,
+			contentType: false,
+    	    cache: false,
+			processData: false,
 			success: function(hasil){
 				
 				// cek hasil dari ajax
     			// cek statusnya
-				if(hasil.status){ // jika status true
-					// arahkan ke page list
-					document.location=base_url+"index.php?m=barang&p=list";
-				}
-				else{ // jika status false
-					// cek jenis error
-					if(hasil.errorDb){ // jika ada error database
-						swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
-                        reset_form("#form_barang");
-					}
-					else{
-						reset_form("#form_barang");
-						// cek apakah duplikat
-						if(hasil.duplikat){ // jika duplikat
-							$("#fKd_barang").parent().find('.help-block').text("Kode Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
-	    					$("#fKd_barang").closest('div').addClass('has-error');
-						}
-						else{
-							setError(hasil);
-						}
-						setValue(hasil);
-					}
-				}
+				// if(hasil.status){ // jika status true
+				// 	// arahkan ke page list
+				// 	document.location=base_url+"index.php?m=barang&p=list";
+				// }
+				// else{ // jika status false
+				// 	// cek jenis error
+				// 	if(hasil.errorDb){ // jika ada error database
+				// 		swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+    //                     reset_form("#form_barang");
+				// 	}
+				// 	else{
+				// 		reset_form("#form_barang");
+				// 		// cek apakah duplikat
+				// 		if(hasil.duplikat){ // jika duplikat
+				// 			$("#fKd_barang").parent().find('.help-block').text("Kode Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
+	   //  					$("#fKd_barang").closest('div').addClass('has-error');
+				// 		}
+				// 		else{
+				// 			setError(hasil);
+				// 		}
+				// 		setValue(hasil);
+				// 	}
+				// }
 				console.log(hasil);
 			},
-			error: function (jqXHR, textStatus, errorThrown) // error handling
-            {
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
                 swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
                 reset_form("#form_barang");
                 console.log(jqXHR, textStatus, errorThrown);
@@ -349,21 +212,41 @@ function setSelect(select, idSelect){
 	})
 }
 
+// fungsi kode barang dan nama barang otomatis terisi
 function setBarang(){
-	var text_idBarang = $("#fId_barang :selected").text();
-	var text_idWarna = $("#fId_warna :selected").text();
+	var text_idBarang = $("#fId_barang").select2('data')[0].text;
+	var text_idWarna = $("#fId_warna").select2('data')[0].text;
 	
 	var split_idBarang = text_idBarang.split('-');
 	var split_idWarna = text_idWarna.split('-');
 
-	if($("#fId_barang :selected").val() !== "" && $("#fId_warna :selected").val() !== ""){
-		// console.log("kosong");
+	if($("#fId_barang").val() !== "" && $("#fId_warna").val() !== ""){
 		$("#fKd_barang").val(split_idBarang[0].trim()+"-"+split_idWarna[0].trim());
 		$("#fNama_barang").val(split_idBarang[1].trim()+" "+split_idWarna[1].trim());
-		// console.log("gk kosong");
 	}
 }
 
+// fungsi get data di form
+function getDataForm(){
+	var data = new FormData();
+
+	data.append('id_barang', $("#fId_barang").val().trim()); // data id barang
+	data.append('id_warna', $("#fId_warna").val().trim()); // data id warna
+	data.append('kd_barang', $("#fKd_barang").val().trim()); // data kd barang
+	data.append('nama', $("#fNama_barang").val().trim()); // data nama
+	data.append('foto', $("#fFoto")[0].files[0]); // data foto
+	data.append('ket', $("#fKet").val().trim()); // data ket
+	data.append('hpp', $("#fHpp").val().trim()); // data hpp
+	data.append('harga_pasar', $("#fHarga_pasar").val().trim()); // data harga pasar
+	data.append('market_place', $("#fHarga_market").val().trim()); // data harga market_place
+	data.append('harga_ig', $("#fHarga_ig").val().trim()); // data harga ig
+	data.append('stokAwal', $("#fStokAwal").val().trim()); // data stok awal
+	data.append('action', $("#btn_submit_barang").val().trim()); // submit
+
+	return data;
+}
+
+// fungsi get data edit
 function edit_barang(id){
 	$.ajax({
 		url: base_url+"module/barang/action.php",
@@ -374,9 +257,7 @@ function edit_barang(id){
 			"action" : "getEdit",
 		},
 		success: function(data){
-			if(!data){
-				document.location=base_url+"index.php?m=barang&p=list";
-			}
+			if(!data) document.location=base_url+"index.php?m=barang&p=list";
 			else{
 				$("#fStokAwal").parent().parent().parent().parent().parent().closest('div').css("display", "none");
 				$("#id").val(data.id);
@@ -386,11 +267,16 @@ function edit_barang(id){
 				$("#fNama_barang").val(data.nama);
 				// $("#fFoto").val(data.foto);
 				$("#fKet").val(data.ket);
-				$("#fHpp").val(parseFloat(data.hpp));
-				$("#fHarga_pasar").val(parseFloat(data.harga_pasar));
-				$("#fHarga_market").val(parseFloat(data.market_place));
-				$("#fHarga_ig").val(parseFloat(data.harga_ig));
-				// $("#fStokAwal").val(data.stokAwal);
+
+				var hpp = parseFloat(data.hpp) ? parseFloat(data.hpp) : data.hpp;
+				var harga_pasar = parseFloat(data.harga_pasar) ? parseFloat(data.harga_pasar) : data.harga_pasar;
+				var harga_ig = parseFloat(data.harga_ig) ? parseFloat(data.harga_ig) : data.harga_ig;
+				var market_place = parseFloat(data.market_place) ? parseFloat(data.market_place) : data.market_place;
+
+				$("#fHpp").val(hpp);
+				$("#fHarga_pasar").val(harga_pasar);
+				$("#fHarga_market").val(market_place);
+				$("#fHarga_ig").val(harga_ig);
 
 				$("#fId_barang").prop("disabled", true);
 				$("#fId_warna").prop("disabled", true);
@@ -399,13 +285,11 @@ function edit_barang(id){
 				$("#btn_tambah_idBarang").prop("disabled", true);
 			}
 				
-
 			console.log(data);
 		},
 		error: function (jqXHR, textStatus, errorThrown) // error handling
         {
             swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-            // reset_form("#form_barang");
             console.log(jqXHR, textStatus, errorThrown);
         }
 	})
@@ -479,6 +363,7 @@ function reset_form(form){
     $(form).trigger('reset');
 }
 
+// fungsi set error form barang
 function setError(hasil){
 	// set error fId_barang
 	// jika ada pesan error
@@ -599,6 +484,7 @@ function setError(hasil){
     }
 }
 
+// fungsi set value error form barang
 function setValue(hasil){
 	// set value
 	$("#fId_barang").select2().val(hasil.set_value.id_barang).trigger('change');
@@ -619,4 +505,173 @@ function setValue(hasil){
 	$("#fHarga_market").val(market_place);
 	$("#fHarga_ig").val(harga_ig);
 	$("#fStokAwal").val(stokAwal);
+}
+
+// fungsi submit modal id barang
+function tambah_idBarang(){
+	var id = $("#id_barang").val().trim();
+    var id_barang = $("#fmId_barang").val().trim();
+    var nama = $("#fmNama_idBarang").val().trim();
+    var submit = $("#btn_submit_idBarang").val();
+
+    // request action
+    $.ajax({
+        url: base_url+"module/id_barang/action.php",
+        type: "post",
+        dataType: "json",
+        data: {
+            "id" : id,
+            "id_barang" : id_barang,
+            "nama" : nama,
+            "action" : submit,
+        },
+        success: function(hasil){
+
+            // cek hasil dari ajax
+            // cek statusnya
+            if(hasil.status){ // jika status true
+                reset_form("#form_modal_idBarang"); 
+                $("#modal_idBarang").modal('hide');
+                // cek jenis actionya
+                alertify.success('Data Id Barang Berhasil Ditambah'); // jika tambah
+                setSelect("id_barang", $("#fId_barang")); // reload select
+            }
+            else{ // jika status false
+                // cek jenis error
+                if(hasil.errorDb){ // jika ada error database
+                    swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+                    reset_form("#form_modal_idBarang");
+                    $("#form_modal_idBarang").modal('hide');
+                }
+                else{
+                    reset_form("#form_modal_idBarang");
+                    // cek apakah duplikat
+                    if(hasil.duplikat){ // jika duplikat
+                        $("#fmId_barang").parent().find('.help-block').text("Id Barang Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
+                        $("#fmId_barang").closest('div').addClass('has-error');
+                    }
+                    else setError_idBarang(hasil);
+                    setValue_idBarang(hasil);
+                }   
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown){ // error handling
+            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+            $("#modal_idBarang").modal('hide');
+            reset_form("#form_modal_idBarang");
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+    })
+}
+
+// fungsi submit modal id warna
+function tambah_idWarna(){
+	var id = $("#id_warna").val().trim();
+    var id_warna = $("#fmId_warna").val().trim();
+    var nama = $("#fmNama_idWarna").val().trim();
+    var submit = $("#submit_idWarna").val();
+
+   	// request action
+    $.ajax({
+        url: base_url+"module/id_warna/action.php",
+        type: "post",
+        dataType: "json",
+        data: {
+            "id" : id,
+            "id_warna" : id_warna,
+            "nama" : nama,
+            "action" : submit,
+        },
+        success: function(hasil){
+
+            // cek hasil dari ajax
+            // cek statusnya
+            if(hasil.status){ // jika status true
+                reset_form("#form_modal_idWarna");
+                $("#modal_idWarna").modal('hide');
+                // cek jenis actionya
+                alertify.success('Data Id Warna Berhasil Ditambah'); // jika tambah
+                setSelect("id_warna", $("#fId_warna")); // reload select
+            }
+            else{ // jika status false
+                // cek jenis error
+                if(hasil.errorDb){ // jika ada error database
+                    swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+                    setSelect("id_warna", $("#fId_warna"));
+                    $("#form_modal_idWarna").modal('hide');
+                }
+                else{
+                    // cek apakah duplikat
+                    if(hasil.duplikat){ // jika duplikat
+                        $("#fmId_warna").parent().find('.help-block').text("Id Warna Sudah Ada, Harap Ganti Dengan Yang Lainnya !");
+                        $("#fmId_warna").closest('div').addClass('has-error');
+                    }
+                    else setError_idWarna(hasil);
+                    setValue_idWarna(hasil);
+                }   
+            }
+
+            console.log(hasil);
+        },
+        error: function (jqXHR, textStatus, errorThrown){ // error handling
+            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+            $("#modal_idWarna").modal('hide');
+            reset_form("#form_modal_idWarna");
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+    })
+}
+
+function setError_idBarang(hasil){
+	if(!jQuery.isEmptyObject(hasil.pesanError.id_barangError)){
+        $("#fmId_barang").parent().find('.help-block').text(hasil.pesanError.id_barangError);
+        $("#fmId_barang").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmId_barang").parent().find('.help-block').text("");
+        $("#fmId_barang").closest('div').removeClass('has-error');
+    }
+    
+    // set error fmNama_idBarang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.namaBarangError)){
+        $("#fmNama_idBarang").parent().find('.help-block').text(hasil.pesanError.namaBarangError);
+        $("#fmNama_idBarang").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmNama_idBarang").parent().find('.help-block').text("");
+        $("#fmNama_idBarang").closest('div').removeClass('has-error');
+    }   
+}
+
+function setValue_idBarang(hasil){
+	$("#fmId_barang").val(hasil.set_value.id_barang);
+    $("#fmNama_idBarang").val(hasil.set_value.namaBarang);
+}
+
+function setError_idWarna(hasil){
+	if(!jQuery.isEmptyObject(hasil.pesanError.id_warnaError)){
+        $("#fmId_warna").parent().find('.help-block').text(hasil.pesanError.id_warnaError);
+        $("#fmId_warna").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmId_warna").parent().find('.help-block').text("");
+        $("#fmId_warna").closest('div').removeClass('has-error');
+    }
+    
+    // set error fNama_idBarang
+    // jika ada pesan error
+    if(!jQuery.isEmptyObject(hasil.pesanError.namaWarnaError)){
+        $("#fmNama_idWarna").parent().find('.help-block').text(hasil.pesanError.namaWarnaError);
+        $("#fmNama_idWarna").closest('div').addClass('has-error');
+    }
+    else{
+        $("#fmNama_idWarna").parent().find('.help-block').text("");
+        $("#fmNama_idWarna").closest('div').removeClass('has-error');
+    }   
+}
+
+function setValue_idWarna(hasil){
+	$("#fmId_warna").val(hasil.set_value.id_warna);
+    $("#fmNama_idWarna").val(hasil.set_value.namaWarna);
 }
