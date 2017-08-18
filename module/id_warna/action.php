@@ -52,6 +52,7 @@
 			'kolomOrder' => array(null, 'id_warna', 'nama', null),
 			'kolomCari' => array('id_warna', 'nama'),
 			'orderBy' => array('id' => 'asc'),
+			'kondisi' => false,
 		);
 
 		// panggil fungsi get datatable
@@ -80,7 +81,7 @@
 
 		$output = array(
 			'draw' => $_POST['draw'],
-			'recordsTotal' => recordTotal($koneksi, $config_db['tabel']),
+			'recordsTotal' => recordTotal($koneksi, $config_db),
 			'recordsFiltered' => recordFilter($koneksi, $config_db),
 			'data' => $data,
 		);
