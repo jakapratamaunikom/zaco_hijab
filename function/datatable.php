@@ -11,22 +11,37 @@
 			-> $kolomCari = array yg isinya kolom2 yg bisa dicari
 			-> $orderBy = array yg isinya kolom2 yg bisa di order
 	*/
-	function setQuery($tabel, $kolomOrder, $kolomCari, $orderBy){
+	function setQuery($tabel, $kolomOrder, $kolomCari, $orderBy, $kondisi){
 		// inisialisasi request datatable
 		$search = isset($_POST['search']['value']) ? $_POST['search']['value'] : false;
 		$order = isset($_POST['order']) ? $_POST['order'] : false;
 
 		$query = "SELECT * FROM $tabel ";
 
-		// jika ada request pencarian
-		$qWhere = "";
-		$i = 0;
-		foreach($kolomCari as $cari){
-			if($search){
-				if($i === 0) $qWhere .= 'WHERE '.$cari.' LIKE "%'.$search.'%" ';
-				else $qWhere .= 'OR '.$cari.' LIKE "%'.$search.'%"';
+		if($kondisi === false){
+			// jika ada request pencarian
+			$qWhere = "";
+			$i = 0;
+			foreach($kolomCari as $cari){
+				if($search){
+					if($i === 0) $qWhere .= 'WHERE '.$cari.' LIKE "%'.$search.'%" ';
+					else $qWhere .= 'OR '.$cari.' LIKE "%'.$search.'%"';
+				}
+				$i++;
 			}
-			$i++;
+		}
+		else{
+			// jika ada request pencarian
+			$qWhere = $kondisi;
+			$i = 0;
+			foreach($kolomCari as $cari){
+				if($search){
+					if($i === 0) $qWhere .= ' AND ('.$cari.' LIKE "%'.$search.'%" ';
+					else $qWhere .= 'OR '.$cari.' LIKE "%'.$search.'%"';
+				}
+				$i++;
+			}
+			if($search) $qWhere .= " )";
 		}
 
 		// jika ada request order
@@ -46,7 +61,7 @@
 		=> intinya yg menentukan pagination sesuai dari req.
 	*/
 	function get_dataTable($config_db){
-		$query = setQuery($config_db['tabel'], $config_db['kolomOrder'], $config_db['kolomCari'], $config_db['orderBy']);
+		$query = setQuery($config_db['tabel'], $config_db['kolomOrder'], $config_db['kolomCari'], $config_db['orderBy'], $config_db['kondisi']);
 		
 		$qLimit = "";
 		if($_POST['length'] != -1) $qLimit .= 'LIMIT '.$_POST['start'].', '.$_POST['length'];
@@ -61,7 +76,7 @@
 		=> fungsi untuk mendapatkan jumlah baris yg terfilter dari query
 	*/
 	function recordFilter($koneksi, $config_db){
-		$query = setQuery($config_db['tabel'], $config_db['kolomOrder'], $config_db['kolomCari'], $config_db['orderBy']);
+		$query = setQuery($config_db['tabel'], $config_db['kolomOrder'], $config_db['kolomCari'], $config_db['orderBy'], $config_db['kondisi']);
 		$statement = $koneksi->prepare($query);
 		$statement->execute();
 
@@ -72,8 +87,12 @@
 		Function recordTotal
 		=> fungsi untuk mendapatkan jumlah seluruh baris/data di suatu tabel
 	*/
-	function recordTotal($koneksi, $tabel){
-		$statement = $koneksi->query("SELECT COUNT(*) FROM $tabel")->fetchColumn();
+	function recordTotal($koneksi, $config_db){
+		$tabel = $config_db['tabel'];
+		$kondisi = $config_db['kondisi'];
 
+		if($kondisi === false) $statement = $koneksi->query("SELECT COUNT(*) FROM $tabel")->fetchColumn();
+		else $statement = $koneksi->query("SELECT COUNT(*) FROM $tabel $kondisi")->fetchColumn();
+		
 		return $statement;
 	}
