@@ -305,8 +305,7 @@ function edit_barang(id){
 				
 			console.log(data);
 		},
-		error: function (jqXHR, textStatus, errorThrown) // error handling
-        {
+		error: function (jqXHR, textStatus, errorThrown) { // error handling
             swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
             console.log(jqXHR, textStatus, errorThrown);
         }

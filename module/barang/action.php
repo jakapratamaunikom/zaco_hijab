@@ -95,10 +95,10 @@
 			$dataRow[] = $no_urut;
 			$dataRow[] = $row['kd_barang'];
 			$dataRow[] = $row['nama'];
-			$dataRow[] = $row['hpp'];
-			$dataRow[] = $row['harga_pasar'];
-			$dataRow[] = $row['market_place'];
-			$dataRow[] = $row['harga_ig'];
+			$dataRow[] = rupiah($row['hpp']);
+			$dataRow[] = rupiah($row['harga_pasar']);
+			$dataRow[] = rupiah($row['market_place']);
+			$dataRow[] = rupiah($row['harga_ig']);
 			$dataRow[] = $row['ket'];
 			$dataRow[] = $row['stok'];
 			$dataRow[] = $aksi;
@@ -362,7 +362,10 @@
 		$statement->execute();
 		$result = $statement->fetch(PDO::FETCH_ASSOC);
 
-		if(!$result) $_SESSION['notif'] = "gagal";
+		if(!$result){
+			session_start();
+			$_SESSION['notif'] = "gagal";
+		} 
 
 		echo json_encode($result);
 	}
@@ -540,9 +543,43 @@
 	// fungsi get view
 	function getView($koneksi, $id){
 		// get data barang
-		$queryBarang = "SELECT * FROM v_barang WHERE id = :id";
+		$query = "SELECT b.id, ib.id_barang, iw.id_warna, ";
+		$query .= "concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, b.nama, hpp, harga_pasar, market_place, harga_ig, foto, ket ";
+		$query .= "FROM barang b JOIN id_barang ib ON ib.id = b.id_barang ";
+		$query .= "JOIN id_warna iw ON iw.id = b.id_warna ";
+		$query .= "WHERE b.id = :id";
 
+		// prepare
+		$statement = $koneksi->prepare($query);
+		// bind
+		$statement->bindParam(':id', $id);
+		// execute
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
 
+		if(!$result){
+			session_start();
+			$_SESSION['notif'] = "gagal";
+			$data = $result;
+		}
+		else{
+			// format data
+			$data = array(
+				'id' => $result['id'],
+				'id_barang' => $result['id_barang'],
+				'id_warna' => $result['id_warna'],
+				'kd_barang' => $result['kd_barang'],
+				'nama' => $result['nama'],
+				'hpp' => rupiah($result['hpp']),
+				'harga_pasar' => rupiah($result['harga_pasar']),
+				'market_place' => rupiah($result['market_place']),
+				'harga_ig' => rupiah($result['harga_ig']),
+				'foto' => $result['foto'],
+				'ket' => $result['ket'],
+			);
+		}
+
+		echo json_encode($data);
 	}
 
 	// function list stok barang
@@ -572,7 +609,7 @@
 
 			$dataRow = array();
 			$dataRow[] = $no_urut;
-			$dataRow[] = $row['tgl'];
+			$dataRow[] = cetakTgl($row['tgl']);
 			$dataRow[] = $row['stok_awal'];
 			$dataRow[] = $row['brg_masuk'];
 			$dataRow[] = $row['brg_keluar'];
