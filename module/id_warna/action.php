@@ -68,7 +68,7 @@
 		$no_urut = $_POST['start'];
 		foreach($result as $row){
 			$no_urut++;
-			$aksi = '<button type="button" class="btn btn-success" onclick="edit_id_warna('."'".$row["id"]."'".')">Edit</button>';
+			$aksi = '<button type="button" class="btn btn-success btn-flat btn-sm" onclick="edit_id_warna('."'".$row["id"]."'".')">Edit</button>';
 			
 			$dataRow = array();
 			$dataRow[] = $no_urut;

@@ -9,7 +9,7 @@
 	include_once("../../function/datatable.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
-	// $action = "list";
+	// $action = "coba";
 
 	// proteksi halaman
 	if(!$action) die("Dilarang Akses Halaman Ini !!");
@@ -55,6 +55,13 @@
 				break;
 			
 			default:
+				// if(file_exists("../../assets/gambar/18359298_1286972521423837_7582557687995918717_o.jpg")){
+				// 	if(unlink("../../assets/gambar/18359298_1286972521423837_7582557687995918717_o.jpg")){
+				// 		$cek = true;
+				// 	}
+				// }
+				// else $cek = false;
+				// var_dump($cek);
 				die();
 				break;
 		}
@@ -535,8 +542,78 @@
 		echo json_encode($output);
 	}
 
-	// fungso edit foto
+	// fungsi edit foto
 	function edit_foto($koneksi, $id){
+		$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+		$cek = $statusUpload = true;
+		$fotoError = "";
+
+		// validasi
+		if($foto){
+			$configFoto = array(
+				'error' => $foto['error'],
+				'size' => $foto['size'],
+				'name' => $foto['name'],
+				'tmp_name' => $foto['tmp_name'],
+				'max' => 2*1048576,
+				// 'path' => "../../assets/gambar/",
+			);
+			$valid_foto = validFoto($configFoto);
+			if(!$valid_foto['cek']){
+				$cek = $statusUpload = false;
+				$fotoError = $valid_foto['error'];
+			}
+			else $fotoBaru = $valid_foto['namaFile'];
+		}
+		else $cek = $statusUpload = $foto;
+
+		if($cek){
+			// get foto yg ingin diganti
+			$queryFoto = "SELECT foto FROM barang WHERE id = :id";
+			$statement = $koneksi->prepare($queryFoto);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			// cek apakah foto ada/tidak
+			$fotoLama = !empty($result['foto']) ? "../../assets/gambar/".$result['foto'] : false;
+			if($fotoLama){
+				// cek foto di dir
+				if(file_exists($fotoLama)) $statusHapus = true;
+				else $statusHapus = false;			
+			}
+			else $statusHapus = false;
+
+			$path = "../../assets/gambar/$fotoBaru";
+			if(!move_uploaded_file($foto['tmp_name'], $path)){
+				$fotoError = "Upload Foto Gagal";
+				$statusUpload = false;
+			}
+			else{
+				// update ke db
+				$query = "UPDATE barang SET foto=:foto WHERE id=:id";
+				$statement = $koneksi->prepare($query);
+				// bind
+				$statement->bindParam(':foto', $fotoBaru);
+				$statement->bindParam(':id', $id);
+				$result = $statement->execute();
+			}
+		}
+		else $statusHapus = false;
+
+		if($statusHapus) unlink($fotoLama); // hapus foto lama
+
+		$output = array(
+			'pesanError' => $fotoError,
+			'statusHapus' => $statusHapus,
+			'statusUpload' => $statusUpload,
+		);
+
+		echo json_encode($output);
+	}
+
+	// fungsi hapus foto
+	function hapus_foto($koneksi, $id){
 
 	}
 
@@ -563,6 +640,12 @@
 			$data = $result;
 		}
 		else{
+			$cekFoto = !empty($result['foto']) ? $result['foto'] : "default.jpg";
+
+			if(!file_exists("../../assets/gambar/".$cekFoto)){
+				$cekFoto = "default.jpg";
+			}
+
 			// format data
 			$data = array(
 				'id' => $result['id'],
@@ -574,7 +657,7 @@
 				'harga_pasar' => rupiah($result['harga_pasar']),
 				'market_place' => rupiah($result['market_place']),
 				'harga_ig' => rupiah($result['harga_ig']),
-				'foto' => $result['foto'],
+				'foto' => $cekFoto,
 				'ket' => $result['ket'],
 			);
 		}
@@ -609,7 +692,7 @@
 
 			$dataRow = array();
 			$dataRow[] = $no_urut;
-			$dataRow[] = cetakTgl($row['tgl']);
+			$dataRow[] = cetakTgl($row['tgl'],"full");
 			$dataRow[] = $row['stok_awal'];
 			$dataRow[] = $row['brg_masuk'];
 			$dataRow[] = $row['brg_keluar'];

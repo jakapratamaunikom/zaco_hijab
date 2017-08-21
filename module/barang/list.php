@@ -43,7 +43,7 @@
                     	<div class="col-md-12 col-xs-12">
 							<div class="btn-group">
 								<!-- tambah -->
-	          					<a href="<?= base_url."index.php?m=barang&p=form" ?>" class="btn btn-default" role="button"><i class="fa fa-plus"></i> Tambah Data</a>
+	          					<a href="<?= base_url."index.php?m=barang&p=form" ?>" class="btn btn-default" role="button"><i class="fa fa-plus"></i> Tambah</a>
 	          					<!-- export excel -->
 	          					<button type="button" class="btn btn-success" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 	          					<!-- export pdf -->

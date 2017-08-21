@@ -39,7 +39,7 @@
 	}
 
 	//fungsi format tgl indo
-	function cetakTgl($tgl, $full = false){
+	function cetakTgl($tgl, $format){
 		//array hari
 		$arrHari = array(
 					1 => "Senin",
@@ -66,29 +66,32 @@
 					12 => "Desember",
 				);
 
-		if($full){
-			//explode $tgl
-			$split = explode("-", $tgl);
-			$getTahun = $split[0]; //get tgl
-			$getBulan = $split[1]; //get bulan
-			$getTgl = explode(" ", $split[2]); //explode tahun, karna menyatu dgn jam
-			$getJam = $getTgl[1]; //get jam
-			$getTgl = $getTgl[0]; //get tahun
+		//explode $tgl
+		$split = explode("-", $tgl);
+		$getTgl = $split[2]; //get tgl
+		$getBulan = $split[1]; //get bulan
+		$getTahun = $split[0]; //get tahun
 
-			$tgl_indo = $getTgl." ".$arrBulan[(int)$getBulan]." ".$getTahun; //format dd bulan tahun
-			$num = date('N', strtotime($tgl)); //get tgl untuk disesuaikan dgn hari
-			$cetak_tgl = $arrHari[$num].", ".$tgl_indo." Jam ".$getJam;
-		}
-		else{
-			//explode $tgl
-			$split = explode("-", $tgl);
-			$getTgl = $split[2]; //get tgl
-			$getBulan = $split[1]; //get bulan
-			$getTahun = $split[0]; //get tahun
+		$tgl_indo = $getTgl." ".$arrBulan[(int)$getBulan]." ".$getTahun; //format dd bulan tahun
+		$num = date('N', strtotime($tgl)); //get tgl untuk disesuaikan dgn hari
 
-			$tgl_indo = $getTgl." ".$arrBulan[(int)$getBulan]." ".$getTahun; //format dd bulan tahun
-			$num = date('N', strtotime($tgl)); //get tgl untuk disesuaikan dgn hari
-			$cetak_tgl = $arrHari[$num].", ".$tgl_indo;
+		switch ($format) {
+			case 'dd-mm-yyyy': // 27-02-2018
+				$cetak_tgl = $getTgl."-".$getBulan."-".$getTahun;
+				break;
+			
+			case 'yyyy-mm-dd': // 2018-02-27
+				$cetak_tgl = $getTahun."-".$getBulan."-".$getTgl;
+				break;
+
+			case 'd-m-y': // 27 Februari 2018
+				$cetak_tgl = $tgl_indo;
+				break;
+
+			case 'full': // Senin, 27 Februari 2018
+			default:
+				$cetak_tgl = $arrHari[$num].", ".$tgl_indo;
+				break;
 		}
 
 		return $cetak_tgl; 
