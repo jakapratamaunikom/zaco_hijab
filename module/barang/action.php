@@ -38,6 +38,11 @@
 				edit_foto($koneksi, $id);
 				break;
 
+			case 'hapus_foto':
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				hapus_foto($koneksi, $id);
+				break;
+
 			case 'getview':
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
 				getView($koneksi, $id);
@@ -140,9 +145,7 @@
 		// validasi inputan
 			// inisialisasi
 			$cek = true;
-			$status = false;
-			$errorDb = false;
-			$duplikat = false;
+			$status = $errorDb = $duplikat = $cekFoto = false;
 			$id_barangError = $id_warnaError = $kd_warnaError = $namaError = $fotoError = "";
 			$ketError = $hppError = $harga_pasarError = $market_placeError = $harga_igError = $stokAwalError = "";
 			$pesanError = $set_value = "";
@@ -151,7 +154,7 @@
 			$valid_id_barang = validString("ID Barang", $id_barang, 1, 4, true);
 			$valid_id_warna = validString("ID Warna", $id_warna, 1, 4, true);
 			$valid_namaBarang = validString("Nama Barang", $nama, 1, 50, true);
-			$valid_ket = validString("Keterangan", $ket, 1, 255, true);
+			$valid_ket = validString("Keterangan", $ket, 1, 255, false);
 			$valid_hpp = validAngka("HPP", $hpp, 1, 1000000, true);
 			$valid_harga_pasar = validAngka("Harga Pasar", $harga_pasar, 1, 1000000, true);
 			$valid_market_place = validAngka("Harga Market Place", $market_place, 1, 1000000, true);
@@ -173,7 +176,10 @@
 					$cek = false;
 					$fotoError = $valid_foto['error'];
 				}
-				else $valueFoto = $valid_foto['namaFile'];
+				else{
+					$valueFoto = $valid_foto['namaFile'];
+					$cekFoto = true;
+				}
 			}
 			else $valueFoto = "";
 
@@ -278,14 +284,18 @@
 				$duplikat = false;
 
 				// upload foto
-				$path = "../../assets/gambar/$valueFoto";
-				if(!move_uploaded_file($foto['tmp_name'], $path)){
-					$pesanError['fotoError'] = "Upload Foto Gagal";
-					$status = false;
-					$errorDb = false;
-					$duplikat = false;
+				if($cekFoto){
+					$path = "../../assets/gambar/$valueFoto";
+					if(!move_uploaded_file($foto['tmp_name'], $path)){
+						$pesanError['fotoError'] = "Upload Foto Gagal";
+						$status = false;
+						$cekFoto = false;
+						// $errorDb = false;
+						// $duplikat = false;
+					}
 				}
-				else{
+
+				if($cekFoto){
 					$tgl = date("Y-m-d");
 					$query = "CALL tambah_barang(
 						:id_barang, :id_warna, :nama, :hpp, :harga_pasar, 
@@ -333,7 +343,7 @@
 						$status = false;
 						$errorDb = true;
 					}
-				}	
+				}		
 			}
 		}
 		else $status = false;
@@ -404,7 +414,7 @@
 			$valid_id_barang = validString("ID Barang", $id_barang, 1, 4, true);
 			$valid_id_warna = validString("ID Warna", $id_warna, 1, 4, true);
 			$valid_namaBarang = validString("Nama Barang", $nama, 1, 50, true);
-			$valid_ket = validString("Keterangan", $ket, 1, 255, true);
+			$valid_ket = validString("Keterangan", $ket, 1, 255, false);
 			$valid_hpp = validAngka("HPP", $hpp, 1, 1000000, true);
 			$valid_harga_pasar = validAngka("Harga Pasar", $harga_pasar, 1, 1000000, true);
 			$valid_market_place = validAngka("Harga Market Place", $market_place, 1, 1000000, true);
@@ -500,7 +510,7 @@
 			$statement->bindParam(':harga_pasar', $harga_pasar);
 			$statement->bindParam(':market_place', $market_place);
 			$statement->bindParam(':harga_ig', $harga_ig);
-			$statement->bindParam(':foto', $foto);
+			// $statement->bindParam(':foto', $foto);
 			$statement->bindParam(':ket', $ket);
 			$statement->bindParam(':id', $id);
 			// execute
@@ -596,7 +606,12 @@
 				// bind
 				$statement->bindParam(':foto', $fotoBaru);
 				$statement->bindParam(':id', $id);
-				$result = $statement->execute();
+				$result = $statement->execute(
+					array(
+						':foto' => $fotoBaru,
+						':id' => $id,
+					)
+				);
 			}
 		}
 		else $statusHapus = false;
@@ -614,6 +629,48 @@
 
 	// fungsi hapus foto
 	function hapus_foto($koneksi, $id){
+		// $foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+		$cek = true;
+		$fotoError = "";
+
+		// get data foto yang ingin di hapus
+		$queryFoto = "SELECT foto FROM barang WHERE id = :id";
+		$statement = $koneksi->prepare($queryFoto);
+		$statement->bindParam(':id', $id);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+		// cek hasil result
+		$fotoLama = !empty($result['foto']) ? "../../assets/gambar/".$result['foto'] : false;
+
+		if($fotoLama){ // jika di db terdata
+			// cek foto apakah valid
+			if(file_exists($fotoLama)) $statusHapus = true;
+			else $statusHapus = false;
+		}
+		else{ // jika foto kosong
+			// do nothing
+			$statusHapus = false;
+		}
+
+		// update foto set ""
+		$query = "UPDATE barang SET foto='' WHERE id=:id";
+		$statement = $koneksi->prepare($query);
+		// bind
+		$statement->bindParam(':id', $id);
+		$result = $statement->execute();
+
+		if(!$result) $cek = false;
+		else{
+			if($statusHapus) unlink($fotoLama);
+		}
+
+		$output = array(
+			'status' => $cek,
+			'statusHapus' => $statusHapus,
+		);
+
+		echo json_encode($output);
 
 	}
 

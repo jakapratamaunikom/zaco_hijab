@@ -11,6 +11,7 @@
   		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
   		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
   		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/lightbox2/css/lightbox.min.css"; ?>">
+  		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
 	<!-- -->
 
 	<!-- isi konten -->
@@ -289,6 +290,52 @@
 			    	$("#modal_foto .modal-title").html("Ganti Foto");
 			    	$("#modal_foto").modal();
 
+			    });
+
+			    // on click btn hapus foto
+			    $("#btn_hapusFoto").click(function(){
+			    	// tampilkan confirm
+			    	swal({
+				    		title: "Apakah Anda Yakin ?",
+				    		text: "Gambar Yang Sudah Dihapus Tidak Dapat Dikembalikan",
+				    		type: "warning",
+				    		showCancelButton: true,
+				    		confirmButtonColor: "#DD6B55",
+				    		confirmButtonText: "Ya, Hapus!",
+				    		closeOnConfirm: false,
+			    		},function(){ // saat confirm
+			    			$.ajax({
+					    		url: base_url+"module/barang/action.php",
+								type: "post",
+								dataType: "json",
+								data: {
+					            	"id" : urlParams.id,
+					                "action" : "hapus_foto",
+					            },
+								success: function(hasil){
+									if(hasil.status){
+										if(hasil.statusHapus){
+											swal({
+													title: "Pesan",
+													text: "Foto Berhasil Dihapus",
+													type: "success",
+												}, function(){
+													location.reload();
+												}
+											);
+										}
+										else swal("Pesan", "Tidak Ada Foto Yang Dihapus", "success");
+									}
+									else swal("Pesan!", "Foto Gagal Dihapus, Coba Lagi", "error");
+									console.log(hasil);
+								},
+								error: function (jqXHR, textStatus, errorThrown) { // error handling
+						            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+						            console.log(jqXHR, textStatus, errorThrown);
+						        }
+					    	})
+			    		}
+			    	);
 			    });
 
 			    $("#form_foto").submit(function(e){
