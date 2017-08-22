@@ -68,6 +68,7 @@
 			'kolomOrder' => array(null, 'kd_pengeluaran', null, 'tgl','ket', null, null, 'total', 'jenis', null),
 			'kolomCari' => array('kd_pengeluaran', 'tgl', 'total', 'jenis'),
 			'orderBy' => array('id' => 'desc'),
+			'kondisi' => false,
 		);
 
 		// panggil fungsi get datatable
@@ -117,7 +118,7 @@
 
 		$output = array(
 			'draw' => $_POST['draw'],
-			'recordsTotal' => recordTotal($koneksi, $config_db['tabel']),
+			'recordsTotal' => recordTotal($koneksi, $config_db),
 			'recordsFiltered' => recordFilter($koneksi, $config_db),
 			'data' => $data,
 		);
@@ -377,8 +378,8 @@
 
 
 		$validKd_barang = validString('Barang',$kd_barang,1,5,true);
-		$validQty = validAngka('Qty',$qty,1,6,true);
-		$validHarga = validAngka('Harga',$harga,1,10,true);
+		$validQty = validAngka('Qty',$qty,1,999,true);
+		$validHarga = validAngka('Harga',$harga,1,9999999,true);
 
 		// cek valid
 		if(!$validKd_barang['cek']){
