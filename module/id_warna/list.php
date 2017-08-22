@@ -43,15 +43,15 @@
                         <div class="col-md-12 col-xs-12">
                             <div class="btn-group">
                                 <!-- tambah -->
-                                <button type="button" id="btn_tambahIdWarna" class="btn btn-default">
+                                <button type="button" id="btn_tambahIdWarna" class="btn btn-default btn-flat">
                                     <i class="fa fa-plus"></i> Tambah
                                 </button>
                                 <!-- export excel -->
-                                <button type="button" class="btn btn-success" id="exportExcel">
+                                <button type="button" class="btn btn-success btn-flat" id="exportExcel">
                                     <i class="fa fa-file-excel-o"></i> Export Excel
                                 </button>
                                 <!-- export pdf -->
-                                <button type="button" class="btn btn-danger" id="exportPdf">
+                                <button type="button" class="btn btn-danger btn-flat" id="exportPdf">
                                     <i class="fa fa-file-pdf-o"></i> Export Pdf
                                 </button>
                             </div>

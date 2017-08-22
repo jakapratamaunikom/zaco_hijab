@@ -31,8 +31,8 @@
                     </div>
             </div>
             <div class="box-footer">
-                <button class="btn pull-right" type="submit" id="btn_export_submit">Export</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                <button class="btn pull-right btn-flat" type="submit" id="btn_export_submit">Export</button>
+                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Batal</button>
             </div>
             </form>
         </div>

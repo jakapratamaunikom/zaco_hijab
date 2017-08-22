@@ -63,7 +63,7 @@
 			          								<span class="help-block small"></span>
 	          									</div>
 	          									<div class="col-md-3 col-xs-12">
-	          										<button type="button" class="btn btn-default pull-right" id="btn_tambah_idBarang">Tambah Id Barang</button>
+	          										<button type="button" class="btn btn-default btn-flat pull-right" id="btn_tambah_idBarang">Tambah Id Barang</button>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -83,7 +83,7 @@
 			          								<span class="help-block small"></span>
 	          									</div>
 	          									<div class="col-md-3 col-xs-12">
-	          										<button type="button" class="btn btn-default pull-right" id="btn_tambah_idWarna">Tambah Id Warna</button>
+	          										<button type="button" class="btn btn-default btn-flat pull-right" id="btn_tambah_idWarna">Tambah Id Warna</button>
 	          									</div>
 	          								</div>		
 	          							</div>
@@ -110,11 +110,11 @@
 								                <input type="text" id="fFoto_text" class="form-control image-preview-filename" disabled="disabled">
 								                <span class="input-group-btn">
 								                    <!-- image-preview-clear button -->
-								                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+								                    <button type="button" class="btn btn-default btn-flat image-preview-clear" style="display:none;">
 								                        <span class="glyphicon glyphicon-remove"></span> Hapus
 								                    </button>
 								                    <!-- image-preview-input -->
-								                    <div class="btn btn-danger image-preview-input">
+								                    <div class="btn btn-danger btn-flat image-preview-input">
 								                        <span class="glyphicon glyphicon-folder-open"></span>
 								                        <span class="image-preview-input-title">Pilih Foto</span>
 								                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" /> <!-- rename it -->
@@ -207,8 +207,8 @@
 	    				</div>
 		    			<div class="box-footer text-right">
 		    				<div class="form-group">
-		    					<button type="submit" class="btn btn-default btn-lg" id="btn_submit_barang" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
-								<a href="<?=base_url."index.php?m=barang&p=list" ?>" class="btn btn-default btn-lg"><i class="fa fa-reply"></i>  Batal</a>
+		    					<button type="submit" class="btn btn-default btn-lg btn-flat" id="btn_submit_barang" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
+								<a href="<?=base_url."index.php?m=barang&p=list" ?>" class="btn btn-default btn-lg btn-flat"><i class="fa fa-reply"></i>  Batal</a>
 		    				</div>
 						</div>
 					</form>		

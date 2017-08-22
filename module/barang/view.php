@@ -33,7 +33,7 @@
 		        <div class="box">
 		        	<div class="box-body box-profile">
 		        		<div class="btn-group">
-		        			<button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		        			<button type="button" class="btn btn-success btn-sm btn-flat dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	                    		<i class="fa fa-picture-o"></i>
 	                    		<span class="fa fa-caret-down"></span>
 	                    	</button>
@@ -75,11 +75,11 @@
 			            <div class="form-group text-center">
 			            	<div class="btn-group">
 								<!-- tambah -->
-	          					<a href="<?= base_url."index.php?m=barang&p=form&id=$id" ?>" class="btn btn-default btn-sm" role="button"><i class="fa fa-edit"></i> Edit Data</a>
+	          					<a href="<?= base_url."index.php?m=barang&p=form&id=$id" ?>" class="btn btn-default btn-sm btn-flat" role="button"><i class="fa fa-edit"></i> Edit</a>
 	          					<!-- export excel -->
-	          					<button type="button" class="btn btn-success btn-sm" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+	          					<button type="button" class="btn btn-success btn-sm btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 	          					<!-- export pdf -->
-	          					<button type="button" class="btn btn-danger btn-sm" id="exportPdf"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
+	          					<button type="button" class="btn btn-danger btn-sm btn-flat" id="exportPdf"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
 		            		</div>
 			            </div>
 		            </div>
@@ -132,11 +132,11 @@
 			                <input type="text" id="fFoto_text" class="form-control image-preview-filename" disabled="disabled">
 			                <span class="input-group-btn">
 			                    <!-- image-preview-clear button -->
-			                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+			                    <button type="button" class="btn btn-default btn-flat image-preview-clear" style="display:none;">
 			                        <span class="glyphicon glyphicon-remove"></span> Hapus
 			                    </button>
 			                    <!-- image-preview-input -->
-			                    <div class="btn btn-danger image-preview-input">
+			                    <div class="btn btn-danger btn-flat image-preview-input">
 			                        <span class="glyphicon glyphicon-folder-open"></span>
 			                        <span class="image-preview-input-title">Pilih Foto</span>
 			                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" /> <!-- rename it -->
@@ -147,8 +147,8 @@
                     </div>
 	            </div>
 	            <div class="box-footer">
-	                <button class="btn btn-success pull-right" type="submit" id="btn_submit">Ganti</button>
-	                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+	                <button class="btn btn-success btn-flat pull-right" type="submit" id="btn_submit">Ganti</button>
+	                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Batal</button>
 	            </div>
 	            </form>
 	        </div>

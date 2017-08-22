@@ -24,8 +24,8 @@
                     </div>
             </div>
             <div class="box-footer">
-                <input class="btn btn-info pull-right" type="submit" id="btn_submit_idBarang" name="action" value="Tambah">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Batal</button>
+                <input class="btn btn-info pull-right btn-flat" type="submit" id="btn_submit_idBarang" name="action" value="Tambah">
+                <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Batal</button>
             </div>
             </form>
         </div>

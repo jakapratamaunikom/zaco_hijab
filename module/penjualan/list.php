@@ -41,11 +41,11 @@
                             <div class="col-md-12 col-xs-12">
                                 <div class="btn-group">
                                     <!-- tambah -->
-                                    <a href="<?= base_url."index.php?m=penjualan&p=form" ?>" class="btn btn-default" role="button"><i class="fa fa-plus"></i> Tambah Data</a>
+                                    <a href="<?= base_url."index.php?m=penjualan&p=form" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a>
                                     <!-- export excel -->
-                                    <button type="button" class="btn btn-success" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                                    <button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                                     <!-- export pdf -->
-                                    <button type="button" class="btn btn-danger" id="exportPdf"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
+                                    <button type="button" class="btn btn-danger btn-flat" id="exportPdf"><i class="fa fa-file-pdf-o"></i> Export Pdf</button>
                                 </div>
                             </div>
                         </div>
@@ -62,6 +62,7 @@
                                             <th>Kode Penjualan</th>
                                             <th>Tanggal</th>
                                             <th>Jenis</th>
+                                            <th>Item</th>
                                             <th>Total</th>
                                             <th>Status</th>
                                             <th>Keterangan</th>
@@ -138,7 +139,7 @@
                     },
                     "columnDefs": [
                         {
-                            "targets":[0, 6, 7], // disable order di kolom 1 dan 3
+                            "targets":[0, 7, 8], // disable order di kolom 1 dan 3
                             "orderable":false,
                         }
                     ],

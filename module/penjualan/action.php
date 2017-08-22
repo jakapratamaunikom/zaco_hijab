@@ -64,9 +64,10 @@
 		*/
 		$config_db = array(
 			'tabel' => 'v_penjualan',
-			'kolomOrder' => array(null, 'kd_penjualan', 'tgl', 'jenis', 'total', 'status', null, null),
-			'kolomCari' => array('kd_penjualan', 'tgl', 'jenis', 'total', 'status'),
+			'kolomOrder' => array(null, 'kd_penjualan', 'tgl', 'jenis', 'item', 'total', 'status', null, null),
+			'kolomCari' => array('kd_penjualan', 'tgl', 'jenis', 'item', 'total', 'status'),
 			'orderBy' => array('id' => 'desc'),
+			'kondisi' => false,
 		);
 
 		// panggil fungsi get datatable
@@ -82,14 +83,15 @@
 		$no_urut = $_POST['start'];
 		foreach($result as $row){
 			$no_urut++;
-			$aksi = '<a role="button" class="btn btn-success" href="'.base_url.'index.php?m=penjualan&p=form&id='.$row["id"].'">Edit</a>';
+			$aksi = '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=form&id='.$row["id"].'">Edit</a>';
 			
 			$dataRow = array();
 			$dataRow[] = $no_urut;
 			$dataRow[] = $row['kd_penjualan'];
-			$dataRow[] = $row['tgl'];
+			$dataRow[] = cetakTgl($row['tgl'],"full");
 			$dataRow[] = $row['jenis'];
-			$dataRow[] = $row['total'];
+			$dataRow[] = $row['item'];
+			$dataRow[] = rupiah($row['total']);
 			$dataRow[] = $row['status'];
 			$dataRow[] = $row['ket'];
 			$dataRow[] = $aksi;
@@ -99,7 +101,7 @@
 
 		$output = array(
 			'draw' => $_POST['draw'],
-			'recordsTotal' => recordTotal($koneksi, $config_db['tabel']),
+			'recordsTotal' => recordTotal($koneksi, $config_db),
 			'recordsFiltered' => recordFilter($koneksi, $config_db),
 			'data' => $data,
 		);

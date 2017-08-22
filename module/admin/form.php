@@ -283,18 +283,9 @@
 
 	function setLevel(){
 		var arrayJenis = [
-			{
-				value: "",
-				text: "-- Level Admin --",
-			},
-			{
-				value: "SUPERADMIN",
-				text: "SUPERADMIN",
-			},
-			{
-				value: "KASIR",
-				text: "KASIR",
-			},
+			{value: "", text: "-- Level Admin --"},
+			{value: "SUPERADMIN",text: "SUPERADMIN"},
+			{value: "KASIR",text: "KASIR"},
 		];
 		
 		$.each(arrayJenis, function(index, item){

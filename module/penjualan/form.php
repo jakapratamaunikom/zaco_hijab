@@ -62,20 +62,25 @@
 	                        			<div class="form-group">
 	                        				<label for="fJenis">Jenis Transaksi</label>
 	                        				<select id="fJenis" name="fJenis" class="form-control">
-	                        					<option value="">-- Pilih Jenis Transaksi --</option>
+	                        				</select>
+	                        			</div>
+
+	                        			<!-- status transaksi -->
+	                        			<div class="form-group">
+	                        				<label for="fStatus">Status Transaksi</label>
+	                        				<select id="fStatus" name="fStatus" class="form-control">
 	                        				</select>
 	                        			</div>
 
 	                        			<!-- kode barang - qty - tambah-->
 	                        			<div class="form-group">
 	                        				<div class="row">
-	                        					<div class="col-md-8">
+	                        					<div class="col-md-8 col-xs-6">
 	                        						<label for="fKd_barang">Item</label>
 			                        				<select id="fKd_barang" name="fKd_barang" class="form-control select2" style="width: 100%;">
-			                        					<option value="">-- Pilih Item --</option>
 			                        				</select>
 	                        					</div>
-	                        					<div class="col-md-4">
+	                        					<div class="col-md-4 col-xs-6">
 	                        						<label for="fQty">Qty</label>
 	                        						<div class="input-group">
 				                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0" placeholder="Masukkan Qty">
@@ -87,24 +92,24 @@
 
 	                        			<!-- diskon -->
 	                        			<div class="form-group">
-      										<label for="fDiskon">Diskon</label>
-          									<div class="input-group">
-          										<input type="number" class="form-control" placeholder="Masukkan Diskon" id="fDiskon" name="fDiskon" min="0" max="100">
-          										<span class="input-group-addon"> %</span>
-          										<span class="input-group-btn">
-		                        					<button type="button" class="btn btn-default" id="fTambah_barang"><i class="fa fa-plus"></i></button>
-		                        				</span>
-          									</div>
-	          							</div>
-
-	                        			<!-- status transaksi -->
-	                        			<div class="form-group">
-	                        				<label for="fStatus">Status Transaksi</label>
-	                        				<select id="fStatus" name="fStatus" class="form-control">
-	                        					<option value="">-- Pilih Status Transaksi --</option>
-	                        				</select>
+	                        				<div class="row">
+	                        					<div class="col-md-6 col-xs-6">
+	                        						<label for="fJenisDiskon">Jenis Diskon</label>
+			                        				<select id="fJenisDiskon" name="fJenisDiskon" class="form-control">
+			                        				</select>
+	                        					</div>
+	                        					<div class="col-md-6 col-xs-6">
+	                        						<label for="fDiskon">Diskon</label>
+	                        						<div class="input-group">
+	                        							<span class="input-group-addon">Rp.</span>
+				                        				<input type="number" id="fDiskon" name="fDiskon" class="form-control" min="0" placeholder="Masukkan Dsikon">
+				                        				<span class="input-group-btn">
+				                        					<button class="btn bg-maroon btn-flat"><i class="fa fa-plus"></i></button>
+				                        				</span>
+			                        				</div>
+	                        					</div>
+	                        				</div>
 	                        			</div>
-
 	                        		</fieldset>
                         		</div>
                         		<div class="col-md-6 col-xs-12">
@@ -207,14 +212,49 @@
 				setKdPenjualan($('#fKd_penjualan')); // set kd_penjualan
 				setSelect($('#fKd_barang'));
 				setJenisTransaksi();
+				setJenisDiskon();
 				setStatusTransaksi();
 
 				// onchange jenis transaksi
 				$("#fJenis").change(function(){
-					if($("#fJenis").val().toLowerCase() == "online"){
+					if(this.value === "") setDataPembeli(false);
+					else if((this.value.toLowerCase() != "harga pasar") && (this.value.toLowerCase() != "reseller"))
 						setDataPembeli();
+					else setDataPembeli(false);
+				});
+
+				// on change status transaksi
+				$("#fStatus").change(function(){
+					if(this.value === "1"){ // normal
+						// set jenis diskon jadi persen
+						$("#fJenisDiskon").val("persen");
+						$("#fJenisDiskon").prop("disabled",false);
+						// set diskon jadi 100
+						$("#fDiskon").val("");
+						$("#fDiskon").prop("readonly",false);
 					}
-					else setDataPembeli(true);
+					else{ // free
+						// set jenis diskon jadi persen
+						$("#fJenisDiskon").val("persen");
+						$("#fJenisDiskon").prop("disabled",true);
+						// set diskon jadi 100
+						$("#fDiskon").val("100");
+						$("#fDiskon").prop("readonly",true);
+					}
+				});
+
+				// on change jenis diskon
+				$("#fJenisDiskon").change(function(){
+					if(this.value === "r"){
+						$("#fDiskon").parent().find('span')[0].innerHTML = 'Rp.';
+		    			$("#fDiskon").removeAttr("max");
+		    			$("#fDiskon").val("");
+					}
+					else{
+						$("#fDiskon").parent().find('span')[0].innerHTML = '%';
+		    			$("#fDiskon").prop("max", "100");
+		    			$("#fDiskon").val("");
+					}
 				});
 
 				// on click tambah list item
@@ -354,12 +394,9 @@
 		                    count = parseInt(iterasi[2]) + 1;
 		                    idSelect.val('PB-'+tanggal+'-'+count.toString());
 		                }
-		            },
-		            error: function (jqXHR, textStatus, errorThrown) // error handling
-		            {
+		            },error: function (jqXHR, textStatus, errorThrown){ // error handling
 		                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
 		                console.log(jqXHR, textStatus, errorThrown);
-		                // location.reload();
 		            }
 		        })
 		    }
@@ -367,7 +404,6 @@
 		    // funsgi set isi select id_barang dan qty
 		    function setSelect(idSelect){
 		        // reset ulang select
-		        
 		        idSelect.find('option')
 		            .remove()
 		            .end()
@@ -386,18 +422,14 @@
 		            success: function(data){
 		            	var disabled = false;
 		                $.each(data, function(index, item){
-		                	if(parseInt(item.stok) < 0) disabled = true; 
+		                	if(parseInt(item.stok) <= 0) disabled = true; 
 		                	else disabled = false;
 
 		                    idSelect.append($("<option>", {
 		                        value: item.id,
 		                        text: item.nama+' - STOK: '+item.stok,
 		                        disabled: disabled,
-		                    }));
-
-		                    // if(parseInt()){
-
-		                    // }                    
+		                    }));                 
 		                });
 		                console.log(data);
 		            },
@@ -405,35 +437,64 @@
 		            {
 		                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
 		                console.log(jqXHR, textStatus, errorThrown);
-		                // location.reload();
 		            }
 		        })
 		    } 
 
 		    // fungsi set jenis transaksi
 		    function setJenisTransaksi(){
-		    	var arrayJenis = ['OFFLINE', 'ONLINE', 'ECER', 'RESELLER'];
-
-		    	$("#fJenis").find('option')
-		            .remove()
-		            .end()
-		            .append($('<option>',{
-		                value: "", 
-		                text: "-- Pilih Jenis Transaksi --"
-		            }));
+		    	var arrayJenis = [
+		    		{value: "", text: "-- Pilih Jenis Transaksi --"},
+		    		{value: "HARGA PASAR", text: "PASAR"},
+		    		{value: "MARKET PLACE", text: "MARKET PLACE"},
+		    		{value: "HARGA IG", text: "INSTAGRAM"},
+		    		{value: "RESELLER", text: "RESELLER"},
+		    	];
 
 		    	$.each(arrayJenis, function(index, item){
-		    		$("#fJenis").append($("<option>", {
-                        value: item,
-                        text: item,
-                    }));
+		    		var option = new Option(item.text, item.value);
+		    		$("#fJenis").append(option);
 		    	});
 
-		    	setDataPembeli(true);
+		    	setDataPembeli(false);
 		    }
 
-		    function setDataPembeli(jenis=false){
-		    	if(!jenis){
+		    // fungsi set jenis diskon
+		    function setJenisDiskon(){
+		    	var arrayJenis = [
+		    		// {value: "", text: "-- Pilih Jenis Diskon --"},
+		    		{value: "r", text: "RUPIAH"},
+		    		{value: "p", text: "PERSEN"},
+		    	];
+
+		    	$.each(arrayJenis, function(index, item){
+		    		var option = new Option(item.text, item.value);
+		    		$("#fJenisDiskon").append(option);
+		    	});
+
+		    	$("#fJenisDiskon").val("persen");
+		    	$("#fDiskon").parent().find('span')[0].innerHTML = '%';
+		    	$("#fDiskon").prop("max", "100");
+		    }
+
+		    // fungsi set status transaksi
+		    function setStatusTransaksi(){
+		    	var arrayStatus = [
+		    		// {value: "", text: "-- Pilih Status Transaksi --"},
+		    		{value: "1", text: "NORMAL"},
+		    		{value: "0", text: "FREE"},
+		    	];
+
+		    	$.each(arrayStatus, function(index, item){
+		    		var option = new Option(item.text, item.value);
+		    		$("#fStatus").append(option);
+		    	});
+
+		    	$("#fStatus").val("1");
+		    }
+
+		    function setDataPembeli(jenis=true){
+		    	if(jenis){
 		    		$("#dataPembeli").css("display", "block");
 					$("#fNama").val("");
 					$("#fno_telepon").val("");
@@ -451,27 +512,6 @@
 					$("#fAlamat").val("");
 					$("#fAlamat").prop("disabled", true);
 		    	} 	
-		    }
-
-		    function setStatusTransaksi(){
-		    	var arrayJenis = {1 : "NORMAL", 0 : "FREE"};
-
-		    	$("#fStatus").find('option')
-		            .remove()
-		            .end()
-		            .append($('<option>',{
-		                value: "", 
-		                text: "-- Pilih Jenis Transaksi --"
-		            }));
-
-		    	$.each(arrayJenis, function(index, item){
-		    		$("#fStatus").append($("<option>", {
-                        value: index,
-                        text: item,
-                    }));
-		    	});
-
-		    	$("#fStatus").val("1");
 		    }
 
 		    // mendapatkan tanggal hari ini
