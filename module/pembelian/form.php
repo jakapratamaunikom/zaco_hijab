@@ -630,7 +630,7 @@
             },
             success: function(hasil){
                 if(hasil.status){
-                    document.location=base_url+"index.php?m=pembelian&p=list";
+                    document.location=base_url+"index.php?m=pengeluaran&p=list";
                 }else{
                     if(hasil.errorDb){ // jika ada error database
                         swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error");
