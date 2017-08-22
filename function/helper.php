@@ -96,3 +96,17 @@
 
 		return $cetak_tgl; 
 	}
+
+	// fungsi cetak list item
+	function cetakListItem($dataItem){
+		$array = explode(',', $dataItem);
+		$array = array_map('trim', $array);
+
+		$dataList = "<ul>";
+		foreach($array as $list){
+			$dataList .= "<li>".$list."</li>";
+		}
+		$dataList .= "</ul>";
+
+		return $dataList;
+	}
