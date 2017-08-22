@@ -42,17 +42,31 @@
                     <!-- panel button -->
                     <div class="row" style="padding-top: 25px;">
                         <div class="col-md-12 col-xs-12">
+
+                                <!-- <button type="button" class="btn btn-default btn-flat"><i class="fa fa-plus"></i> Tambah</button> -->
+                                
+                          
                             <div class="btn-group">
                                 <!-- tambah -->
-                                <a href="<?= base_url."index.php?m=pembelian&p=form" ?>" class="btn btn-default" role="button">
-                                	<i class="fa fa-plus"></i> Tambah
-                                </a>
+
+                                <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-caret-down"></i> Tambah
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="<?= base_url."index.php?m=pembelian&p=form" ?>">
+                                        <i class="fa fa-plus"></i> PRODUKSI
+                                    </a></li>
+                                    <li><a href="<?= base_url."index.php?m=pengeluaran&p=form" ?>">
+                                        <i class="fa fa-plus"></i> NON PRODUKSI
+                                    </a></li>
+                                </ul>
+
                                 <!-- export excel -->
-                                <button type="button" id="exportExcel" class="btn btn-success">
+                                <button type="button" id="exportExcel" class="btn btn-success btn-flat">
                                 	<i class="fa fa-file-excel-o"></i> Export Excel
                                 </button>
                                 <!-- export pdf -->
-                                <button type="button" id="exportPdf" class="btn btn-danger">
+                                <button type="button" id="exportPdf" class="btn btn-danger btn-flat">
                                 	<i class="fa fa-file-pdf-o"></i> Export Pdf
                                 </button>
                             </div>
