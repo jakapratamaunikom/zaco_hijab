@@ -102,9 +102,9 @@
 	                        						<label for="fDiskon">Diskon</label>
 	                        						<div class="input-group">
 	                        							<span class="input-group-addon">Rp.</span>
-				                        				<input type="number" id="fDiskon" name="fDiskon" class="form-control" min="0" placeholder="Masukkan Dsikon">
+				                        				<input type="number" id="fDiskon" name="fDiskon" class="form-control" min="0" placeholder="Masukkan Diskon">
 				                        				<span class="input-group-btn">
-				                        					<button class="btn bg-maroon btn-flat"><i class="fa fa-plus"></i></button>
+				                        					<button type="button" class="btn bg-maroon btn-flat" id="btn_tambahItem"><i class="fa fa-plus"></i></button>
 				                        				</span>
 			                        				</div>
 	                        					</div>
@@ -147,7 +147,7 @@
 			                        				<div class="col-md-12">
 			                        					<table id="tabel_item_penjualan" class="table table-bordered table-hover">
 					                        				<thead>
-					                        					<tr>
+					                        					<tr class="small">
 					                        						<th style="width: 15px">No</th>
 					                        						<th>Item</th>
 					                        						<th>Harga</th>
@@ -190,6 +190,7 @@
 		<script type="text/javascript">
             var base_url = "<?php print base_url; ?>";
             var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
+            var listItem = [];
         </script>
 		<script type="text/javascript">
 			$(document).ready(function(){
@@ -206,14 +207,12 @@
 			        todayHighlight: true,
 				});
 
-				var listItem = [];
-
 				$('#fTgl').val(getTanggal); // set field tanggal
 				setKdPenjualan($('#fKd_penjualan')); // set kd_penjualan
 				setSelect($('#fKd_barang'));
 				setJenisTransaksi();
-				setJenisDiskon();
 				setStatusTransaksi();
+				setJenisDiskon();
 
 				// onchange jenis transaksi
 				$("#fJenis").change(function(){
@@ -227,7 +226,7 @@
 				$("#fStatus").change(function(){
 					if(this.value === "1"){ // normal
 						// set jenis diskon jadi persen
-						$("#fJenisDiskon").val("persen");
+						$("#fJenisDiskon").val("p");
 						$("#fJenisDiskon").prop("disabled",false);
 						// set diskon jadi 100
 						$("#fDiskon").val("");
@@ -235,7 +234,7 @@
 					}
 					else{ // free
 						// set jenis diskon jadi persen
-						$("#fJenisDiskon").val("persen");
+						$("#fJenisDiskon").val("p");
 						$("#fJenisDiskon").prop("disabled",true);
 						// set diskon jadi 100
 						$("#fDiskon").val("100");
@@ -248,129 +247,244 @@
 					if(this.value === "r"){
 						$("#fDiskon").parent().find('span')[0].innerHTML = 'Rp.';
 		    			$("#fDiskon").removeAttr("max");
-		    			$("#fDiskon").val("");
 					}
 					else{
 						$("#fDiskon").parent().find('span')[0].innerHTML = '%';
 		    			$("#fDiskon").prop("max", "100");
-		    			$("#fDiskon").val("");
 					}
+					$("#fDiskon").val(0);
 				});
 
-				// on click tambah list item
-				$("#fTambah_barang").click(function(){
-					// var komponen = [];
-					var item_text = $("#fKd_barang option:selected").text();
-					var item_val = $("#fKd_barang").val(); // id barang
+				var indexItem = 0;
+				// on click tambah item
+				$("#btn_tambahItem").click(function(){
+					var index = indexItem++;
+					var item_text = $("#fKd_barang option:selected").text().trim();
+					var item_val = $("#fKd_barang").val().trim();
+					var qty = parseInt($("#fQty").val());
+					var jenisDiskon = $("#fJenisDiskon").val().trim();
+					var diskon = parseInt($("#fDiskon").val());
+					var dataItem = {
+						aksi: "tambah",
+						status: "",
+						index: index,
+						id: "",
+						nama: item_text,
+						kd_barang: item_val,
+						qty: qty,
+						harga: "",
+						jenisDiskon: jenisDiskon,
+						diskon: diskon,
+						subTotal: "",
+						ket: "",
+					};
 
-					// cek jika value option barang masih default set text kosong
-			        if(item_val.length <= 0){
-			            item_text = "";
-			        }
+					// validasi sebelum push ke array list
+					$.ajax({
+						url: base_url+"module/penjualan/action.php",
+						type: "post",
+						dataType: "json",
+						data:{
+							"data": dataItem,
+							"jenis": $("#fJenis").val().trim(),
+							"action": "addList",
+						},
+						success: function(hasil){
+							console.log(hasil);
+							if(hasil.status){
+								// var harga = "";
+								if($("#fJenis").val().toLowerCase() == "harga pasar")
+									var harga = hasil.harga.harga_pasar;
+								else if($("#fJenis").val().toLowerCase() == "market place")
+									var harga = hasil.harga.market_place;
+								else if($("#fJenis").val().toLowerCase() == "harga ig")
+									var harga = hasil.harga.harga_ig;
+								else if($("#fJenis").val().toLowerCase() == "reseller")
+									var harga = hasil.harga.harga_pasar;
 
-			        var qty = $("#fQty").val().trim();
-			        var diskon = $("#fDiskon").val().trim();
-			        // var harga = 10000;
+								var subTotal = hitungSubtotal(harga,qty,jenisDiskon,diskon);
+								dataItem.harga = harga;
+								dataItem.subTotal = subTotal;
 
-			        var dataItem = {
-			        	kd_barang : item_val,
-			        	qty : qty,
-			        	diskon : diskon,
-			        };
-
-			        $.ajax({
-			        	url : base_url+"module/penjualan/action.php",
-			        	type : "post",
-			        	dataType : "json",
-			        	data : {
-			        		"dataItem" : dataItem,
-			        		"action" : 'addList',
-			        	},
-			        	success: function(hasil){
-			        		if(hasil.status){
-			        			$("#tabel_item_penjualan > tbody:last-child").append(
-						        	'<tr id="baris">'+
-			                            '<td></td>'+
-			                            '<td><div style="display: none;">'+item_val+'</div>'+item_text+'</td>'+
-			                            '<td>Rp. '+hasil.harga.harga_pasar+'</td>'+
-			                            '<td>'+fieldQty(qty)+'</td>'+
-			                            '<td>'+fieldDiskon(diskon)+'</td>'+
-			                            '<td>'+fieldKeterangan()+'</td>'+
-			                            '<td>'+
-			                                '<button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list">'+
-			                                    '<i class="fa fa-trash">'+
-			                                '</button>'+
-			                            '</td>'+
-			                        '</tr>'
-						        );
-			        		}
-			        		else{
-			        			// jika ada pesan error
-			                    if(!jQuery.isEmptyObject(hasil.pesanError.kd_barangError)){
-			                        alertify.error(hasil.pesanError.kd_barangError);
-			                    } else if(!jQuery.isEmptyObject(hasil.pesanError.qtyError)){
-			                        alertify.error(hasil.pesanError.qtyError);
-			                    } else if(!jQuery.isEmptyObject(hasil.pesanError.diskonError)){
+								listItem.push(dataItem);
+								$("#tabel_item_penjualan > tbody:last-child").append(
+									"<tr class='small'>"+
+									"<td></td>"+ // nomor
+									"<td>"+item_text+"</td>"+ // item
+									"<td>"+parseInt(harga)+"</td>"+ // harga
+									"<td>"+fieldQty(qty, index)+"</td>"+ // qty
+									"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
+									"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
+									"<td>"+btnAksi(index)+"</td>"+ // aksi
+									"</tr>"
+								);
+								numberingList();
+								clearBarang();
+							}
+							else{
+								// kurangi index
+								indexItem -= 1;
+								if(!jQuery.isEmptyObject(hasil.pesanError.jenisError))
+									alertify.error(hasil.pesanError.jenisError);
+								else if(!jQuery.isEmptyObject(hasil.pesanError.kd_barangError))
+									alertify.error(hasil.pesanError.kd_barangError);
+			                    else if(!jQuery.isEmptyObject(hasil.pesanError.qtyError))
+			                    	alertify.error(hasil.pesanError.qtyError);
+			                    else if(!jQuery.isEmptyObject(hasil.pesanError.diskonError))
 			                        alertify.error(hasil.pesanError.diskonError);
-			                    }
-			        		}
-			        	},
-			        	error: function (jqXHR, textStatus, errorThrown) // error handling
-			            {
+							}
+
+							console.log(listItem);
+							console.log(index);
+
+						},
+						error: function (jqXHR, textStatus, errorThrown){ // error handling
 			                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
 			                // clearBarang();
 			                console.log(jqXHR, textStatus, errorThrown);
-			            } 
-			        })
-
-
-			        
-
-			        // listItem.push(dataItem);
-			        // console.log(listItem);
-
-			        
-			        // numberingList();
+			            }    
+					})
+					
 				});
 
 
 			});
 
-			// fungsi nomor di tabel
-			// function numberingList(){
-			// 	// variabel untuk menhitung total barang
-		 //        var total = 0;
-		 //        var hrg = 0;
-		 //        // var qty =
-
-		 //        $('#tabel_item_penjualan tbody tr').each(function (index) {
-		 //            $(this).children("td:eq(0)").html(index + 1);
-
-		 //            // operasi untuk menghitung total
-		 //            hrg = $(this).children("td:eq(2)").html().substr(4);
-		 //            qty = $(this).children("td:eq(3)").html();
-		 //            total += parseFloat(hrg)*parseInt(qty);
-		 //        });
-		        
-		 //        // menampilkan total
-		 //        $('#tampilHarga').children().html('Total: Rp. '+total+',00');
-			// }
+			// fungsi penomeran berurut otomatis
+			function numberingList(){
+				$('#tabel_item_penjualan tbody tr').each(function (index) {
+		            $(this).children("td:eq(0)").html(index + 1);
+		        });
+		        $("#tampilHarga h4").text(hitungTotal());
+			}
 
 			// fungsi cetak field qty di tabel
-			function fieldQty(qty){
-				var field = '<input type="number" min="0" id="qtyList" style="width: 5em" class="form-control input-sm" value="'+qty+'">';
+			function fieldQty(qty, index){
+				var field = '<input type="number" min="0" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control input-sm" value="'+qty+'">';
         		return field;
 			}
 
 			// fungsi cetak field keterangan di tabel
-			function fieldKeterangan(){
-		        var field = '<textarea id="ketList" class="form-control input-sm" row="2"></textarea>';
+			function fieldKeterangan(index){
+		        var field = '<textarea class="form-control input-sm" row="1" onchange="onChange_ket('+index+',this)"></textarea>';
 		        return field;
 		    }
 
-		    function fieldDiskon(diskon){
-		    	var field = '<input type="number" min="0" max="100" id="diskonList" style="width: 5em" class="form-control input-sm" value="'+diskon+'">';
+		    // fungsi cetak field diskon di tabel
+		    function fieldDiskon(jenisDiskon, diskon, index, status){
+		    	var text = max = span = field = readonly = "";
+
+		    	if(status=="0") readonly = "readonly";
+
+		    	if(jenisDiskon==="p"){
+		    		max = "100";
+		    		span = "<span class='input-group-addon'>%</span>";
+		    	}
+		    	else{
+		    		max = "999999";
+		    		span = "<span class='input-group-addon'>Rp.</span>";
+		    	}
+		    	text = '<input type="number" min="0" max="'+max+'" style="width: 5em" class="form-control input-sm" onchange="onChange_diskon('+index+',this)" value="'+diskon+'" '+readonly+'>';
+		    	field = "<div class='input-group'>"+span+text+"</div>";
+		    	
 		        return field;
+		    }
+
+		    // fungsi cetak btn aksi di tabel
+		    function btnAksi(index){
+				var btn = '<button type="button" class="btn btn-danger bnt-flat btn-xs" onclick="delList('+index+',this)" title="Hapus dari list">'+
+		                        '<i class="fa fa-trash"></button>';
+		        return btn;
+			}
+
+			// fungsi onchange qty
+		    function onChange_qty(index, val){
+		    	var diskon = 0;
+
+		    	// ubah nilai qty di array
+		    	$.each(listItem, function(i, item){
+		    		if(item.index == index){
+		    			item.qty = val.value;
+		    			// sesuaikan ulang sub total
+		    			if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
+		    			else diskon=item.diskon;
+		    			item.subTotal = (item.harga*item.qty)-diskon;	
+		    		} 
+		    		// console.log(item);
+		    	});
+		    	numberingList();
+		    	console.log(listItem);
+		    }
+
+		    // fungsi onchange diskon
+		    function onChange_diskon(index, val){
+		    	var diskon = 0;
+
+		    	// ubah nilai qty di array
+		    	$.each(listItem, function(i, item){
+		    		if(item.index == index){
+		    			item.diskon = val.value;
+		    			// sesuaikan ulang sub total
+		    			if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
+		    			else diskon=item.diskon;
+		    			item.subTotal = (item.harga*item.qty)-diskon;	
+		    		} 
+		    		// console.log(item);
+		    	});
+		    	numberingList();
+		    	console.log(listItem);
+		    }
+
+		    // fungsi onchange ket
+		    function onChange_ket(index, val){
+		    	// ubah nilai qty di array
+		    	$.each(listItem, function(i, item){
+		    		if(item.index == index) item.ket = val.value;
+		    	});
+		    	numberingList();
+		    	console.log(listItem);
+		    }
+
+		    // fungsi hapus baris di tabel
+		    function delList(index, val){
+		    	$(val).parent().parent().remove(); // hapus data ditabel
+		    	$.each(listItem, function(i, item){
+		    		if(item.index == index) item.status = "hapus";
+		    	});
+		    	numberingList(); // reset ulang nomer
+		    	console.log(listItem);
+		    }
+
+		    // fungsi hitung sub total dari inputan
+		    function hitungSubtotal(harga, qty, jenisDiskon, valueDiskon){
+		    	var diskon = 0;
+		    	var subTotal = 0;
+		    	
+    			if(jenisDiskon === "p") diskon=(harga*qty*(valueDiskon/100));
+    			else diskon=valueDiskon;
+    			subTotal = (harga*qty)-diskon;
+	    		
+		    	return subTotal;
+		    }
+
+		    // fungsi hitung total dari array
+		    function hitungTotal(){
+		    	var diskon = 0;
+		    	var total = 0;
+		    	$.each(listItem, function(i, item){
+		    		// selain hapus lakukan perhitungan
+		    		if(item.status !== "hapus") total += item.subTotal;
+		    	});
+
+		    	return total.toFixed(2);
+		    }
+
+		    function clearBarang(){
+		    	$('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
+		        $("#fQty").val(0);
+		        $("#fDiskon").val(0);
+
+		        $("#fKd_barang").focus();
 		    }
 
 			// fungsi set kode pembelian (bug kode > 10)
@@ -431,7 +545,7 @@
 		                        disabled: disabled,
 		                    }));                 
 		                });
-		                console.log(data);
+		                // console.log(data);
 		            },
 		            error: function (jqXHR, textStatus, errorThrown) // error handling
 		            {
@@ -459,28 +573,9 @@
 		    	setDataPembeli(false);
 		    }
 
-		    // fungsi set jenis diskon
-		    function setJenisDiskon(){
-		    	var arrayJenis = [
-		    		// {value: "", text: "-- Pilih Jenis Diskon --"},
-		    		{value: "r", text: "RUPIAH"},
-		    		{value: "p", text: "PERSEN"},
-		    	];
-
-		    	$.each(arrayJenis, function(index, item){
-		    		var option = new Option(item.text, item.value);
-		    		$("#fJenisDiskon").append(option);
-		    	});
-
-		    	$("#fJenisDiskon").val("persen");
-		    	$("#fDiskon").parent().find('span')[0].innerHTML = '%';
-		    	$("#fDiskon").prop("max", "100");
-		    }
-
 		    // fungsi set status transaksi
 		    function setStatusTransaksi(){
 		    	var arrayStatus = [
-		    		// {value: "", text: "-- Pilih Status Transaksi --"},
 		    		{value: "1", text: "NORMAL"},
 		    		{value: "0", text: "FREE"},
 		    	];
@@ -491,6 +586,24 @@
 		    	});
 
 		    	$("#fStatus").val("1");
+		    }
+
+		    // fungsi set jenis diskon
+		    function setJenisDiskon(){
+		    	var arrayJenis = [
+		    		{value: "r", text: "RUPIAH"},
+		    		{value: "p", text: "PERSEN"},
+		    	];
+
+		    	$.each(arrayJenis, function(index, item){
+		    		var option = new Option(item.text, item.value);
+		    		$("#fJenisDiskon").append(option);
+		    	});
+
+		    	$("#fJenisDiskon").val("p");
+		    	$("#fDiskon").parent().find('span')[0].innerHTML = '%';
+		    	$("#fDiskon").prop("max", "100");
+		    	$("#fDiskon").val("0");
 		    }
 
 		    function setDataPembeli(jenis=true){

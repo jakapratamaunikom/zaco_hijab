@@ -83,14 +83,15 @@
 		$no_urut = $_POST['start'];
 		foreach($result as $row){
 			$no_urut++;
-			$aksi = '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=form&id='.$row["id"].'">Edit</a>';
+			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=view&id='.$row["id"].'">Detail</a>';
+			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=form&id='.$row["id"].'">Edit</a>';
 			
 			$dataRow = array();
 			$dataRow[] = $no_urut;
 			$dataRow[] = $row['kd_penjualan'];
 			$dataRow[] = cetakTgl($row['tgl'],"full");
 			$dataRow[] = $row['jenis'];
-			$dataRow[] = $row['item'];
+			$dataRow[] = cetakListItem($row['item']);
 			$dataRow[] = rupiah($row['total']);
 			$dataRow[] = $row['status'];
 			$dataRow[] = $row['ket'];
@@ -109,25 +110,43 @@
 		echo json_encode($output);
 	}
 
+	// fungsi tambah data
+	function actionAdd($koneksi){
+		
+	}
+
 	// fungsi validasi list item
 	function validList($koneksi){
-		$dataItem = isset($_POST['dataItem']) ? $_POST['dataItem'] : false;
+		$data = isset($_POST['data']) ? $_POST['data'] : false;
+		$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 
 		// pecah array
-		$kd_barang = $dataItem['kd_barang'];
-		$qty = $dataItem['qty'];
-		$diskon = $dataItem['diskon'];
+		$kd_barang = $data['kd_barang'];
+		$qty = $data['qty'];
+		$jenisDiskon = $data['jenisDiskon'];
+		$diskon = $data['diskon'];
 		
 		$cek = true;
 		$status = false;
-		$kd_barangError = $qtyError = $diskonError = "";
+		$jenisError = $kd_barangError = $qtyError = $diskonError = "";
 		$pesanError = "";
 
-		$validKd_barang = validAngka('Barang',$kd_barang,1,5,true);
-		$validQty = validAngka('Qty',$qty,1,6,true);
-		$validDiskon = validAngka('Diskon',$diskon,1,3,true);
+		// get harga, dan stok barang
+		$ketBarang = getKetBarang($koneksi, $kd_barang);
+
+		$maxDiskon = $jenisDiskon === "p" ? 100 : 999999;
+
+		$validKd_barang = validAngka('Barang',$kd_barang,1,99999,true);
+		$validQty = validAngka('Qty',$qty,1,$ketBarang['stok'],true);
+		$validDiskon = validAngka('Diskon',$diskon,0,$maxDiskon,false);
+		$validJenis = validHuruf("Jenis Transaksi",$jenis,1,50,true);
 
 		// cek valid
+		if(!$validJenis['cek']){
+			$cek = false;
+			$jenisError = $validJenis['error'];
+		}
+
 		if(!$validKd_barang['cek']){
 			$cek = false;
 			$kd_barangError = $validKd_barang['error'];
@@ -144,21 +163,18 @@
 		}
 
 		$pesanError = array(
+			'jenisError' => $jenisError,
 			'kd_barangError' => $kd_barangError,
 			'qtyError' => $qtyError,
 			'diskonError' => $diskonError, 
 		);
 
-		if($cek){
-			$status = true;
-		}
-
-		$harga = getHargaBarang($koneksi, $kd_barang);
+		if($cek) $status = true;
 
 		$output = array(
 			'status' => $status,
 			'pesanError' => $pesanError,
-			'harga' => $harga, 
+			'harga' => $ketBarang, 
 		);
 
 		echo json_encode($output);
@@ -177,8 +193,8 @@
 		echo json_encode($result);
 	}
 
-	function getHargaBarang($koneksi, $id){
-		$query = "SELECT hpp, harga_pasar, market_place, harga_ig FROM barang WHERE id=:id";
+	function getKetBarang($koneksi, $id){
+		$query = "SELECT hpp, harga_pasar, market_place, harga_ig, stok FROM v_barang WHERE id=:id";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
