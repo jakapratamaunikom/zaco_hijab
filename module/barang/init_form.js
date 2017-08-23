@@ -139,6 +139,7 @@ $(document).ready(function(){
 // funsgi set isi select id_barang dan id_warna
 function setSelect(select, idSelect){
 	// reset ulang select
+	idSelect.find('option').remove().end();
 	var text = "";
 
 	if(select === "id_barang"){
@@ -437,11 +438,11 @@ function setError(hasil){
     // jika ada pesan error
     if(!jQuery.isEmptyObject(hasil.pesanError.ketError)){
 		$("#fKet").parent().find('.help-block').text(hasil.pesanError.ketError);
-			$("#fKet").closest('div').addClass('has-error');
+		$("#fKet").closest('div').addClass('has-error');
     }
     else{
     	$("#fKet").parent().find('.help-block').text("");
-			$("#fKet").closest('div').removeClass('has-error');
+		$("#fKet").closest('div').removeClass('has-error');
     }
 
     // set error fHpp

@@ -60,13 +60,6 @@
 				break;
 			
 			default:
-				// if(file_exists("../../assets/gambar/18359298_1286972521423837_7582557687995918717_o.jpg")){
-				// 	if(unlink("../../assets/gambar/18359298_1286972521423837_7582557687995918717_o.jpg")){
-				// 		$cek = true;
-				// 	}
-				// }
-				// else $cek = false;
-				// var_dump($cek);
 				die();
 				break;
 		}
@@ -134,7 +127,7 @@
 		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : "";
 		$kd_barang = isset($_POST['kd_barang']) ? $_POST['kd_barang'] : "";
 		$nama = isset($_POST['nama']) ? $_POST['nama'] : "";
-		$foto = isset($_FILES['foto']) ? $_FILES['foto'] : "";
+		$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 		$ket = isset($_POST['ket']) ? $_POST['ket'] : "";
 		$hpp = isset($_POST['hpp']) ? $_POST['hpp'] : "";
 		$harga_pasar = isset($_POST['harga_pasar']) ? $_POST['harga_pasar'] : "";
@@ -144,8 +137,8 @@
 
 		// validasi inputan
 			// inisialisasi
-			$cek = true;
-			$status = $errorDb = $duplikat = $cekFoto = false;
+			$cek = $cekFoto = true;
+			$status = $errorDb = $duplikat = false;
 			$id_barangError = $id_warnaError = $kd_warnaError = $namaError = $fotoError = "";
 			$ketError = $hppError = $harga_pasarError = $market_placeError = $harga_igError = $stokAwalError = "";
 			$pesanError = $set_value = "";
@@ -178,7 +171,7 @@
 				}
 				else{
 					$valueFoto = $valid_foto['namaFile'];
-					$cekFoto = true;
+					// $cekFoto = true;
 				}
 			}
 			else $valueFoto = "";
@@ -284,7 +277,7 @@
 				$duplikat = false;
 
 				// upload foto
-				if($cekFoto){
+				if($foto){
 					$path = "../../assets/gambar/$valueFoto";
 					if(!move_uploaded_file($foto['tmp_name'], $path)){
 						$pesanError['fotoError'] = "Upload Foto Gagal";

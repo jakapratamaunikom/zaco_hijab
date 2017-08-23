@@ -229,5 +229,5 @@
             var base_url = "<?php print base_url; ?>";
             var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
         </script>
-		<script type="text/javascript" src="<?= base_url."module/barang/init.js" ?>"></script>
+		<script type="text/javascript" src="<?= base_url."module/barang/init_form.js" ?>"></script>
     <!-- -->

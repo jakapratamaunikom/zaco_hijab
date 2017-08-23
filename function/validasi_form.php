@@ -219,7 +219,7 @@
 		$cekValid['max'] = $max;
 		$cekValid['required'] = $required;
 		$cekValid['jenis'] = "huruf";
-		$cekValid['pattern'] = "^[a-zA-Z\s]*$/";
+		$cekValid['pattern'] = "/^[a-zA-Z\s]*$/";
 
 		$output = validTemplate($cekValid);
 

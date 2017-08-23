@@ -102,7 +102,7 @@
 		$array = explode(',', $dataItem);
 		$array = array_map('trim', $array);
 
-		$dataList = "<ul>";
+		$dataList = "<ul class='list-unstyled'>";
 		foreach($array as $list){
 			$dataList .= "<li>".$list."</li>";
 		}
