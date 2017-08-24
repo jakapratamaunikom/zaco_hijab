@@ -91,74 +91,50 @@
 
 	// fungsi action add
 	function actionAdd($koneksi){
-		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : false;
-		$nama = isset($_POST['nama']) ? $_POST['nama'] : false;
+		$dataForm = isset($_POST) ? $_POST : false;
 
 		// validasi inputan
 			// inisialisasi
-			$cek = true;
-			$status = false;
-			$errorDb = false;
-			$duplikat = false;
-			$pesanError = $id_warnaError = $namaWarnaError = $set_value = "";
-			// inisialisasi pemanggilan fungsi validasi
-			$validIdWarna = validString("ID Warna", $id_warna, 1, 4, true);
-			$validNamaWarna = validString("Nama Warna", $nama, 1, 25, true);
+			$status = $errorDb = $duplikat = false;
 
-			// cek valid
-			if(!$validIdWarna['cek']){
-				$cek = false;
-				$id_warnaError = $validIdWarna['error'];
-			}
-
-			if(!$validNamaWarna['cek']){
-				$cek = false;
-				$namaWarnaError = $validNamaWarna['error'];
-			}
-
-			$pesanError = array(
-				'id_warnaError' => $id_warnaError,
-				'namaWarnaError' => $namaWarnaError, 
-			);
-
-			$set_value = array(
-				'id_warna' => $id_warna,
-				'namaWarna' => $nama,
-			);
-
+			$configData = configData($dataForm);
+			$validasi = set_validasi($configData);
+			$cek = $validasi['cek'];
+			$pesanError = $validasi['pesanError'];
+			$set_value = $validasi['set_value'];
+			
 		// ==================================== //
 		if($cek){
-			$id_warna = validInputan($id_warna, false, false);
-			$nama = validInputan($nama, false, false);
+			$dataForm = array(
+				'id_warna' => validInputan($dataForm['id_warna'], false, false),
+				'nama' => validInputan($dataForm['nama'], false, false),
+			);
 
 			// cek duplikat id barang
 			$config_duplikat = array(
 				'tabel' => 'id_warna',
 				'field' => 'id_warna',
-				'value' => $id_warna,
+				'value' => $dataForm['id_warna'],
 			);
 
 			if(cekDuplikat($koneksi, $config_duplikat)){ // jika ada yg sama
-				$status = false;
-				$errorDb = false;
+				$status = $errorDb = false;
 				$duplikat = true;
 			}
 			else{
 				$duplikat = false;
 
-				$tabel = "id_warna";
-				$query = "INSERT INTO $tabel (id_warna, nama) VALUES (:id_warna, :nama)";
-
+				$query = "INSERT INTO id_warna(id_warna, nama) VALUES (:id_warna, :nama)";
 				// prepare
 				$statement = $koneksi->prepare($query);
 				// bind
-				$statement->bindParam(':id_warna', $id_warna);
-				$statement->bindParam(':nama', $nama);
+				$statement->bindParam(':id_warna', $dataForm['id_warna']);
+				$statement->bindParam(':nama', $dataForm['nama']);
 				// execute
 				$result = $statement->execute(
 					array(
-						':id_warna' => $id_warna,
-						':nama' => $nama,
+						':id_warna' => $dataForm['id_warna'],
+						':nama' => $dataForm['nama'],
 					)
 				);
 				
@@ -207,63 +183,32 @@
 
 	// fungsi action edit
 	function actionEdit($koneksi){
-		$id = isset($_POST['id']) ? $_POST['id'] : false;
-		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : false;
-		$nama = isset($_POST['nama']) ? $_POST['nama'] : false;
+		$dataForm = isset($_POST) ? $_POST : false;
 
 		// validasi
 			// inisialisasi
-			$cek = true;
-			$cek = true;
-			$status = false;
-			$errorDb = false;
-			$duplikat = false;
-			$pesanError = $id_warnaError = $namaWarnaError = $set_value = "";
-			// inisialisasi pemanggilan fungsi validasi
-			$validIdWarna = validString("ID Warna", $id_warna, 1, 4, true);
-			$validNamaWarna = validString("Nama Warna", $nama, 1, 25, true);
-
-			// cek valid
-			if(!$validIdWarna['cek']){
-				$cek = false;
-				$id_warnaError = $validIdWarna['error'];
-			}
-
-			if(!$validNamaWarna['cek']){
-				$cek = false;
-				$namaWarnaError = $validNamaWarna['error'];
-			}
-
-			$pesanError = array(
-				'id_warnaError' => $id_warnaError,
-				'namaWarnaError' => $namaWarnaError, 
-			);
-
-			$set_value = array(
-				'id_warna' => $id_warna,
-				'namaWarna' => $nama,
-			);
+			$status = $errorDb = $duplikat = false;
+			$configData = configData($dataForm);
+			$validasi = set_validasi($configData);
+			$cek = $validasi['cek'];
+			$pesanError = $validasi['pesanError'];
+			$set_value = $validasi['set_value'];
 		// ==================================== //
 
 		if($cek){
-			$id_warna = validInputan($id_warna, false, false);
-			$nama = validInputan($nama, false, false);
+			$dataForm['nama'] = validInputan($dataForm['nama'], false, false);
 
-			$tabel = "id_warna";
-			$query = "UPDATE $tabel SET id_warna = :id_warna, nama = :nama WHERE id = :id";
-
+			$query = "UPDATE id_warna SET nama = :nama WHERE id = :id";
 			// prepare
 			$statement = $koneksi->prepare($query);
 			// bind
-			$statement->bindParam(':id_warna', $id_warna);
-			$statement->bindParam(':nama', $nama);
-			$statement->bindParam(':id', $id);
+			$statement->bindParam(':nama', $dataForm['nama']);
+			$statement->bindParam(':id', $dataForm['id']);
 			// execute
 			$result = $statement->execute(
 				array(
-					':id_warna' => $id_warna,
-					':nama' => $nama,
-					':id' => $id,
+					':nama' => $dataForm['nama'],
+					':id' => $dataForm['id'],
 				)
 			);
 			
@@ -289,4 +234,22 @@
 		);
 
 		echo json_encode($output);
+	}
+
+	// fungsi set data untuk di validasi
+	function configData($data){
+		$configData = array(
+			// data id warna
+			array(
+				'field' => $data['id_warna'], 'label' => 'ID Warna', 'error' => 'id_warnaError',
+				'value' => 'id_warna', 'rule' => 'string | 1 | 4 | required',
+			),
+			// data nama warna
+			array(
+				'field' => $data['nama'], 'label' => 'Nama Warna', 'error' => 'namaWarnaError',
+				'value' => 'namaWarna', 'rule' => 'string | 1 | 25 | required',
+			),
+		);
+
+		return $configData;
 	}
