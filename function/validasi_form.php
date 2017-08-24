@@ -1,4 +1,72 @@
 <?php
+	// prototype fungsi set validasi
+	function set_validasi($configData){
+		$cek = true;
+
+		foreach($configData as $config){
+			foreach ($config as $key => $value) {
+				// get nilai tiap array
+				if($key == "field") $field = $value;
+				if($key == "label") $label = $value;
+				if($key == "error") $error = $value;
+				if($key == "value") $setValue = $value;
+				if($key == "rule"){
+					// explode rule
+					// dapatkan masing2 rule
+					$rule = explode("|", $value);
+					$rule = array_map('trim', $rule);
+
+					$jenis = $rule[0];
+					$min = $rule[1];
+					$max = $rule[2];
+					$required = strtolower($rule[3]) == "required" ? true : false;
+					
+					$pesanError[$error] = "";
+					$set_value[$setValue] = $field;
+					
+					// get fungsi validasi
+					switch ($jenis) {
+						case 'string':
+							$valid = validString($label, $field, $min, $max, $required);
+							if(!$valid['cek']){
+								$cek = false;
+								$pesanError[$error] = $valid['error'];
+							}
+							break;
+
+						case 'huruf':
+							$valid = validHuruf($label, $field, $min, $max, $required);
+							if(!$valid['cek']){
+								$cek = false;
+								$pesanError[$error] = $valid['error'];
+							}
+							break;
+
+						case 'angka':
+							$valid = validAngka($label, $field, $min, $max, $required);
+							if(!$valid['cek']){
+								$cek = false;
+								$pesanError[$error] = $valid['error'];
+							}
+							break;
+						
+						default:
+							die();
+							break;
+					}
+
+					$output = array(
+						'cek' => $cek,
+						'pesanError' => $pesanError,
+						'set_value' => $set_value,
+					);
+				}
+			}
+		}
+
+		return $output;
+	}
+
 	/*
 		template fungsi validasi
 		# format tempalte:
