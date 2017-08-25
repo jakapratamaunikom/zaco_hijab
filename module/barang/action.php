@@ -123,36 +123,19 @@
 
 	// fungsi action add
 	function actionAdd($koneksi){
-		$id_barang = isset($_POST['id_barang']) ? $_POST['id_barang'] : "";
-		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : "";
-		$kd_barang = isset($_POST['kd_barang']) ? $_POST['kd_barang'] : "";
-		$nama = isset($_POST['nama']) ? $_POST['nama'] : "";
+		$dataForm = isset($_POST) ? $_POST : false;
 		$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
-		$ket = isset($_POST['ket']) ? $_POST['ket'] : "";
-		$hpp = isset($_POST['hpp']) ? $_POST['hpp'] : "";
-		$harga_pasar = isset($_POST['harga_pasar']) ? $_POST['harga_pasar'] : "";
-		$market_place = isset($_POST['market_place']) ? $_POST['market_place'] : "";
-		$harga_ig = isset($_POST['harga_ig']) ? $_POST['harga_ig'] : "";
-		$stokAwal = isset($_POST['stokAwal']) ? $_POST['stokAwal'] : "";
 
 		// validasi inputan
 			// inisialisasi
-			$cek = $cekFoto = true;
+			$cekFoto = true;
 			$status = $errorDb = $duplikat = false;
-			$id_barangError = $id_warnaError = $kd_warnaError = $namaError = $fotoError = "";
-			$ketError = $hppError = $harga_pasarError = $market_placeError = $harga_igError = $stokAwalError = "";
-			$pesanError = $set_value = "";
 
-			// inisialisasi pemanggilan fungsi validasi
-			$valid_id_barang = validString("ID Barang", $id_barang, 1, 4, true);
-			$valid_id_warna = validString("ID Warna", $id_warna, 1, 4, true);
-			$valid_namaBarang = validString("Nama Barang", $nama, 1, 50, true);
-			$valid_ket = validString("Keterangan", $ket, 1, 255, false);
-			$valid_hpp = validAngka("HPP", $hpp, 1, 1000000, true);
-			$valid_harga_pasar = validAngka("Harga Pasar", $harga_pasar, 1, 1000000, true);
-			$valid_market_place = validAngka("Harga Market Place", $market_place, 1, 1000000, true);
-			$valid_harga_ig = validAngka("Harga IG", $harga_ig, 1, 1000000, true);
-			$valid_stokAwal = validAngka("Stok Awal", $stokAwal, 1, 10000, true);
+			$configData = configData($dataForm);
+			$validasi = set_validasi($configData);
+			$cek = $validasi['cek'];
+			$pesanError = $validasi['pesanError'];
+			$set_value = $validasi['set_value'];
 
 			// jika terdeteksi ada input foto
 			if($foto){
@@ -162,115 +145,41 @@
 					'name' => $foto['name'],
 					'tmp_name' => $foto['tmp_name'],
 					'max' => 2*1048576,
-					// 'path' => "../../assets/gambar/",
 				);
 				$valid_foto = validFoto($configFoto);
 				if(!$valid_foto['cek']){
 					$cek = false;
-					$fotoError = $valid_foto['error'];
+					$pesanError['fotoError'] = $valid_foto['error'];
 				}
-				else{
-					$valueFoto = $valid_foto['namaFile'];
-					// $cekFoto = true;
-				}
+				else $valueFoto = $valid_foto['namaFile'];
 			}
 			else $valueFoto = "";
 
-			// cek valid
-			if(!$valid_id_barang['cek']){
-				$cek = false;
-				$id_barangError = $valid_id_barang['error'];
-			}
-
-			if(!$valid_id_warna['cek']){
-				$cek = false;
-				$id_warnaError = $valid_id_warna['error'];
-			}
-
-			if(!$valid_namaBarang['cek']){
-				$cek = false;
-				$namaError = $valid_namaBarang['error'];
-			}
-
-			if(!$valid_ket['cek']){
-				$cek = false;
-				$ketError = $valid_ket['error'];
-			}
-
-			if(!$valid_hpp['cek']){
-				$cek = false;
-				$hppError = $valid_hpp['error'];
-			}
-
-			if(!$valid_harga_pasar['cek']){
-				$cek = false;
-				$harga_pasarError = $valid_harga_pasar['error'];
-			}
-
-			if(!$valid_market_place['cek']){
-				$cek = false;
-				$market_placeError = $valid_market_place['error'];
-			}
-
-			if(!$valid_harga_ig['cek']){
-				$cek = false;
-				$harga_igError = $valid_harga_ig['error'];
-			}
-
-			if(!$valid_stokAwal['cek']){
-				$cek = false;
-				$stokAwalError = $valid_stokAwal['error'];
-			}
-
-			$pesanError = array(
-				'id_barangError' => $id_barangError,
-				'id_warnaError' => $id_warnaError,
-				'namaError' => $namaError,
-				'fotoError' => $fotoError,
-				'ketError' => $ketError,
-				'hppError' => $hppError,
-				'harga_pasarError' => $harga_pasarError,
-				'market_placeError' => $market_placeError,
-				'harga_igError' => $harga_igError,
-				'stokAwalError' => $stokAwalError,
-			);
-
-			$set_value = array(
-				'id_barang' => $id_barang,
-				'id_warna' => $id_warna,
-				'kd_barang' => $kd_barang,
-				'nama' => $nama,
-				'ket' => $ket,
-				'hpp' => $hpp,
-				'harga_pasar' => $harga_pasar,
-				'market_place' => $market_place,
-				'harga_ig' => $harga_ig,
-				'stokAwal' => $stokAwal,
-			);
-
 		// ==================================== //
 		if($cek){
-			$id_barang = validInputan($id_barang, false, false);
-			$id_warna = validInputan($id_warna, false, false);
-			$kd_barang = validInputan($kd_barang, false, false);
-			$nama = validInputan($nama, false, false);
-			$ket = validInputan($ket, false, false);
-			$hpp = validInputan($hpp, false, false);
-			$harga_pasar = validInputan($harga_pasar, false, false);
-			$market_place = validInputan($market_place, false, false);
-			$harga_ig = validInputan($harga_ig, false, false);
-			$stokAwal = validInputan($stokAwal, false, false);
+			// validasi inputan dari inject
+			$dataForm = array(
+				'id_barang' => validInputan($dataForm['id_barang'], false, false),
+				'id_warna' => validInputan($dataForm['id_warna'], false, false),
+				'kd_barang' => validInputan($dataForm['kd_barang'], false, false),
+				'nama' => validInputan($dataForm['nama'], false, false),
+				'ket' => validInputan($dataForm['ket'], false, false),
+				'hpp' => validInputan($dataForm['hpp'], false, false),
+				'harga_pasar' => validInputan($dataForm['harga_pasar'], false, false),
+				'market_place' => validInputan($dataForm['market_place'], false, false),
+				'harga_ig' => validInputan($dataForm['harga_ig'], false, false),
+				'stokAwal' => validInputan($dataForm['stokAwal'], false, false),
+			);
 
 			// cek duplikat id barang
 			$config_duplikat = array(
 				'tabel' => 'v_barang',
 				'field' => 'kd_barang',
-				'value' => $kd_barang,
+				'value' => $dataForm['kd_barang'],
 			);
 
 			if(cekDuplikat($koneksi, $config_duplikat)){ // jika ada yg sama
-				$status = false;
-				$errorDb = false;
+				$status = $errorDb = false;
 				$duplikat = true;
 			}
 			else{
@@ -281,10 +190,7 @@
 					$path = "../../assets/gambar/$valueFoto";
 					if(!move_uploaded_file($foto['tmp_name'], $path)){
 						$pesanError['fotoError'] = "Upload Foto Gagal";
-						$status = false;
-						$cekFoto = false;
-						// $errorDb = false;
-						// $duplikat = false;
+						$status = $cekFoto = false;
 					}
 				}
 
@@ -297,31 +203,31 @@
 					// prepare
 					$statement = $koneksi->prepare($query);
 					// bind
-					$statement->bindParam(':id_barang', $id_barang);
-					$statement->bindParam(':id_warna', $id_warna);
-					$statement->bindParam(':nama', $nama);
-					$statement->bindParam(':hpp', $hpp);
-					$statement->bindParam(':harga_pasar', $harga_pasar);
-					$statement->bindParam(':market_place', $market_place);
-					$statement->bindParam(':harga_ig', $harga_ig);
+					$statement->bindParam(':id_barang', $dataForm['id_barang']);
+					$statement->bindParam(':id_warna', $dataForm['id_warna']);
+					$statement->bindParam(':nama', $dataForm['nama']);
+					$statement->bindParam(':hpp', $dataForm['hpp']);
+					$statement->bindParam(':harga_pasar', $dataForm['harga_pasar']);
+					$statement->bindParam(':market_place', $dataForm['market_place']);
+					$statement->bindParam(':harga_ig', $dataForm['harga_ig']);
 					$statement->bindParam(':foto', $valueFoto);
-					$statement->bindParam(':ket', $ket);
+					$statement->bindParam(':ket', $dataForm['ket']);
 					$statement->bindParam(':tgl', $tgl);
-					$statement->bindParam(':stokAwal', $stokAwal);
+					$statement->bindParam(':stokAwal', $dataForm['stokAwal']);
 					// execute
 					$result = $statement->execute(
 						array(
-							':id_barang' => $id_barang,
-							':id_warna' => $id_warna,
-							':nama' => $nama,
-							':hpp' => $hpp,
-							':harga_pasar' => $harga_pasar,
-							':market_place' => $market_place,
-							':harga_ig' => $harga_ig,
+							':id_barang' => $dataForm['id_barang'],
+							':id_warna' => $dataForm['id_warna'],
+							':nama' => $dataForm['nama'],
+							':hpp' => $dataForm['hpp'],
+							':harga_pasar' => $dataForm['harga_pasar'],
+							':market_place' => $dataForm['market_place'],
+							':harga_ig' => $dataForm['harga_ig'],
 							':foto' => $valueFoto,
-							':ket' => $ket,
+							':ket' => $dataForm['ket'],
 							':tgl' => $tgl,
-							':stokAwal' => $stokAwal,
+							':stokAwal' => $dataForm['stokAwal'],
 						)
 					);
 					
@@ -382,140 +288,56 @@
 
 	// fungsi action edit
 	function actionEdit($koneksi){
-		$id = isset($_POST['id']) ? $_POST['id'] : false;
-		$id_barang = isset($_POST['id_barang']) ? $_POST['id_barang'] : "";
-		$id_warna = isset($_POST['id_warna']) ? $_POST['id_warna'] : "";
-		$kd_barang = isset($_POST['kd_barang']) ? $_POST['kd_barang'] : "";
-		$nama = isset($_POST['nama']) ? $_POST['nama'] : "";
-		$ket = isset($_POST['ket']) ? $_POST['ket'] : "";
-		$hpp = isset($_POST['hpp']) ? $_POST['hpp'] : "";
-		$harga_pasar = isset($_POST['harga_pasar']) ? $_POST['harga_pasar'] : "";
-		$market_place = isset($_POST['market_place']) ? $_POST['market_place'] : "";
-		$harga_ig = isset($_POST['harga_ig']) ? $_POST['harga_ig'] : "";
+		$dataForm = isset($_POST) ? $_POST : false;
 
 		// validasi inputan
 			// inisialisasi
-			$cek = true;
-			$status = false;
-			$errorDb = false;
-			$duplikat = false;
-			$id_barangError = $id_warnaError = $kd_warnaError = $namaError = $fotoError = "";
-			$ketError = $hppError = $harga_pasarError = $market_placeError = $harga_igError = $stokAwalError = "";
-			$pesanError = $set_value = "";
+			$status = $errorDb = $duplikat = false;
 
-			// inisialisasi pemanggilan fungsi validasi
-			$valid_id_barang = validString("ID Barang", $id_barang, 1, 4, true);
-			$valid_id_warna = validString("ID Warna", $id_warna, 1, 4, true);
-			$valid_namaBarang = validString("Nama Barang", $nama, 1, 50, true);
-			$valid_ket = validString("Keterangan", $ket, 1, 255, false);
-			$valid_hpp = validAngka("HPP", $hpp, 1, 1000000, true);
-			$valid_harga_pasar = validAngka("Harga Pasar", $harga_pasar, 1, 1000000, true);
-			$valid_market_place = validAngka("Harga Market Place", $market_place, 1, 1000000, true);
-			$valid_harga_ig = validAngka("Harga IG", $harga_ig, 1, 1000000, true);
-
-			// cek valid
-			if(!$valid_id_barang['cek']){
-				$cek = false;
-				$id_barangError = $valid_id_barang['error'];
-			}
-
-			if(!$valid_id_warna['cek']){
-				$cek = false;
-				$id_warnaError = $valid_id_warna['error'];
-			}
-
-			if(!$valid_namaBarang['cek']){
-				$cek = false;
-				$namaError = $valid_namaBarang['error'];
-			}
-
-			if(!$valid_ket['cek']){
-				$cek = false;
-				$ketError = $valid_ket['error'];
-			}
-
-			if(!$valid_hpp['cek']){
-				$cek = false;
-				$hppError = $valid_hpp['error'];
-			}
-
-			if(!$valid_harga_pasar['cek']){
-				$cek = false;
-				$harga_pasarError = $valid_harga_pasar['error'];
-			}
-
-			if(!$valid_market_place['cek']){
-				$cek = false;
-				$market_placeError = $valid_market_place['error'];
-			}
-
-			if(!$valid_harga_ig['cek']){
-				$cek = false;
-				$harga_igError = $valid_harga_ig['error'];
-			}
-
-			$pesanError = array(
-				'id_barangError' => $id_barangError,
-				'id_warnaError' => $id_warnaError,
-				'namaError' => $namaError,
-				'ketError' => $ketError,
-				'hppError' => $hppError,
-				'harga_pasarError' => $harga_pasarError,
-				'market_placeError' => $market_placeError,
-				'harga_igError' => $harga_igError,
-			);
-
-			$set_value = array(
-				'id_barang' => $id_barang,
-				'id_warna' => $id_warna,
-				'kd_barang' => $kd_barang,
-				'nama' => $nama,
-				'ket' => $ket,
-				'hpp' => $hpp,
-				'harga_pasar' => $harga_pasar,
-				'market_place' => $market_place,
-				'harga_ig' => $harga_ig,
-			);
-
+			$configData = configData($dataForm);
+			$validasi = set_validasi($configData);
+			$cek = $validasi['cek'];
+			$pesanError = $validasi['pesanError'];
+			$set_value = $validasi['set_value'];
 		// ==================================== //
 
 		if($cek){
-			$id = validInputan($id, false, false);
-			// $id_barang = validInputan($id_barang, false, false);
-			// $id_warna = validInputan($id_warna, false, false);
-			// $kd_barang = validInputan($kd_barang, false, false);
-			$nama = validInputan($nama, false, false);
-			$ket = validInputan($ket, false, false);
-			$hpp = validInputan($hpp, false, false);
-			$harga_pasar = validInputan($harga_pasar, false, false);
-			$market_place = validInputan($market_place, false, false);
-			$harga_ig = validInputan($harga_ig, false, false);
-			// $stokAwal = validInputan($stokAwal, false, false);
+			$dataForm = array(
+				'id' => validInputan($dataForm['id'], false, false),
+				'id_barang' => validInputan($dataForm['id_barang'], false, false),
+				'id_warna' => validInputan($dataForm['id_warna'], false, false),
+				'kd_barang' => validInputan($dataForm['kd_barang'], false, false),
+				'nama' => validInputan($dataForm['nama'], false, false),
+				'ket' => validInputan($dataForm['ket'], false, false),
+				'hpp' => validInputan($dataForm['hpp'], false, false),
+				'harga_pasar' => validInputan($dataForm['harga_pasar'], false, false),
+				'market_place' => validInputan($dataForm['market_place'], false, false),
+				'harga_ig' => validInputan($dataForm['harga_ig'], false, false),
+				'stokAwal' => validInputan($dataForm['stokAwal'], false, false),
+			);
 
-			$tabel = "barang";
-			$query = "UPDATE $tabel SET nama=:nama, ket=:ket, hpp=:hpp, harga_pasar=:harga_pasar, market_place=:market_place, harga_ig=:harga_ig WHERE id = :id";
+			$query = "UPDATE barang SET nama=:nama, ket=:ket, hpp=:hpp, harga_pasar=:harga_pasar, market_place=:market_place, harga_ig=:harga_ig WHERE id = :id";
 
 			// prepare
 			$statement = $koneksi->prepare($query);
 			// bind
-			$statement->bindParam(':nama', $nama);
-			$statement->bindParam(':hpp', $hpp);
-			$statement->bindParam(':harga_pasar', $harga_pasar);
-			$statement->bindParam(':market_place', $market_place);
-			$statement->bindParam(':harga_ig', $harga_ig);
-			// $statement->bindParam(':foto', $foto);
-			$statement->bindParam(':ket', $ket);
-			$statement->bindParam(':id', $id);
+			$statement->bindParam(':nama', $dataForm['nama']);
+			$statement->bindParam(':hpp', $dataForm['hpp']);
+			$statement->bindParam(':harga_pasar', $dataForm['harga_pasar']);
+			$statement->bindParam(':market_place', $dataForm['market_place']);
+			$statement->bindParam(':harga_ig', $dataForm['harga_ig']);
+			$statement->bindParam(':ket', $dataForm['ket']);
+			$statement->bindParam(':id', $dataForm['id']);
 			// execute
 			$result = $statement->execute(
 				array(
-					':nama' => $nama,
-					':hpp' => $hpp,
-					':harga_pasar' => $harga_pasar,
-					':market_place' => $market_place,
-					':harga_ig' => $harga_ig,
-					':ket' => $ket,
-					':id' => $id,
+					':nama' => $dataForm['nama'],
+					':hpp' => $dataForm['hpp'],
+					':harga_pasar' => $dataForm['harga_pasar'],
+					':market_place' => $dataForm['market_place'],
+					':harga_ig' => $dataForm['harga_ig'],
+					':ket' => $dataForm['ket'],
+					':id' => $dataForm['id'],
 				)
 			);
 			
@@ -664,7 +486,6 @@
 		);
 
 		echo json_encode($output);
-
 	}
 
 	// fungsi get view
@@ -772,4 +593,64 @@
 		$result = $statement->fetchAll();
 
 		echo json_encode($result);
+	}
+
+	// fungsi set data untuk di validasi
+	function configData($data){
+		$required = $_POST['action'] == "edit" ? "not_required" : "required";
+
+		$configData = array(
+			// data id_barang
+			array(
+				'field' => $data['id_barang'], 'label' => 'ID Barang', 'error' => 'id_barangError',
+				'value' => 'id_barang', 'rule' => 'string | 1 | 4 | required',
+			),
+			// data id_warna
+			array(
+				'field' => $data['id_warna'], 'label' => 'ID Warna', 'error' => 'id_warnaError',
+				'value' => 'id_warna', 'rule' => 'string | 1 | 4 | required',
+			),
+			// data kd_barang
+			array(
+				'field' => $data['kd_barang'], 'label' => 'Kode Barang', 'error' => 'kd_barangError',
+				'value' => 'kd_barang', 'rule' => 'string | 1 | 15 | required',
+			),
+			// data nama barang
+			array(
+				'field' => $data['nama'], 'label' => 'Nama Barang', 'error' => 'id_barangError',
+				'value' => 'nama', 'rule' => 'string | 1 | 50 | required',
+			),
+			// data ket
+			array(
+				'field' => $data['ket'], 'label' => 'Keterangan', 'error' => 'ketError',
+				'value' => 'ket', 'rule' => 'string | 1 | 255 | not_required',
+			),
+			// data hpp
+			array(
+				'field' => $data['hpp'], 'label' => 'HPP', 'error' => 'hppError',
+				'value' => 'hpp', 'rule' => 'angka | 1 | 999999 | required',
+			),
+			// data harga_pasar
+			array(
+				'field' => $data['harga_pasar'], 'label' => 'Harga Pasar', 'error' => 'harga_pasarError',
+				'value' => 'harga_pasar', 'rule' => 'angka | 1 | 999999 | required',
+			),
+			// data market place
+			array(
+				'field' => $data['market_place'], 'label' => 'Harga Market Place', 'error' => 'market_placeError',
+				'value' => 'market_place', 'rule' => 'angka | 1 | 999999 | required',
+			),
+			// data harga ig
+			array(
+				'field' => $data['harga_ig'], 'label' => 'Harga IG', 'error' => 'harga_igError',
+				'value' => 'harga_ig', 'rule' => 'angka | 1 | 999999 | required',
+			),
+			// data stok awal
+			array(
+				'field' => $data['stokAwal'], 'label' => 'Stok Awal', 'error' => 'stokAwalError',
+				'value' => 'stokAwal', 'rule' => 'angka | 1 | 999999 | '.$required,
+			),
+		);
+
+		return $configData;
 	}
