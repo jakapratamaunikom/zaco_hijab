@@ -18,9 +18,9 @@
 				list_Barang($koneksi); // list datatable
 				break;
 
-			// case 'tambah':
-			// 	actionAdd($koneksi); // aksi tambah
-			// 	break;
+			case 'tambah':
+				actionAdd($koneksi); // aksi tambah
+				break;
 
 			// case 'getedit':
 			// 	// get data untuk edit
@@ -110,71 +110,171 @@
 		echo json_encode($output);
 	}
 
+	function cekArray($data){
+		$cekKosong = true;
+
+		foreach($data as $array){
+			foreach ($array as $key => $value) {
+				if($key == "status"){
+					if($value != "hapus") $cekKosong = false;
+				}
+			}
+		}
+
+		return $cekKosong;
+	}
+
 	// fungsi tambah data
 	function actionAdd($koneksi){
+		$dataPenjualan = isset($_POST['dataPenjualan']) ? $_POST['dataPenjualan'] : false;
+		$dataLisItem = isset($_POST['dataLisItem']) ? $_POST['dataLisItem'] : false;
+
+		// validasi
+			// inisialisasi
+			$status = $errorDb = $duplikat = $cekArray = false;
+			$pesanError_penjualan = $set_value_penjualan = "";
+
+			if($dataLisItem){ // cek isi list item ada / tidak
+				if(cekArray($dataLisItem)) $cekArray = false; // array kosong
+				else $cekArray = true;
+			}
+
+			if($cekArray){ // jika ada list lanjutkan
+				$configData_penjualan = configData($dataPenjualan);
+				$validasi_penjualan = set_validasi($configData_penjualan);
+				$cek = $validasi_penjualan['cek'];
+				$pesanError_penjualan = $validasi_penjualan['pesanError'];
+				$set_value_penjualan = $validasi_penjualan['set_value'];
+			}
+			else $cek = false;
+		// ======================================== //
+		if($cek){
+			$dataPenjualan = array(
+				'kd_penjualan' => validInputan($dataPenjualan['kd_penjualan'], false, false),
+				'tgl' => validInputan($dataPenjualan['tgl'], false, false),
+				'jenis' => validInputan($dataPenjualan['jenis'], false, false),
+				'status' => validInputan($dataPenjualan['status'], false, false),
+				'nama' => validInputan($dataPenjualan['nama'], false, false),
+				'no_telp' => validInputan($dataPenjualan['no_telp'], false, false),
+				'alamat' => validInputan($dataPenjualan['alamat'], false, false),
+			);
+
+			// cek duplikat kd_penjualan
+			$config_duplikat = array(
+				'tabel' => 'penjualan',
+				'field' => 'kd_penjualan',
+				'value' => $dataPenjualan['kd_penjualan'],
+			);
+
+			if(cekDuplikat($koneksi, $config_duplikat)){ // jika ada yg sama
+				$status = $errorDb = false;
+				$duplikat = true;
+			}
+			else{
+				$duplikat = false;
+
+				// insert penjualan
+				if(insertPenjualan($koneksi, $dataPenjualan)){
+					// insert ke detail penjualan
+					foreach($dataLisItem as $index => $array){
+						if($dataLisItem[$index]['status'] != "hapus"){
+							$dataInsert['kd_penjualan'] = $dataPenjualan['kd_penjualan'];
+							$dataInsert['tgl'] = $dataPenjualan['tgl'];
+							foreach ($dataLisItem[$index] as $key => $value) {
+								$dataInsert[$key] = $value;
+							}
+							insertDetail_penjualan($koneksi,$dataInsert);
+						}
+					}
+				}
+				else{
+					$status = false;
+					$errorDb = true;
+				}
+				$status = true;
+			}
+		}
+		else $status = false;
+
+		$output = array(
+			'status' => $status,
+			'errorDb' => $errorDb,
+			'duplikat' => $duplikat,
+			'pesanError' => $pesanError_penjualan,
+			'set_value' => $set_value_penjualan,
+		);
+
+		echo json_encode($output);
+	}
+
+	// fungsi insert penjualan
+	function insertPenjualan($koneksi, $data){
+		$ket = "";
+		$onkir = 0;
+		$username = "admin";
+
+		$query = "INSERT INTO penjualan ";
+		$query .= "(kd_penjualan, tgl, jenis, nama, telp, alamat, ongkir, status, ket, username) ";
+		$query .= "VALUES (:kd_penjualan, :tgl, :jenis, :nama, :telp, :alamat, :ongkir, :status, :ket, :username);";
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
+		$statement->bindParam(':tgl',$data['tgl']);
+		$statement->bindParam(':jenis',$data['jenis']);
+		$statement->bindParam(':nama',$data['nama']);
+		$statement->bindParam(':telp',$data['no_telp']);
+		$statement->bindParam(':alamat',$data['alamat']);
+		$statement->bindParam(':ongkir',$onkir);
+		$statement->bindParam(':status',$data['status']);
+		$statement->bindParam(':ket',$ket);
+		$statement->bindParam(':username',$username);
+		$result = $statement->execute();
+
+		return $result;
+	}
+
+	function insertDetail_penjualan($koneksi, $data){
+		$laba = $data['harga']-$data['hpp'];
+
+		$query = "CALL tambah_penjualan ";
+		$query .= "(:kd_penjualan, :tgl, :kd_barang, :hpp, :harga, ";
+		$query .= ":qty, :jenisDiskon, :diskon, :subtotal, :laba, :ket)";
 		
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
+		$statement->bindParam(':tgl',$data['tgl']);
+		$statement->bindParam(':kd_barang',$data['kd_barang']);
+		$statement->bindParam(':hpp',$data['hpp']);
+		$statement->bindParam(':harga',$data['harga']);
+		$statement->bindParam(':qty',$data['qty']);
+		$statement->bindParam(':jenisDiskon',$data['jenisDiskon']);
+		$statement->bindParam(':diskon',$data['diskon']);
+		$statement->bindParam(':subtotal',$data['subtotal']);
+		$statement->bindParam(':laba',$laba);
+		$statement->bindParam(':ket',$data['ket']);
+		$result = $statement->execute();		
+
+		return $result;
 	}
 
 	// fungsi validasi list item
 	function validList($koneksi){
-		$data = isset($_POST['data']) ? $_POST['data'] : false;
-		$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+		$dataList = isset($_POST['data']) ? $_POST['data'] : false;
 
-		// pecah array
-		$kd_barang = $data['kd_barang'];
-		$qty = $data['qty'];
-		$jenisDiskon = $data['jenisDiskon'];
-		$diskon = $data['diskon'];
-		
-		$cek = true;
 		$status = false;
-		$jenisError = $kd_barangError = $qtyError = $diskonError = "";
-		$pesanError = "";
 
 		// get harga, dan stok barang
-		$ketBarang = getKetBarang($koneksi, $kd_barang);
-
-		$maxDiskon = $jenisDiskon === "p" ? 100 : 999999;
-
-		$validKd_barang = validAngka('Barang',$kd_barang,1,99999,true);
-		$validQty = validAngka('Qty',$qty,1,$ketBarang['stok'],true);
-		$validDiskon = validAngka('Diskon',$diskon,0,$maxDiskon,false);
-		$validJenis = validHuruf("Jenis Transaksi",$jenis,1,50,true);
-
-		// cek valid
-		if(!$validJenis['cek']){
-			$cek = false;
-			$jenisError = $validJenis['error'];
-		}
-
-		if(!$validKd_barang['cek']){
-			$cek = false;
-			$kd_barangError = $validKd_barang['error'];
-		}
-
-		if(!$validQty['cek']){
-			$cek = false;
-			$qtyError = $validQty['error'];
-		}
-
-		if(!$validDiskon['cek']){
-			$cek = false;
-			$diskonError = $validDiskon['error'];
-		}
-
-		$pesanError = array(
-			'jenisError' => $jenisError,
-			'kd_barangError' => $kd_barangError,
-			'qtyError' => $qtyError,
-			'diskonError' => $diskonError, 
-		);
+		$hargaBarang = getKetBarang($koneksi, $dataList['kd_barang']);
+		$configData = configDataList($dataList, $koneksi);
+		$validasi = set_validasi($configData);
+		$cek = $validasi['cek'];
+		$pesanError = $validasi['pesanError'];
 
 		if($cek) $status = true;
 
 		$output = array(
 			'status' => $status,
 			'pesanError' => $pesanError,
-			'harga' => $ketBarang, 
+			'harga' => $hargaBarang, 
 		);
 
 		echo json_encode($output);
@@ -217,5 +317,101 @@
 		$result = $statement->fetchAll();
 
 		echo json_encode($result);
+	}
+
+	// fungsi set data untuk di validasi
+	function configData($data){
+		if((strtolower($data['jenis'])=="harga pasar") || (strtolower($data['jenis'])=="reseller")){
+			$required = "not_required";
+		}
+		else $required = "required";
+
+		$configData = array(
+			// data kd_penjualan
+			array(
+				'field' => $data['kd_penjualan'], 'label' => 'Kode Penjualan', 'error' => 'kd_penjualanError',
+				'value' => 'kd_penjualan', 'rule' => 'string | 13 | 16 | required',
+			),
+			// data tgl
+			// array(
+			// 	'field' => $data['tgl'], 'label' => 'Tanggal', 'error' => 'tglError',
+			// 	'value' => 'tgl', 'rule' => 'string | 10 | 10 | required',
+			// ),
+			// data jenis
+			array(
+				'field' => $data['jenis'], 'label' => 'Jenis Transaksi', 'error' => 'jenisError',
+				'value' => 'jenis', 'rule' => 'string | 1 | 16 | required',
+			),
+			// data status
+			array(
+				'field' => $data['status'], 'label' => 'Status Transaksi', 'error' => 'statusError',
+				'value' => 'status', 'rule' => 'angka | 0 | 1 | required',
+			),
+			// data nama
+			array(
+				'field' => $data['nama'], 'label' => 'Nama Pembeli', 'error' => 'namaError',
+				'value' => 'nama', 'rule' => 'string | 1 | 50 | '.$required,
+			),
+			// data no. telp
+			array(
+				'field' => $data['no_telp'], 'label' => 'No. Telepon', 'error' => 'no_telpError',
+				'value' => 'no_telp', 'rule' => 'string | 1 | 15 | '.$required,
+			),
+			// data alamat
+			array(
+				'field' => $data['alamat'], 'label' => 'Alamat', 'error' => 'alamatError',
+				'value' => 'alamat', 'rule' => 'string | 1 | 255 | '.$required,
+			),
+		);
+
+		return $configData;
+	}
+
+	// fungsi set data validasi list item
+	function configDataList($data, $koneksi){
+		// get max qty item dan diskon
+		$ketBarang = getKetBarang($koneksi, $data['kd_barang']);
+		$maxQty = $ketBarang['stok'];
+		$maxDiskon = $data['jenisDiskon'] === "p" ? 100 : 999999;
+		
+		$configData = array(
+			// data jenis transaksi
+			array(
+				'field' => $_POST['jenis'], 'label' => 'Jenis Transaksi', 'error' => 'jenisError',
+				'value' => 'jenis', 'rule' => 'string | 1 | 25 | required',
+			),
+			// data kd_barang
+			array(
+				'field' => $data['kd_barang'], 'label' => 'Kode Barang', 'error' => 'kd_barangError',
+				'value' => 'kd_barang', 'rule' => 'angka | 1 | 99999 | required',
+			),
+			// data qty
+			array(
+				'field' => $data['qty'], 'label' => 'Qty', 'error' => 'qtyError',
+				'value' => 'qty', 'rule' => 'angka | 1 | '.$maxQty.' | required',
+			),
+			// data jenis diskon
+			array(
+				'field' => $data['jenisDiskon'], 'label' => 'Jenis Diskon', 'error' => 'jenisDiskonError',
+				'value' => 'jenisDiskon', 'rule' => 'string | 1 | 1 | required',
+			),
+			// data diskon
+			array(
+				'field' => $data['diskon'], 'label' => 'Diskon', 'error' => 'diskonError',
+				'value' => 'Diskon', 'rule' => 'angka | 0 | '.$maxDiskon.' | not_required',
+			),
+			// data subtotal
+			// array(
+			// 	'field' => $data['subTotal'], 'label' => 'Subtotal', 'error' => 'subTotalError',
+			// 	'value' => 'subTotal', 'rule' => 'angka | 0 | 9999999 | required',
+			// ),
+			// data ket
+			array(
+				'field' => $data['ket'], 'label' => 'Keterangan', 'error' => 'ketError',
+				'value' => 'ket', 'rule' => 'string | 1 | 255 | not_required',
+			),
+		);
+
+		return $configData;
 	}
 ?>

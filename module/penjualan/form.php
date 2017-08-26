@@ -16,7 +16,7 @@
 
 	<!-- header dan breadcrumb -->
     <section class="content-header">
-        <h1>Penjualan</h1>
+        <h1>Form Data Penjualan</h1>
         <ol class="breadcrumb">
             <li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i> Zaco Hijab</a></li>
             <li class="active"><a href="<?= base_url."index.php?m=penjualan&p=list"; ?>">Penjualan</a></li>
@@ -24,162 +24,169 @@
         </ol>
     </section>
 
-     <!-- isi konten -->
+    <!-- isi konten -->
     <section class="content">
-        <div class="row">
-            <div class="col-xs-12">
-                <!-- panel box -->
-                <div class="box">
-                    <!-- judul panel box -->
-                    <div class="box-header">
-                        <div class="row">
-                            <div class="col-sm-6 col-xs-12">
-                                <h3 class="box-title">Form Data Penjualan</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- isi panel box -->
-                    <div class="box-body">
-                        <div class="row">
-                        	<form enctype="multipart/form-data" role="form">
-                        		<!-- fieldset data penjualan -->
-                        		<div class="col-md-6 col-xs-12">
-                        			<fieldset>
-	                        			<legend>Data Penjualan</legend>
-	                        			<!-- kode penjualan -->
-	                        			<div class="form-group">
-	                        				<label for="fKd_penjualan">Kode Penjualan</label>
-	                        				<input type="text" name="fKd_penjualan" id="fKd_penjualan" class="form-control" placeholder="Kode Penjualan">
-	                        			</div>
-
-	                        			<!-- tanggal -->
-	                        			<div class="form-group">
-	                        				<label for="fTgl">Tanggal</label>
-	                        				<input type="text" name="fTgl" id="fTgl" class="form-control datepicker">
-	                        			</div>
-
-	                        			<!-- jenis transaksi -->
-	                        			<div class="form-group">
-	                        				<label for="fJenis">Jenis Transaksi</label>
-	                        				<select id="fJenis" name="fJenis" class="form-control">
-	                        				</select>
-	                        			</div>
-
-	                        			<!-- status transaksi -->
-	                        			<div class="form-group">
-	                        				<label for="fStatus">Status Transaksi</label>
-	                        				<select id="fStatus" name="fStatus" class="form-control">
-	                        				</select>
-	                        			</div>
-
-	                        			<!-- kode barang - qty - tambah-->
-	                        			<div class="form-group">
-	                        				<div class="row">
-	                        					<div class="col-md-8 col-xs-6">
-	                        						<label for="fKd_barang">Item</label>
+    	<form enctype="multipart/form-data" role="form" id="form_penjualan">
+	    	<!-- panel 1 -->
+	    	<div class="row">
+	    		<div class="col-md-12">
+	    			<!-- panel data penjualan -->
+		    		<div class="box">
+		    			<div class="box-body">
+		    				<div class="col-md-6">	    				
+		    					<fieldset>
+		    						<legend>Data Penjualan</legend>
+		    						<!-- kode dan tgl -->
+		    						<div class="row">
+		    							<div class="col-md-6">
+		    								<!-- kode -->
+		    								<div class="form-group">
+			                    				<label for="fKd_penjualan">Kode Penjualan</label>
+			                    				<input type="text" name="fKd_penjualan" id="fKd_penjualan" class="form-control" placeholder="Kode Penjualan">
+			                    			</div>		
+		    							</div>
+		    							<div class="col-md-6">
+		    								<!-- tanggal -->
+			                    			<div class="form-group">
+			                    				<label for="fTgl">Tanggal</label>
+			                    				<input type="text" name="fTgl" id="fTgl" class="form-control datepicker">
+			                    			</div>
+		    							</div>
+		    						</div>
+		    						<!-- jenis dan status -->
+		    						<div class="row">
+		    							<div class="col-md-6">
+		    								<!-- jenis transaksi -->
+			                    			<div class="form-group">
+			                    				<label for="fJenis">Jenis Transaksi</label>
+			                    				<select id="fJenis" name="fJenis" class="form-control">
+			                    				</select>
+			                    			</div>
+		    							</div>
+		    							<div class="col-md-6">
+		    								<!-- status transaksi -->
+			                    			<div class="form-group">
+			                    				<label for="fStatus">Status Transaksi</label>
+			                    				<select id="fStatus" name="fStatus" class="form-control">
+			                    				</select>
+			                    			</div>
+		    							</div>
+		    						</div>
+		    					</fieldset>
+		    				</div>
+				    		<!-- panel data pembeli -->
+				    		<div class="col-md-6">
+		    					<fieldset>
+		    						<legend>Data Pembeli</legend>
+		    						<!-- nama dan no.telp -->
+		    						<div class="row">
+		    							<!-- nama -->
+		    							<div class="col-md-6">
+		    								<div class="form-group">
+		                        				<label for="fNama">Nama</label>
+		                        				<input type="text" name="fNama" id="fNama" class="form-control" placeholder="Masukkan Nama Pembeli">
+		                        			</div>	
+		    							</div>
+		    							<div class="col-md-6">
+		    								<div class="form-group">
+		                        				<label for="fno_telepon">No. Telepon</label>
+		                        				<input type="text" name="fno_telepon" id="fno_telepon" class="form-control" placeholder="Masukkan No. Telepon">
+		                        			</div>
+		    							</div>
+		    						</div>
+		    						<!-- alamat -->
+		    						<div class="form-group">
+	                    				<label for="fAlamat">Alamat</label>
+	                    				<textarea id="fAlamat" class="form-control" placeholder="Masukkan Alamat Pembeli"></textarea>
+	                    			</div>
+		    					</fieldset>
+				    		</div>
+		    			</div>
+		    		</div>
+	    		</div>
+	    	</div>
+	    	<!-- panel 2 -->
+	    	<div class="row">
+	   			<div class="col-md-12">
+	   				<div class="box">
+	   					<div class="box-body">
+	   						<fieldset>
+		   						<div class="row">
+		   							<div class="col-md-12">
+			   							<legend>List Item</legend>
+			   							<!-- kode barang - qty-->
+		                    			<div class="form-group">
+		                    				<div class="row">
+		                    					<div class="col-md-6 col-xs-6">
+		                    						<label for="fKd_barang">Item</label>
 			                        				<select id="fKd_barang" name="fKd_barang" class="form-control select2" style="width: 100%;">
 			                        				</select>
-	                        					</div>
-	                        					<div class="col-md-4 col-xs-6">
-	                        						<label for="fQty">Qty</label>
-	                        						<div class="input-group">
-				                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0" placeholder="Masukkan Qty">
+		                    					</div>
+		                    					<div class="col-md-6 col-xs-6">
+		                    						<label for="fQty">Qty</label>
+		                    						<div class="input-group">
+				                        				<input type="number" id="fQty" name="fQty" class="form-control" min="0" placeholder="Qty">
 				                        				<span class="input-group-addon">pcs</span>
 			                        				</div>
-	                        					</div>
-	                        				</div>
-	                        			</div>
+		                    					</div>
+		                    				</div>
+		                    			</div>
 
-	                        			<!-- diskon -->
-	                        			<div class="form-group">
-	                        				<div class="row">
-	                        					<div class="col-md-6 col-xs-6">
-	                        						<label for="fJenisDiskon">Jenis Diskon</label>
+		                    			<!-- diskon + tambah -->
+		                    			<div class="form-group">
+		                    				<div class="row">
+		                    					<div class="col-md-6 col-xs-6">
+		                    						<label for="fJenisDiskon">Jenis Diskon</label>
 			                        				<select id="fJenisDiskon" name="fJenisDiskon" class="form-control">
 			                        				</select>
-	                        					</div>
-	                        					<div class="col-md-6 col-xs-6">
-	                        						<label for="fDiskon">Diskon</label>
-	                        						<div class="input-group">
-	                        							<span class="input-group-addon">Rp.</span>
+		                    					</div>
+		                    					<div class="col-md-6 col-xs-6">
+		                    						<label for="fDiskon">Diskon</label>
+		                    						<div class="input-group">
+		                    							<span class="input-group-addon">Rp.</span>
 				                        				<input type="number" id="fDiskon" name="fDiskon" class="form-control" min="0" placeholder="Masukkan Diskon">
 				                        				<span class="input-group-btn">
 				                        					<button type="button" class="btn bg-maroon btn-flat" id="btn_tambahItem"><i class="fa fa-plus"></i></button>
 				                        				</span>
 			                        				</div>
-	                        					</div>
-	                        				</div>
-	                        			</div>
-	                        		</fieldset>
-                        		</div>
-                        		<div class="col-md-6 col-xs-12">
-                        			<!-- fieldset data pembeli -->
-                        			<div class="row" id="dataPembeli">
-                        				<div class="col-md-12 col-xs-12">
-                        					<fieldset>
-			                        			<legend>Data Pembeli</legend>
-			                        			<!-- nama -->
-			                        			<div class="form-group">
-			                        				<label for="fNama">Nama</label>
-			                        				<input type="text" name="fNama" id="fNama" class="form-control" placeholder="Masukkan Nama Pembeli">
-			                        			</div>
+		                    					</div>
+		                    				</div>
+		                    			</div>
+		   							</div>
+		   						</div>
+	   							<div class="row">
+	   								<div class="col-md-12">
+	   									<div class="table-responsive">
+	   										<table id="tabel_item_penjualan" class="table table-bordered table-hover">
+		                        				<thead>
+		                        					<tr>
+		                        						<th style="width: 15px">No</th>
+		                        						<th>Item</th>
+		                        						<th>Harga</th>
+		                        						<th>Qty</th>
+		                        						<th>Diskon</th>
+		                        						<th>Keterangan</th>
+		                        						<th>Subtotal</th>
+		                        						<th>Aksi</th>
+		                        					</tr>
+		                        				</thead>
+		                        				<tbody></tbody>
+		                        			</table>
+	   									</div>
+	                        			<h4 id="tampilHarga" class="text-right">Total: Rp. -,00</h4>
+	   								</div>
+	   							</div>
 
-			                        			<!-- no. telp -->
-			                        			<div class="form-group">
-			                        				<label for="fno_telepon">No. Telepon</label>
-			                        				<input type="text" name="fno_telepon" id="fno_telepon" class="form-control" placeholder="Masukkan No. Telepon">
-			                        			</div>
-
-			                        			<!-- alamat -->
-			                        			<div class="form-group">
-			                        				<label for="fAlamat">Alamat</label>
-			                        				<textarea class="form-control" placeholder="Masukkan Alamat Pembeli"></textarea>
-			                        			</div>
-			                        		</fieldset>	
-                        				</div>
-                        			</div>
-                        			<!-- fieldset list item -->
-                        			<div class="row">
-                        				<div class="col-md-12 col-xs-12">
-                        					<fieldset>
-			                        			<legend>List Item</legend>
-			                        			<div class="row">
-			                        				<div class="col-md-12">
-			                        					<table id="tabel_item_penjualan" class="table table-bordered table-hover">
-					                        				<thead>
-					                        					<tr class="small">
-					                        						<th style="width: 15px">No</th>
-					                        						<th>Item</th>
-					                        						<th>Harga</th>
-					                        						<th>Qty</th>
-					                        						<th>Diskon</th>
-					                        						<th>Keterangan</th>
-					                        						<th>Aksi</th>
-					                        					</tr>
-					                        				</thead>
-					                        				<tbody></tbody>
-					                        			</table>
-			                        				</div>
-			                        				<div class="col-md-12" id="tampilHarga">
-			                        					<h4 class="text-right">Total: Rp. -,00</h4>
-			                        				</div>
-			                        			</div>	
-			                        		</fieldset>
-                        				</div>
-                        			</div>
-                        		</div>
-	                        		
-                        	</form>
-                        </div>
-                    </div>
-                    <!-- footer box -->
-                    <div class="box-footer text-right">
-                    	<button type="button" class="btn btn-default btn-lg"><i class="fa fa-plus"></i> Tambah</button>
-                    	<button type="button" class="btn btn-default btn-lg">Batal</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+	   						</fieldset>	
+	   					</div>
+	   					<div class="box-footer text-right">
+	                    	<button type="submit" class="btn btn-default btn-lg btn-flat" id="btn_submit_penjualan" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
+	                    	<button type="button" class="btn btn-default btn-lg btn-flat">Batal</button>
+	                    </div>
+	   				</div>
+	   			</div>
+	    	</div>
+	    </form>
     </section>
 
     <!-- js -->
@@ -187,6 +194,7 @@
 		<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 		<!-- Select2 -->
 		<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
+		<script type="text/javascript" src="<?= base_url."assets/plugins/jquery-mask/jquery.mask.min.js"; ?>"></script>
 		<script type="text/javascript">
             var base_url = "<?php print base_url; ?>";
             var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
@@ -207,7 +215,8 @@
 			        todayHighlight: true,
 				});
 
-				$('#fTgl').val(getTanggal); // set field tanggal
+				$('#fTgl').datepicker('update',getTanggal()); // set field tanggal
+				$('#fQty').val(0);
 				setKdPenjualan($('#fKd_penjualan')); // set kd_penjualan
 				setSelect($('#fKd_barang'));
 				setJenisTransaksi();
@@ -228,8 +237,8 @@
 						// set jenis diskon jadi persen
 						$("#fJenisDiskon").val("p");
 						$("#fJenisDiskon").prop("disabled",false);
-						// set diskon jadi 100
-						$("#fDiskon").val("");
+						// set diskon jadi 0
+						$("#fDiskon").val(0);
 						$("#fDiskon").prop("readonly",false);
 					}
 					else{ // free
@@ -237,7 +246,7 @@
 						$("#fJenisDiskon").val("p");
 						$("#fJenisDiskon").prop("disabled",true);
 						// set diskon jadi 100
-						$("#fDiskon").val("100");
+						$("#fDiskon").val(100);
 						$("#fDiskon").prop("readonly",true);
 					}
 				});
@@ -272,6 +281,7 @@
 						nama: item_text,
 						kd_barang: item_val,
 						qty: qty,
+						hpp: "",
 						harga: "",
 						jenisDiskon: jenisDiskon,
 						diskon: diskon,
@@ -304,17 +314,19 @@
 
 								var subTotal = hitungSubtotal(harga,qty,jenisDiskon,diskon);
 								dataItem.harga = harga;
+								dataItem.hpp = hasil.harga.hpp;
 								dataItem.subTotal = subTotal;
 
 								listItem.push(dataItem);
 								$("#tabel_item_penjualan > tbody:last-child").append(
-									"<tr class='small'>"+
+									"<tr>"+
 									"<td></td>"+ // nomor
 									"<td>"+item_text+"</td>"+ // item
-									"<td>"+parseInt(harga)+"</td>"+ // harga
+									"<td>Rp. "+parseInt(harga)+",00</td>"+ // harga
 									"<td>"+fieldQty(qty, index)+"</td>"+ // qty
 									"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
 									"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
+									"<td>Rp. "+subTotal+",00</td>"+
 									"<td>"+btnAksi(index)+"</td>"+ // aksi
 									"</tr>"
 								);
@@ -344,29 +356,72 @@
 			                console.log(jqXHR, textStatus, errorThrown);
 			            }    
 					})
-					
 				});
 
+				// submit form
+				$("#form_penjualan").submit(function(e){
+					e.preventDefault();
+					var data = getDataForm();
+					data.dataLisItem = listItem;
 
+					console.log(data);
+					$.ajax({
+						url : base_url+"module/penjualan/action.php",
+						type : "post",
+						dataType : "json",
+						data: data,
+						success: function(hasil){
+							console.log(hasil);
+							// if(hasil.status) swal("List Item Masih Kosong");
+						},
+						error: function (jqXHR, textStatus, errorThrown){ // error handling
+				            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+				            console.log(jqXHR, textStatus, errorThrown);
+				        }
+					})
+
+					return false;
+				});
 			});
+	
+			// fungsi get data
+			function getDataForm(){
+				var dataPenjualan = {
+					kd_penjualan: $("#fKd_penjualan").val(),
+					tgl: $("#fTgl").val(),
+					jenis: $("#fJenis").val(),
+					status: $("#fStatus").val(),
+					nama: $("#fNama").val(),
+					no_telp: $("#fno_telepon").val(),
+					alamat: $("#fAlamat").val(),
+				};
+				
+				var data = {
+					"action": $("#btn_submit_penjualan").val(),
+					"dataPenjualan": dataPenjualan,
+					// "dataListItem": listItem,
+				};
+
+				return data;
+			}
 
 			// fungsi penomeran berurut otomatis
 			function numberingList(){
 				$('#tabel_item_penjualan tbody tr').each(function (index) {
 		            $(this).children("td:eq(0)").html(index + 1);
 		        });
-		        $("#tampilHarga h4").text(hitungTotal());
+		        $("#tampilHarga").text("Rp. "+hitungTotal());
 			}
 
 			// fungsi cetak field qty di tabel
 			function fieldQty(qty, index){
-				var field = '<input type="number" min="0" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control input-sm" value="'+qty+'">';
+				var field = '<input type="number" min="0" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'">';
         		return field;
 			}
 
 			// fungsi cetak field keterangan di tabel
 			function fieldKeterangan(index){
-		        var field = '<textarea class="form-control input-sm" row="1" onchange="onChange_ket('+index+',this)"></textarea>';
+		        var field = '<textarea class="form-control" row="1" onchange="onChange_ket('+index+',this)"></textarea>';
 		        return field;
 		    }
 
@@ -384,7 +439,7 @@
 		    		max = "999999";
 		    		span = "<span class='input-group-addon'>Rp.</span>";
 		    	}
-		    	text = '<input type="number" min="0" max="'+max+'" style="width: 5em" class="form-control input-sm" onchange="onChange_diskon('+index+',this)" value="'+diskon+'" '+readonly+'>';
+		    	text = '<input type="number" min="0" max="'+max+'" class="form-control" onchange="onChange_diskon('+index+',this)" value="'+diskon+'" '+readonly+'>';
 		    	field = "<div class='input-group'>"+span+text+"</div>";
 		    	
 		        return field;
@@ -392,7 +447,7 @@
 
 		    // fungsi cetak btn aksi di tabel
 		    function btnAksi(index){
-				var btn = '<button type="button" class="btn btn-danger bnt-flat btn-xs" onclick="delList('+index+',this)" title="Hapus dari list">'+
+				var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list">'+
 		                        '<i class="fa fa-trash"></button>';
 		        return btn;
 			}
@@ -502,11 +557,11 @@
 
 		                // cek apakah ada kode pembelian pada hari ini
 		                if(!data[0]){
-		                    idSelect.val('PB-'+tanggal+'-1'); 
+		                    idSelect.val('PJ-'+tanggal+'-1'); 
 		                }else{
 		                    iterasi = data[0].kd_penjualan.split("-");
 		                    count = parseInt(iterasi[2]) + 1;
-		                    idSelect.val('PB-'+tanggal+'-'+count.toString());
+		                    idSelect.val('PJ-'+tanggal+'-'+count.toString());
 		                }
 		            },error: function (jqXHR, textStatus, errorThrown){ // error handling
 		                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
@@ -608,22 +663,20 @@
 
 		    function setDataPembeli(jenis=true){
 		    	if(jenis){
-		    		$("#dataPembeli").css("display", "block");
 					$("#fNama").val("");
 					$("#fno_telepon").val("");
 					$("#fAlamat").val("");
-					$("#fNama").prop("disabled", false);
-					$("#fno_telepon").prop("disabled", false);
-					$("#fAlamat").prop("disabled", false);
+					$("#fNama").prop("readonly", false);
+					$("#fno_telepon").prop("readonly", false);
+					$("#fAlamat").prop("readonly", false);
 		    	}
 		    	else{
-		    		$("#dataPembeli").css("display", "none");
 		    		$("#fNama").val("");
-		    		$("#fNama").prop("disabled", true);
+		    		$("#fNama").prop("readonly", true);
 					$("#fno_telepon").val("");
-					$("#fno_telepon").prop("disabled", true);
+					$("#fno_telepon").prop("readonly", true);
 					$("#fAlamat").val("");
-					$("#fAlamat").prop("disabled", true);
+					$("#fAlamat").prop("readonly", true);
 		    	} 	
 		    }
 
