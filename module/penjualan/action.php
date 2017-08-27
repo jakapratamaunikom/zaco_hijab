@@ -1,5 +1,5 @@
 <?php
-	session_start();
+	// session_start();
 	date_default_timezone_set('Asia/Jakarta');
 
 	// Load semua fungsi yang dibutuhkan
@@ -22,21 +22,16 @@
 				actionAdd($koneksi); // aksi tambah
 				break;
 
-			// case 'getedit':
-			// 	// get data untuk edit
-			// 	$id = isset($_POST['id']) ? $_POST['id'] : false;
-			// 	getEdit($koneksi, $id);
-			// 	break;
+			case 'getedit':
+				// get data untuk edit
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				getEdit($koneksi, $id);
+				break;
 
-			// case 'edit':
-			// 	actionEdit($koneksi); // aksi edit
-			// 	break;
+			case 'edit':
+				actionEdit($koneksi); // aksi edit
+				break;
 
-			// case 'getselect':
-			// 	// aksi set select dinamis
-			// 	$select = isset($_POST['select']) ? $_POST['select'] : false;
-			// 	getSelect($koneksi, $select);
-			// 	break;
 			case 'addlist':
 				validList($koneksi);
 				break;
@@ -110,20 +105,6 @@
 		echo json_encode($output);
 	}
 
-	function cekArray($data){
-		$cekKosong = true;
-
-		foreach($data as $array){
-			foreach ($array as $key => $value) {
-				if($key == "status"){
-					if($value != "hapus") $cekKosong = false;
-				}
-			}
-		}
-
-		return $cekKosong;
-	}
-
 	// fungsi tambah data
 	function actionAdd($koneksi){
 		$dataPenjualan = isset($_POST['dataPenjualan']) ? $_POST['dataPenjualan'] : false;
@@ -177,9 +158,11 @@
 				if(insertPenjualan($koneksi, $dataPenjualan)){
 					// insert ke detail penjualan
 					foreach($dataLisItem as $index => $array){
+						// insert hanya yg statusnya bukan hapus
 						if($dataLisItem[$index]['status'] != "hapus"){
 							$dataInsert['kd_penjualan'] = $dataPenjualan['kd_penjualan'];
 							$dataInsert['tgl'] = $dataPenjualan['tgl'];
+							// get data list item
 							foreach ($dataLisItem[$index] as $key => $value) {
 								$dataInsert[$key] = $value;
 							}
@@ -198,6 +181,7 @@
 
 		$output = array(
 			'status' => $status,
+			'cekList' => $cekArray,
 			'errorDb' => $errorDb,
 			'duplikat' => $duplikat,
 			'pesanError' => $pesanError_penjualan,
@@ -210,12 +194,13 @@
 	// fungsi insert penjualan
 	function insertPenjualan($koneksi, $data){
 		$ket = "";
-		$onkir = 0;
+		$ongkir = 0;
 		$username = "admin";
 
 		$query = "INSERT INTO penjualan ";
 		$query .= "(kd_penjualan, tgl, jenis, nama, telp, alamat, ongkir, status, ket, username) ";
 		$query .= "VALUES (:kd_penjualan, :tgl, :jenis, :nama, :telp, :alamat, :ongkir, :status, :ket, :username);";
+
 		$statement = $koneksi->prepare($query);
 		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
 		$statement->bindParam(':tgl',$data['tgl']);
@@ -223,7 +208,7 @@
 		$statement->bindParam(':nama',$data['nama']);
 		$statement->bindParam(':telp',$data['no_telp']);
 		$statement->bindParam(':alamat',$data['alamat']);
-		$statement->bindParam(':ongkir',$onkir);
+		$statement->bindParam(':ongkir',$ongkir);
 		$statement->bindParam(':status',$data['status']);
 		$statement->bindParam(':ket',$ket);
 		$statement->bindParam(':username',$username);
@@ -232,6 +217,7 @@
 		return $result;
 	}
 
+	// fungsi insert detail penjualan
 	function insertDetail_penjualan($koneksi, $data){
 		$laba = $data['harga']-$data['hpp'];
 
@@ -248,12 +234,190 @@
 		$statement->bindParam(':qty',$data['qty']);
 		$statement->bindParam(':jenisDiskon',$data['jenisDiskon']);
 		$statement->bindParam(':diskon',$data['diskon']);
-		$statement->bindParam(':subtotal',$data['subtotal']);
+		$statement->bindParam(':subtotal',$data['subTotal']);
 		$statement->bindParam(':laba',$laba);
 		$statement->bindParam(':ket',$data['ket']);
 		$result = $statement->execute();		
 
 		return $result;
+	}
+
+	// fungsi get edit
+	function getEdit($koneksi, $id){
+		// get data penjualan
+		$query = "SELECT * FROM penjualan WHERE id=:id";
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':id', $id);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+		if(!$result){
+			session_start();
+			$_SESSION['notif'] = "gagal";
+			$data = false;
+		}
+		else{
+			$data['penjualan'] = $result;
+			// get data detail penjualan
+			$query = "SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.nama, dp.hpp, dp.harga, ";
+			$query .= "dp.qty, dp.jenis_diskon, dp.diskon, dp.subtotal, dp.ket ";
+			$query .= "FROM detail_penjualan dp JOIN penjualan p ON p.id=dp.kd_penjualan ";
+			$query .= "JOIN barang b ON b.id=dp.kd_barang WHERE dp.kd_penjualan= :id ORDER BY dp.id ASC";
+			$statement = $koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetchAll();
+			$data['listItem'] = $result;
+		}
+
+		echo json_encode($data);
+	}
+
+	// fungsi action edit
+	function actionEdit($koneksi){
+		$dataPenjualan = isset($_POST['dataPenjualan']) ? $_POST['dataPenjualan'] : false;
+		$dataLisItem = isset($_POST['dataLisItem']) ? $_POST['dataLisItem'] : false;
+
+		// validasi
+			// inisialisasi
+			$status = $errorDb = $duplikat = $cekArray = false;
+			$pesanError_penjualan = $set_value_penjualan = "";
+
+			if($dataLisItem){ // cek isi list item ada / tidak
+				if(cekArray($dataLisItem)) $cekArray = false; // array kosong
+				else $cekArray = true;
+			}
+
+			if($cekArray){ // jika ada list lanjutkan
+				$configData_penjualan = configData($dataPenjualan);
+				$validasi_penjualan = set_validasi($configData_penjualan);
+				$cek = $validasi_penjualan['cek'];
+				$pesanError_penjualan = $validasi_penjualan['pesanError'];
+				$set_value_penjualan = $validasi_penjualan['set_value'];
+			}
+			else $cek = false;
+		// ======================================== //
+		if($cek){
+			$dataPenjualan = array(
+				'id' => $dataPenjualan['id'],
+				'kd_penjualan' => validInputan($dataPenjualan['kd_penjualan'], false, false),
+				'tgl' => validInputan($dataPenjualan['tgl'], false, false),
+				'jenis' => validInputan($dataPenjualan['jenis'], false, false),
+				'status' => validInputan($dataPenjualan['status'], false, false),
+				'nama' => validInputan($dataPenjualan['nama'], false, false),
+				'no_telp' => validInputan($dataPenjualan['no_telp'], false, false),
+				'alamat' => validInputan($dataPenjualan['alamat'], false, false),
+			);
+
+			// update penjualan
+			if(updatePenjualan($koneksi, $dataPenjualan)){
+				$dataUpdate['tgl'] = $dataPenjualan['tgl'];
+				// update detail penjualan
+				foreach($dataLisItem as $index => $array){
+					// update hanya yg statusnya bukan hapus dan aksinya edit
+					if(($dataLisItem[$index]['status'] != "hapus") && ($dataLisItem[$index]['aksi'] == "edit")) {
+						$dataUpdate['kd_penjualan'] = $dataPenjualan['id'];
+						// get data list item
+						foreach ($dataLisItem[$index] as $key => $value) {
+							$dataUpdate[$key] = $value;
+						}
+						updateDetail_penjualan($koneksi,$dataUpdate);
+					}
+					// insert data
+					else if(($dataLisItem[$index]['status'] != "hapus") && ($dataLisItem[$index]['aksi'] == "tambah")){
+						$dataUpdate['kd_penjualan'] = $dataPenjualan['kd_penjualan'];
+						// get data list item
+						foreach ($dataLisItem[$index] as $key => $value) {
+							$dataUpdate[$key] = $value;
+						}
+						insertDetail_penjualan($koneksi,$dataUpdate);
+					}
+					// hapus list
+					else if(($dataLisItem[$index]['status'] == "hapus") && ($dataLisItem[$index]['aksi'] == "edit")){
+						// // get data list item
+						// foreach ($dataLisItem[$index] as $key => $value) {
+						// 	$dataUpdate[$key] = $value;
+						// }
+						// updateDetail_penjualan($koneksi,$dataUpdate);
+					}
+				}
+			}
+			else{
+				$status = false;
+				$errorDb = true;
+			}
+			$status = true;
+			session_start();
+			$_SESSION['notif'] = "Edit Data Berhasil";
+		}
+		else $status = false;
+
+		$output = array(
+			'status' => $status,
+			'cekList' => $cekArray,
+			'errorDb' => $errorDb,
+			'duplikat' => $duplikat,
+			'pesanError' => $pesanError_penjualan,
+			'set_value' => $set_value_penjualan,
+		);
+
+		echo json_encode($output);
+	}
+
+	// fungsi update penjualan
+	function updatePenjualan($koneksi, $data){
+		$ket = "";
+		$ongkir = 0;
+
+		$query = "UPDATE penjualan SET tgl= :tgl, jenis= :jenis, nama= :nama, telp= :telp, ";
+		$query .= "alamat= :alamat, ongkir= :ongkir, status= :status, ket= :ket ";
+		$query .= "WHERE id= :id";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':tgl', $data['tgl']);
+		$statement->bindParam(':jenis', $data['jenis']);
+		$statement->bindParam(':nama', $data['nama']);
+		$statement->bindParam(':telp', $data['no_telp']);
+		$statement->bindParam(':alamat', $data['alamat']);
+		$statement->bindParam(':ongkir', $ongkir);
+		$statement->bindParam(':status', $data['status']);
+		$statement->bindParam(':ket', $ket);
+		$statement->bindParam(':id', $data['id']);
+		$result = $statement->execute();
+
+		return $result;
+	}
+
+	// fungsi update detail penjualan
+	function updateDetail_penjualan($koneksi, $data){
+		$laba = $data['harga']-$data['hpp'];
+
+		$query = "CALL edit_penjualan ";
+		$query .= "(:kd_penjualan, :id_detail, :tgl, :kd_barang, :hpp, :harga, ";
+		$query .= ":qty, :jenisDiskon, :diskon, :subtotal, :laba, :ket)";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
+		$statement->bindParam(':id_detail',$data['id']);
+		$statement->bindParam(':tgl',$data['tgl']);
+		$statement->bindParam(':kd_barang',$data['kd_barang']);
+		$statement->bindParam(':hpp',$data['hpp']);
+		$statement->bindParam(':harga',$data['harga']);
+		$statement->bindParam(':qty',$data['qty']);
+		$statement->bindParam(':jenisDiskon',$data['jenisDiskon']);
+		$statement->bindParam(':diskon',$data['diskon']);
+		$statement->bindParam(':subtotal',$data['subTotal']);
+		$statement->bindParam(':laba',$laba);
+		$statement->bindParam(':ket',$data['ket']);
+		$result = $statement->execute();		
+
+		return $result;
+
+	}
+
+	// fungsi hapus detail penjualan
+	function deleteDetail_penjualan($koneksi, $data){
+
 	}
 
 	// fungsi validasi list item
@@ -286,7 +450,6 @@
 
 		// prepare
 		$statement = $koneksi->prepare($query);
-		
 		// execute
 		$statement->execute();
 		$result = $statement->fetchAll();
@@ -400,11 +563,6 @@
 				'field' => $data['diskon'], 'label' => 'Diskon', 'error' => 'diskonError',
 				'value' => 'Diskon', 'rule' => 'angka | 0 | '.$maxDiskon.' | not_required',
 			),
-			// data subtotal
-			// array(
-			// 	'field' => $data['subTotal'], 'label' => 'Subtotal', 'error' => 'subTotalError',
-			// 	'value' => 'subTotal', 'rule' => 'angka | 0 | 9999999 | required',
-			// ),
 			// data ket
 			array(
 				'field' => $data['ket'], 'label' => 'Keterangan', 'error' => 'ketError',
@@ -414,4 +572,3 @@
 
 		return $configData;
 	}
-?>

@@ -27,6 +27,7 @@
     <!-- isi konten -->
     <section class="content">
     	<form enctype="multipart/form-data" role="form" id="form_penjualan">
+    		<input type="hidden" name="id" id="id">
 	    	<!-- panel 1 -->
 	    	<div class="row">
 	    		<div class="col-md-12">
@@ -199,11 +200,22 @@
             var base_url = "<?php print base_url; ?>";
             var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
             var listItem = [];
+            var indexItem = 0;
         </script>
 		<script type="text/javascript">
 			$(document).ready(function(){
+				var cekEdit = false;
+
+				if(!jQuery.isEmptyObject(urlParams.id)){ // jika ada parameter get
+					// edit_barang(urlParams.id);
+					cekEdit = true;
+				}
+
+				console.log(cekEdit);
+
 				//Initialize Select2 Elements
 	    		$(".select2").select2();
+	    		$("#fKd_penjualan").prop("readonly", true);
 
 	    		//setting datepicker
 				$(".datepicker").datepicker({
@@ -215,13 +227,19 @@
 			        todayHighlight: true,
 				});
 
-				$('#fTgl').datepicker('update',getTanggal()); // set field tanggal
+				 // set field tanggal
 				$('#fQty').val(0);
-				setKdPenjualan($('#fKd_penjualan')); // set kd_penjualan
+				 // set kd_penjualan
 				setSelect($('#fKd_barang'));
 				setJenisTransaksi();
 				setStatusTransaksi();
 				setJenisDiskon();
+
+				if(cekEdit) edit_penjualan(urlParams.id);
+				else{
+					setKdPenjualan($('#fKd_penjualan'));
+					$('#fTgl').datepicker('update',getTanggal());
+				}
 
 				// onchange jenis transaksi
 				$("#fJenis").change(function(){
@@ -264,7 +282,6 @@
 					$("#fDiskon").val(0);
 				});
 
-				var indexItem = 0;
 				// on click tambah item
 				$("#btn_tambahItem").click(function(){
 					var index = indexItem++;
@@ -274,19 +291,10 @@
 					var jenisDiskon = $("#fJenisDiskon").val().trim();
 					var diskon = parseInt($("#fDiskon").val());
 					var dataItem = {
-						aksi: "tambah",
-						status: "",
-						index: index,
-						id: "",
-						nama: item_text,
-						kd_barang: item_val,
-						qty: qty,
-						hpp: "",
-						harga: "",
-						jenisDiskon: jenisDiskon,
-						diskon: diskon,
-						subTotal: "",
-						ket: "",
+						aksi: "tambah", status: "", index: index, id: "",
+						nama: item_text, kd_barang: item_val, qty: qty,
+						hpp: "", harga: "", jenisDiskon: jenisDiskon,
+						diskon: diskon, subTotal: "", ket: "",
 					};
 
 					// validasi sebelum push ke array list
@@ -304,17 +312,17 @@
 							if(hasil.status){
 								// var harga = "";
 								if($("#fJenis").val().toLowerCase() == "harga pasar")
-									var harga = hasil.harga.harga_pasar;
+									var harga = parseInt(hasil.harga.harga_pasar);
 								else if($("#fJenis").val().toLowerCase() == "market place")
-									var harga = hasil.harga.market_place;
+									var harga = parseInt(hasil.harga.market_place);
 								else if($("#fJenis").val().toLowerCase() == "harga ig")
-									var harga = hasil.harga.harga_ig;
+									var harga = parseInt(hasil.harga.harga_ig);
 								else if($("#fJenis").val().toLowerCase() == "reseller")
-									var harga = hasil.harga.harga_pasar;
+									var harga = parseInt(hasil.harga.harga_pasar);
 
 								var subTotal = hitungSubtotal(harga,qty,jenisDiskon,diskon);
 								dataItem.harga = harga;
-								dataItem.hpp = hasil.harga.hpp;
+								dataItem.hpp = parseInt(hasil.harga.hpp);
 								dataItem.subTotal = subTotal;
 
 								listItem.push(dataItem);
@@ -322,7 +330,7 @@
 									"<tr>"+
 									"<td></td>"+ // nomor
 									"<td>"+item_text+"</td>"+ // item
-									"<td>Rp. "+parseInt(harga)+",00</td>"+ // harga
+									"<td>Rp. "+harga+",00</td>"+ // harga
 									"<td>"+fieldQty(qty, index)+"</td>"+ // qty
 									"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
 									"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
@@ -371,6 +379,23 @@
 						dataType : "json",
 						data: data,
 						success: function(hasil){
+							if(hasil.status) document.location=base_url+"index.php?m=penjualan&p=list"; // jika berhasil
+							else{
+								// cek jenis error
+								if(hasil.errorDb){
+									swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+								}
+								else{
+									// cek duplikat
+									if(hasil.duplikat){
+
+									}
+									// cek list item
+									else if(!hasil.cekList){
+										swal("Pesan", "List Item Belum Diisi !", "warning");
+									}
+								}
+							}
 							console.log(hasil);
 							// if(hasil.status) swal("List Item Masih Kosong");
 						},
@@ -387,6 +412,7 @@
 			// fungsi get data
 			function getDataForm(){
 				var dataPenjualan = {
+					id: $("#id").val(),
 					kd_penjualan: $("#fKd_penjualan").val(),
 					tgl: $("#fTgl").val(),
 					jenis: $("#fJenis").val(),
@@ -405,6 +431,69 @@
 				return data;
 			}
 
+			// fungsi submit data
+			function submit_penjualan(){
+
+			}
+
+			// fungsi get data edit
+			function edit_penjualan(id){
+
+				$.ajax({
+					url: base_url+"module/penjualan/action.php",
+					type: "post",
+					dataType: "json",
+					data: {
+						"id" : id,
+						"action" : "getEdit",
+					},
+					success: function(data){
+						console.log(data);
+						var statusTranksaksi = data.penjualan.status;
+						// isi form penjualan
+						$("#id").val(data.penjualan.id);
+						$("#fKd_penjualan").val(data.penjualan.kd_penjualan);
+						$('#fTgl').datepicker('update',data.penjualan.tgl);
+						$("#fJenis").val(data.penjualan.jenis);
+						$("#fStatus").val(data.penjualan.status);
+						$("#fNama").val(data.penjualan.nama);
+						$("#fno_telepon").val(data.penjualan.telp);
+						$("#fAlamat").val(data.penjualan.alamat);
+
+						$.each(data.listItem, function(index, item){
+							var index = indexItem++;
+							// masukkan data dari server ke array listItem
+							var dataItem = {
+								aksi: "edit", status: "", index: index, id: item.id, nama: item.nama,
+								kd_barang: item.kd_barang, qty: parseInt(item.qty), hpp: parseInt(item.hpp),
+								harga: parseInt(item.harga), jenisDiskon: item.jenis_diskon,
+								diskon: parseInt(item.diskon), subTotal: parseInt(item.subtotal),
+								ket: item.ket,
+							};
+							listItem.push(dataItem);
+							$("#tabel_item_penjualan > tbody:last-child").append(
+								"<tr>"+
+								"<td></td>"+ // nomor
+								"<td>"+item.nama+"</td>"+ // item
+								"<td>Rp. "+parseInt(item.harga)+",00</td>"+ // harga
+								"<td>"+fieldQty(parseInt(item.qty), dataItem.index)+"</td>"+ // qty
+								"<td>"+fieldDiskon(item.jenis_diskon, parseInt(item.diskon), dataItem.index, statusTranksaksi)+"</td>"+ // diskon
+								"<td>"+fieldKeterangan(dataItem.index, item.ket)+"</td>"+ // keterangan
+								"<td>Rp. "+parseInt(item.subtotal)+",00</td>"+
+								"<td>"+btnAksi(dataItem.index)+"</td>"+ // aksi
+								"</tr>"
+							);
+							numberingList();
+						});
+						console.log(listItem);
+					},
+					error: function (jqXHR, textStatus, errorThrown) { // error handling
+			            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+			            console.log(jqXHR, textStatus, errorThrown);
+			        }
+				})
+			}
+
 			// fungsi penomeran berurut otomatis
 			function numberingList(){
 				$('#tabel_item_penjualan tbody tr').each(function (index) {
@@ -420,8 +509,9 @@
 			}
 
 			// fungsi cetak field keterangan di tabel
-			function fieldKeterangan(index){
-		        var field = '<textarea class="form-control" row="1" onchange="onChange_ket('+index+',this)"></textarea>';
+			function fieldKeterangan(index, val=false){
+				var ket = val===false ? "" : val;
+		        var field = '<textarea class="form-control" row="1" onchange="onChange_ket('+index+',this)">'+ket+'</textarea>';
 		        return field;
 		    }
 
@@ -544,7 +634,7 @@
 
 			// fungsi set kode pembelian (bug kode > 10)
 		    function setKdPenjualan(idSelect){
-		    	$("#fKd_penjualan").prop("readonly", true);
+		    	
 		        $.ajax({
 		            url: base_url+"module/penjualan/action.php",
 		            type: "post",
