@@ -110,3 +110,18 @@
 
 		return $dataList;
 	}
+
+	// fungsi untuk cek array list
+	function cekArray($data){
+		$cekKosong = true;
+
+		foreach($data as $array){
+			foreach ($array as $key => $value) {
+				if($key == "status"){
+					if($value != "hapus") $cekKosong = false;
+				}
+			}
+		}
+
+		return $cekKosong; // true --> list kosong, false --> ada isinya.
+	}
