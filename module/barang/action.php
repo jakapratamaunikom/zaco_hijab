@@ -215,21 +215,7 @@
 					$statement->bindParam(':tgl', $tgl);
 					$statement->bindParam(':stokAwal', $dataForm['stokAwal']);
 					// execute
-					$result = $statement->execute(
-						array(
-							':id_barang' => $dataForm['id_barang'],
-							':id_warna' => $dataForm['id_warna'],
-							':nama' => $dataForm['nama'],
-							':hpp' => $dataForm['hpp'],
-							':harga_pasar' => $dataForm['harga_pasar'],
-							':market_place' => $dataForm['market_place'],
-							':harga_ig' => $dataForm['harga_ig'],
-							':foto' => $valueFoto,
-							':ket' => $dataForm['ket'],
-							':tgl' => $tgl,
-							':stokAwal' => $dataForm['stokAwal'],
-						)
-					);
+					$result = $statement->execute();
 					
 					// jika query berhasil
 					if($result){
@@ -261,14 +247,11 @@
 
 	// fungsi get data edit
 	function getEdit($koneksi, $id){
-		// $id = "11";
-		$tabel = "barang";
-		// query
-		$query = "SELECT $tabel.id, $tabel.id_barang, ib.id_barang id_idBarang, ib.nama nama_idBarang, $tabel.id_warna, iw.id_warna id_idWarna, iw.nama nama_idWarna, ";
-		$query .= "concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, $tabel.nama, hpp, harga_pasar, market_place, harga_ig, foto, ket ";
-		$query .= "FROM $tabel JOIN id_barang ib ON ib.id = $tabel.id_barang ";
-		$query .= "JOIN id_warna iw ON iw.id = $tabel.id_warna ";
-		$query .= "WHERE $tabel.id = :id";
+		$query = "SELECT b.id, b.id_barang, ib.id_barang id_idBarang, ib.nama nama_idBarang, b.id_warna, iw.id_warna id_idWarna, iw.nama nama_idWarna, ";
+		$query .= "concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, b.nama, hpp, harga_pasar, market_place, harga_ig, foto, ket ";
+		$query .= "FROM barang b JOIN id_barang ib ON ib.id = b.id_barang ";
+		$query .= "JOIN id_warna iw ON iw.id = b.id_warna ";
+		$query .= "WHERE b.id = :id";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
@@ -329,17 +312,7 @@
 			$statement->bindParam(':ket', $dataForm['ket']);
 			$statement->bindParam(':id', $dataForm['id']);
 			// execute
-			$result = $statement->execute(
-				array(
-					':nama' => $dataForm['nama'],
-					':hpp' => $dataForm['hpp'],
-					':harga_pasar' => $dataForm['harga_pasar'],
-					':market_place' => $dataForm['market_place'],
-					':harga_ig' => $dataForm['harga_ig'],
-					':ket' => $dataForm['ket'],
-					':id' => $dataForm['id'],
-				)
-			);
+			$result = $statement->execute();
 			
 			// jika query berhasil
 			if($result){
@@ -421,12 +394,7 @@
 				// bind
 				$statement->bindParam(':foto', $fotoBaru);
 				$statement->bindParam(':id', $id);
-				$result = $statement->execute(
-					array(
-						':foto' => $fotoBaru,
-						':id' => $id,
-					)
-				);
+				$result = $statement->execute();
 			}
 		}
 		else $statusHapus = false;

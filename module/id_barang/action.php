@@ -132,12 +132,7 @@
 				$statement->bindParam(':id_barang', $dataForm['id_barang']);
 				$statement->bindParam(':nama', $dataForm['nama']);
 				// execute
-				$result = $statement->execute(
-					array(
-						':id_barang' => $dataForm['id_barang'],
-						':nama' => $dataForm['nama'],
-					)
-				);
+				$result = $statement->execute();
 				
 				// jika query berhasil
 				if($result){
@@ -207,12 +202,7 @@
 			$statement->bindParam(':nama', $dataForm['nama']);
 			$statement->bindParam(':id', $dataForm['id']);
 			// execute
-			$result = $statement->execute(
-				array(
-					':nama' => $dataForm['nama'],
-					':id' => $dataForm['id'],
-				)
-			);
+			$result = $statement->execute();
 			
 			// jika query berhasil
 			if($result){
