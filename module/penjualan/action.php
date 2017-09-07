@@ -7,6 +7,7 @@
 	include_once("../../function/koneksi.php");
 	include_once("../../function/validasi_form.php");
 	include_once("../../function/datatable.php");
+	include_once("model_penjualan.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
 
@@ -15,7 +16,7 @@
 	else{
 		switch (strtolower($action)) {
 			case 'list':
-				list_Barang($koneksi); // list datatable
+				list_penjualan($koneksi); // list datatable
 				break;
 
 			case 'tambah':
@@ -51,7 +52,7 @@
 	}
 
 	// function list datatable (server-side)
-	function list_Barang($koneksi){
+	function list_penjualan($koneksi){
 		/* 
 			configurasi tabel barang
 			=> kolom yg ditampilkan di datatable:
@@ -65,18 +66,20 @@
 			'kondisi' => false,
 		);
 
-		// panggil fungsi get datatable
-		$query = get_dataTable($config_db);
+		// // panggil fungsi get datatable
+		// $query = get_dataTable($config_db);
 
-		// persiapkan eksekusi query
-		$statement = $koneksi->prepare($query);
-		$statement->execute();
-		$result = $statement->fetchAll();
+		// // persiapkan eksekusi query
+		// $statement = $koneksi->prepare($query);
+		// $statement->execute();
+		// $result = $statement->fetchAll();
+
+		$data_penjualan = get_all_penjualan($koneksi, $config_db);
 
 		// siapkan data untuk isi datatable
 		$data = array();
 		$no_urut = $_POST['start'];
-		foreach($result as $row){
+		foreach($data_penjualan as $row){
 			$no_urut++;
 			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=view&id='.$row["id"].'">Detail</a>';
 			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=form&id='.$row["id"].'">Edit</a>';
@@ -191,83 +194,35 @@
 		echo json_encode($output);
 	}
 
-	// fungsi insert penjualan
-	function insertPenjualan($koneksi, $data){
-		$ket = "";
-		$ongkir = 0;
-		$username = "admin";
-
-		$query = "INSERT INTO penjualan ";
-		$query .= "(kd_penjualan, tgl, jenis, nama, telp, alamat, ongkir, status, ket, username) ";
-		$query .= "VALUES (:kd_penjualan, :tgl, :jenis, :nama, :telp, :alamat, :ongkir, :status, :ket, :username);";
-
-		$statement = $koneksi->prepare($query);
-		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
-		$statement->bindParam(':tgl',$data['tgl']);
-		$statement->bindParam(':jenis',$data['jenis']);
-		$statement->bindParam(':nama',$data['nama']);
-		$statement->bindParam(':telp',$data['no_telp']);
-		$statement->bindParam(':alamat',$data['alamat']);
-		$statement->bindParam(':ongkir',$ongkir);
-		$statement->bindParam(':status',$data['status']);
-		$statement->bindParam(':ket',$ket);
-		$statement->bindParam(':username',$username);
-		$result = $statement->execute();
-
-		return $result;
-	}
-
-	// fungsi insert detail penjualan
-	function insertDetail_penjualan($koneksi, $data){
-		$laba = $data['harga']-$data['hpp'];
-
-		$query = "CALL tambah_penjualan ";
-		$query .= "(:kd_penjualan, :tgl, :kd_barang, :hpp, :harga, ";
-		$query .= ":qty, :jenisDiskon, :diskon, :subtotal, :laba, :ket)";
-		
-		$statement = $koneksi->prepare($query);
-		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
-		$statement->bindParam(':tgl',$data['tgl']);
-		$statement->bindParam(':kd_barang',$data['kd_barang']);
-		$statement->bindParam(':hpp',$data['hpp']);
-		$statement->bindParam(':harga',$data['harga']);
-		$statement->bindParam(':qty',$data['qty']);
-		$statement->bindParam(':jenisDiskon',$data['jenisDiskon']);
-		$statement->bindParam(':diskon',$data['diskon']);
-		$statement->bindParam(':subtotal',$data['subTotal']);
-		$statement->bindParam(':laba',$laba);
-		$statement->bindParam(':ket',$data['ket']);
-		$result = $statement->execute();		
-
-		return $result;
-	}
-
 	// fungsi get edit
 	function getEdit($koneksi, $id){
 		// get data penjualan
-		$query = "SELECT * FROM penjualan WHERE id=:id";
-		$statement = $koneksi->prepare($query);
-		$statement->bindParam(':id', $id);
-		$statement->execute();
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		// $query = "SELECT * FROM penjualan WHERE id=:id";
+		// $statement = $koneksi->prepare($query);
+		// $statement->bindParam(':id', $id);
+		// $statement->execute();
+		// $result = $statement->fetch(PDO::FETCH_ASSOC);
 
-		if(!$result){
+		$data_penjualan = get_penjualan_by_id($koneksi, $id);
+
+		if(!$data_penjualan){
 			session_start();
 			$_SESSION['notif'] = "gagal";
 			$data = false;
 		}
 		else{
-			$data['penjualan'] = $result;
+			$data['penjualan'] = $data_penjualan;
 			// get data detail penjualan
-			$query = "SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.nama, dp.hpp, dp.harga, ";
-			$query .= "dp.qty, dp.jenis_diskon, dp.diskon, dp.subtotal, dp.ket ";
-			$query .= "FROM detail_penjualan dp JOIN penjualan p ON p.id=dp.kd_penjualan ";
-			$query .= "JOIN barang b ON b.id=dp.kd_barang WHERE dp.kd_penjualan= :id ORDER BY dp.id ASC";
-			$statement = $koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$statement->execute();
-			$result = $statement->fetchAll();
-			$data['listItem'] = $result;
+			// $query = "SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.nama, dp.hpp, dp.harga, ";
+			// $query .= "dp.qty, dp.jenis_diskon, dp.diskon, dp.subtotal, dp.ket ";
+			// $query .= "FROM detail_penjualan dp JOIN penjualan p ON p.id=dp.kd_penjualan ";
+			// $query .= "JOIN barang b ON b.id=dp.kd_barang WHERE dp.kd_penjualan= :id ORDER BY dp.id ASC";
+			// $statement = $koneksi->prepare($query);
+			// $statement->bindParam(':id', $id);
+			// $statement->execute();
+			// $result = $statement->fetchAll();
+			$data_detail = get_detail_by_id($koneksi, $id);
+			$data['listItem'] = $data_detail;
 		}
 
 		echo json_encode($data);
@@ -365,28 +320,28 @@
 	}
 
 	// fungsi update penjualan
-	function updatePenjualan($koneksi, $data){
-		$ket = "";
-		$ongkir = 0;
+	// function updatePenjualan($koneksi, $data){
+	// 	$ket = "";
+	// 	$ongkir = 0;
 
-		$query = "UPDATE penjualan SET tgl= :tgl, jenis= :jenis, nama= :nama, telp= :telp, ";
-		$query .= "alamat= :alamat, ongkir= :ongkir, status= :status, ket= :ket ";
-		$query .= "WHERE id= :id";
+	// 	$query = "UPDATE penjualan SET tgl= :tgl, jenis= :jenis, nama= :nama, telp= :telp, ";
+	// 	$query .= "alamat= :alamat, ongkir= :ongkir, status= :status, ket= :ket ";
+	// 	$query .= "WHERE id= :id";
 
-		$statement = $koneksi->prepare($query);
-		$statement->bindParam(':tgl', $data['tgl']);
-		$statement->bindParam(':jenis', $data['jenis']);
-		$statement->bindParam(':nama', $data['nama']);
-		$statement->bindParam(':telp', $data['no_telp']);
-		$statement->bindParam(':alamat', $data['alamat']);
-		$statement->bindParam(':ongkir', $ongkir);
-		$statement->bindParam(':status', $data['status']);
-		$statement->bindParam(':ket', $ket);
-		$statement->bindParam(':id', $data['id']);
-		$result = $statement->execute();
+	// 	$statement = $koneksi->prepare($query);
+	// 	$statement->bindParam(':tgl', $data['tgl']);
+	// 	$statement->bindParam(':jenis', $data['jenis']);
+	// 	$statement->bindParam(':nama', $data['nama']);
+	// 	$statement->bindParam(':telp', $data['no_telp']);
+	// 	$statement->bindParam(':alamat', $data['alamat']);
+	// 	$statement->bindParam(':ongkir', $ongkir);
+	// 	$statement->bindParam(':status', $data['status']);
+	// 	$statement->bindParam(':ket', $ket);
+	// 	$statement->bindParam(':id', $data['id']);
+	// 	$result = $statement->execute();
 
-		return $result;
-	}
+	// 	return $result;
+	// }
 
 	// fungsi update detail penjualan
 	function updateDetail_penjualan($koneksi, $data){
