@@ -3,15 +3,15 @@
 	date_default_timezone_set('Asia/Jakarta');
 
 	// include semua fungsi
-	include_once("function/helper.php");
-	include_once("function/koneksi.php");
+	include_once("app/function/helper.php");
+	include_once("app/function/koneksi.php");
 
 	// start session
 	session_start();
 
 	// inisialisasi parameter get
-	// $m => get data module
-	// $p => get data page yang ada di dalam module
+	// $m => get data menu/view
+	// $p => get data page yang ada di dalam views
 
 	$m = isset($_GET['m']) ? $_GET['m'] : false; // untuk get menu
 	$p = isset($_GET['p']) ? $_GET['p'] : false; // untuk get page
@@ -29,31 +29,31 @@
 		<!-- jQuery -->
 		<script src="<?= base_url."assets/plugins/jQuery/jquery-2.2.3.min.js"; ?>"></script>
 		<!-- CSS -->
-		<?php include_once("pages/template/css.php") ?>
+		<?php include_once("app/views/template/css.php") ?>
 
 	</head>
 	<body class="hold-transition skin-red sidebar-mini">
 
 		<div class="wrapper">
 			<!-- Header -->
-			<?php include_once("pages/template/header.php") ?>
+			<?php include_once("app/views/template/header.php") ?>
 
 			<!-- Sidebar -->
-			<?php include_once("pages/template/sidebar.php") ?>
+			<?php include_once("app/views/template/sidebar.php") ?>
 
 			<!-- Content -->
-			<?php include_once("pages/template/content.php") ?>
+			<?php include_once("app/views/template/content.php") ?>
 
 			<!-- Footer -->
-			<?php include_once("pages/template/footer.php") ?>
+			<?php include_once("app/views/template/footer.php") ?>
 
 			<!-- Control Sidebar -->
-			<?php include_once("pages/template/control_sidebar.php") ?>
+			<?php include_once("app/views/template/control_sidebar.php") ?>
 
 		</div>
 		<!-- ./wrapper -->
 		
 		<!-- JavaScript -->
-		<?php include_once("pages/template/javascript.php") ?>
+		<?php include_once("app/views/template/javascript.php") ?>
 	</body>
 </html>
