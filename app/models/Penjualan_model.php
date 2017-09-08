@@ -1,13 +1,23 @@
 <?php
-	
 	// get all data penjualan
 	function get_all_penjualan($koneksi, $config_db){
 		$query = get_dataTable($config_db);
 		$statement = $koneksi->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
+		tutup_koneksi($koneksi);
 
 		return $result;
+	}
+
+	// get data view penjualan
+	function get_penjualan_view($koneksi, $id){
+
+	}
+
+	// get data view detail penjualan
+	function get_detail_view($koneksi, $id){
+
 	}
 
 	// get data edit penjualan
@@ -17,6 +27,7 @@
 		$statement->bindParam(':id', $id);
 		$statement->execute();
 		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		tutup_koneksi($koneksi);
 
 		return $result;
 	}
@@ -31,7 +42,23 @@
 		$statement->bindParam(':id', $id);
 		$statement->execute();
 		$result = $statement->fetchAll();
+		tutup_koneksi($koneksi);
 
+		return $result;
+	}
+
+	// get kd penjualan
+	function get_kd_penjualan($koneksi){
+		$kode = date("Y").date("m").date("d");
+		$query = "SELECT kd_penjualan FROM penjualan WHERE kd_penjualan LIKE '%".$kode."%' ORDER BY kd_penjualan desc LIMIT 1";
+
+		// prepare
+		$statement = $koneksi->prepare($query);
+		// execute
+		$statement->execute();
+		$result = $statement->fetchAll();
+		tutup_koneksi($koneksi);
+		
 		return $result;
 	}
 
@@ -57,6 +84,7 @@
 		$statement->bindParam(':ket',$ket);
 		$statement->bindParam(':username',$username);
 		$result = $statement->execute();
+		tutup_koneksi($koneksi);
 
 		return $result;
 	}
@@ -82,6 +110,7 @@
 		$statement->bindParam(':laba',$laba);
 		$statement->bindParam(':ket',$data['ket']);
 		$result = $statement->execute();		
+		tutup_koneksi($koneksi);
 
 		return $result;
 	}
@@ -106,6 +135,7 @@
 		$statement->bindParam(':ket', $ket);
 		$statement->bindParam(':id', $data['id']);
 		$result = $statement->execute();
+		tutup_koneksi($koneksi);
 
 		return $result;
 	}
@@ -132,6 +162,7 @@
 		$statement->bindParam(':laba',$laba);
 		$statement->bindParam(':ket',$data['ket']);
 		$result = $statement->execute();		
+		tutup_koneksi($koneksi);
 
 		return $result;
 	}

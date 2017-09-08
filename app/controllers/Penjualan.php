@@ -9,6 +9,7 @@
 	include_once("../function/datatable.php");
 	// load model
 	include_once("../models/Penjualan_model.php");
+	include_once("../models/Barang_model.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
 
@@ -310,7 +311,6 @@
 		$status = false;
 
 		// get harga, dan stok barang
-		$hargaBarang = getKetBarang($koneksi, $dataList['kd_barang']);
 		$configData = configDataList($dataList, $koneksi);
 		$validasi = set_validasi($configData);
 		$cek = $validasi['cek'];
@@ -321,48 +321,20 @@
 		$output = array(
 			'status' => $status,
 			'pesanError' => $pesanError,
-			'harga' => $hargaBarang, 
 		);
 
 		echo json_encode($output);
 	}
-
+	
 	function getKdPenjualan($koneksi){
-		$kode = date("Y").date("m").date("d");
-		$query = "SELECT kd_penjualan FROM penjualan WHERE kd_penjualan LIKE '%".$kode."%' ORDER BY kd_penjualan desc LIMIT 1";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// execute
-		$statement->execute();
-		$result = $statement->fetchAll();
-		echo json_encode($result);
+		$kd_penjualan = get_kd_penjualan($koneksi);
+		echo json_encode($kd_penjualan);
 	}
 
-	function getKetBarang($koneksi, $id){
-		$query = "SELECT hpp, harga_pasar, market_place, harga_ig, stok FROM v_barang WHERE id=:id";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		$statement->bindParam(':id', $id);
-		// execute
-		$statement->execute();
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-		return $result;
-	}
-
-	// fungsi get data select
+	// fungsi get data select barang
 	function getSelect($koneksi){
-		$query = "SELECT id, nama, stok FROM v_barang";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// execute
-		$statement->execute();
-		$result = $statement->fetchAll();
-
-		echo json_encode($result);
+		$data_barang = get_ket_barang($koneksi);
+		echo json_encode($data_barang);
 	}
 
 	// fungsi set data untuk di validasi

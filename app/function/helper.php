@@ -32,6 +32,11 @@
 		return $cek;
 	}
 
+	// fungsi tutup koneksi
+	function tutup_koneksi($koneksi){
+		$koneksi = null;
+	}
+
 	//fungsi format rupiah
 	function rupiah($harga){
 		$string = "Rp. ".number_format($harga,2,",",".");

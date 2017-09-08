@@ -9,6 +9,7 @@
 	include_once("../function/datatable.php");
 	// load model
 	include_once("../models/Barang_model.php");
+	include_once("../models/Stok_model.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
 	// $action = "coba";
@@ -82,18 +83,12 @@
 			'kondisi' => false,
 		);
 
-		// panggil fungsi get datatable
-		$query = get_dataTable($config_db);
-
-		// persiapkan eksekusi query
-		$statement = $koneksi->prepare($query);
-		$statement->execute();
-		$result = $statement->fetchAll();
+		$data_barang = get_all_barang($koneksi, $config_db);
 
 		// siapkan data untuk isi datatable
 		$data = array();
 		$no_urut = $_POST['start'];
-		foreach($result as $row){
+		foreach($data_barang as $row){
 			$no_urut++;
 			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=view&id='.$row["id"].'">Detail</a>';
 			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=form&id='.$row["id"].'">Edit</a>';
@@ -171,6 +166,7 @@
 				'market_place' => validInputan($dataForm['market_place'], false, false),
 				'harga_ig' => validInputan($dataForm['harga_ig'], false, false),
 				'stokAwal' => validInputan($dataForm['stokAwal'], false, false),
+				'foto' => validInputan($valueFoto, false, true),
 			);
 
 			// cek duplikat id barang
@@ -196,31 +192,9 @@
 					}
 				}
 
-				if($cekFoto){
-					$tgl = date("Y-m-d");
-					$query = "CALL tambah_barang(
-						:id_barang, :id_warna, :nama, :hpp, :harga_pasar, 
-						:market_place, :harga_ig, :foto, :ket, :tgl, :stokAwal)";
-
-					// prepare
-					$statement = $koneksi->prepare($query);
-					// bind
-					$statement->bindParam(':id_barang', $dataForm['id_barang']);
-					$statement->bindParam(':id_warna', $dataForm['id_warna']);
-					$statement->bindParam(':nama', $dataForm['nama']);
-					$statement->bindParam(':hpp', $dataForm['hpp']);
-					$statement->bindParam(':harga_pasar', $dataForm['harga_pasar']);
-					$statement->bindParam(':market_place', $dataForm['market_place']);
-					$statement->bindParam(':harga_ig', $dataForm['harga_ig']);
-					$statement->bindParam(':foto', $valueFoto);
-					$statement->bindParam(':ket', $dataForm['ket']);
-					$statement->bindParam(':tgl', $tgl);
-					$statement->bindParam(':stokAwal', $dataForm['stokAwal']);
-					// execute
-					$result = $statement->execute();
-					
+				if($cekFoto){					
 					// jika query berhasil
-					if($result){
+					if(insertBarang($koneksi, $dataForm)){
 						$status = true;
 						$errorDb = false;
 						session_start();
@@ -249,26 +223,14 @@
 
 	// fungsi get data edit
 	function getEdit($koneksi, $id){
-		$query = "SELECT b.id, b.id_barang, ib.id_barang id_idBarang, ib.nama nama_idBarang, b.id_warna, iw.id_warna id_idWarna, iw.nama nama_idWarna, ";
-		$query .= "concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, b.nama, hpp, harga_pasar, market_place, harga_ig, foto, ket ";
-		$query .= "FROM barang b JOIN id_barang ib ON ib.id = b.id_barang ";
-		$query .= "JOIN id_warna iw ON iw.id = b.id_warna ";
-		$query .= "WHERE b.id = :id";
+		$data_barang = get_barang_by_id($koneksi, $id);
 
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// bind
-		$statement->bindParam(':id', $id);
-		// execute
-		$statement->execute();
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-		if(!$result){
+		if(!$data_barang){
 			session_start();
 			$_SESSION['notif'] = "gagal";
 		} 
 
-		echo json_encode($result);
+		echo json_encode($data_barang);
 	}
 
 	// fungsi action edit
@@ -300,24 +262,9 @@
 				'harga_ig' => validInputan($dataForm['harga_ig'], false, false),
 				'stokAwal' => validInputan($dataForm['stokAwal'], false, false),
 			);
-
-			$query = "UPDATE barang SET nama=:nama, ket=:ket, hpp=:hpp, harga_pasar=:harga_pasar, market_place=:market_place, harga_ig=:harga_ig WHERE id = :id";
-
-			// prepare
-			$statement = $koneksi->prepare($query);
-			// bind
-			$statement->bindParam(':nama', $dataForm['nama']);
-			$statement->bindParam(':hpp', $dataForm['hpp']);
-			$statement->bindParam(':harga_pasar', $dataForm['harga_pasar']);
-			$statement->bindParam(':market_place', $dataForm['market_place']);
-			$statement->bindParam(':harga_ig', $dataForm['harga_ig']);
-			$statement->bindParam(':ket', $dataForm['ket']);
-			$statement->bindParam(':id', $dataForm['id']);
-			// execute
-			$result = $statement->execute();
 			
 			// jika query berhasil
-			if($result){
+			if(updateBarang($koneksi, $dataForm)){
 				$status = true;
 				$errorDb = false;
 				session_start();
@@ -369,14 +316,10 @@
 
 		if($cek){
 			// get foto yg ingin diganti
-			$queryFoto = "SELECT foto FROM barang WHERE id = :id";
-			$statement = $koneksi->prepare($queryFoto);
-			$statement->bindParam(':id', $id);
-			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
+			$get_foto = get_foto_by_id($koneksi, $id);
 
 			// cek apakah foto ada/tidak
-			$fotoLama = !empty($result['foto']) ? "../../assets/gambar/".$result['foto'] : false;
+			$fotoLama = !empty($get_foto['foto']) ? "../../assets/gambar/".$get_foto['foto'] : false;
 			if($fotoLama){
 				// cek foto di dir
 				if(file_exists($fotoLama)) $statusHapus = true;
@@ -391,12 +334,8 @@
 			}
 			else{
 				// update ke db
-				$query = "UPDATE barang SET foto=:foto WHERE id=:id";
-				$statement = $koneksi->prepare($query);
-				// bind
-				$statement->bindParam(':foto', $fotoBaru);
-				$statement->bindParam(':id', $id);
-				$result = $statement->execute();
+				$dataFoto = array('foto' => $fotoBaru, 'id' => $id);
+				updateFoto($koneksi, $dataFoto);
 			}
 		}
 		else $statusHapus = false;
@@ -414,38 +353,26 @@
 
 	// fungsi hapus foto
 	function hapus_foto($koneksi, $id){
-		// $foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 		$cek = true;
 		$fotoError = "";
 
 		// get data foto yang ingin di hapus
-		$queryFoto = "SELECT foto FROM barang WHERE id = :id";
-		$statement = $koneksi->prepare($queryFoto);
-		$statement->bindParam(':id', $id);
-		$statement->execute();
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		$get_foto = get_foto_by_id($koneksi, $id);
 
 		// cek hasil result
-		$fotoLama = !empty($result['foto']) ? "../../assets/gambar/".$result['foto'] : false;
+		$fotoLama = !empty($get_foto['foto']) ? "../../assets/gambar/".$get_foto['foto'] : false;
 
 		if($fotoLama){ // jika di db terdata
 			// cek foto apakah valid
 			if(file_exists($fotoLama)) $statusHapus = true;
 			else $statusHapus = false;
 		}
-		else{ // jika foto kosong
-			// do nothing
-			$statusHapus = false;
-		}
+		else $statusHapus = false; // jika foto kosong
 
 		// update foto set ""
-		$query = "UPDATE barang SET foto='' WHERE id=:id";
-		$statement = $koneksi->prepare($query);
-		// bind
-		$statement->bindParam(':id', $id);
-		$result = $statement->execute();
+		$dataFoto = array('foto' => "", 'id' => $id);
 
-		if(!$result) $cek = false;
+		if(!updateFoto($koneksi, $dataFoto)) $cek = false;
 		else{
 			if($statusHapus) unlink($fotoLama);
 		}
@@ -461,27 +388,15 @@
 	// fungsi get view
 	function getView($koneksi, $id){
 		// get data barang
-		$query = "SELECT b.id, ib.id_barang, iw.id_warna, ";
-		$query .= "concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, b.nama, hpp, harga_pasar, market_place, harga_ig, foto, ket ";
-		$query .= "FROM barang b JOIN id_barang ib ON ib.id = b.id_barang ";
-		$query .= "JOIN id_warna iw ON iw.id = b.id_warna ";
-		$query .= "WHERE b.id = :id";
+		$get_barang = get_barang_by_id($koneksi, $id);
 
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// bind
-		$statement->bindParam(':id', $id);
-		// execute
-		$statement->execute();
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-		if(!$result){
+		if(!$get_barang){
 			session_start();
 			$_SESSION['notif'] = "gagal";
-			$data = $result;
+			$data = $get_barang;
 		}
 		else{
-			$cekFoto = !empty($result['foto']) ? $result['foto'] : "default.jpg";
+			$cekFoto = !empty($get_barang['foto']) ? $get_barang['foto'] : "default.jpg";
 
 			if(!file_exists("../../assets/gambar/".$cekFoto)){
 				$cekFoto = "default.jpg";
@@ -489,17 +404,17 @@
 
 			// format data
 			$data = array(
-				'id' => $result['id'],
-				'id_barang' => $result['id_barang'],
-				'id_warna' => $result['id_warna'],
-				'kd_barang' => $result['kd_barang'],
-				'nama' => $result['nama'],
-				'hpp' => rupiah($result['hpp']),
-				'harga_pasar' => rupiah($result['harga_pasar']),
-				'market_place' => rupiah($result['market_place']),
-				'harga_ig' => rupiah($result['harga_ig']),
+				'id' => $get_barang['id'],
+				'id_barang' => $get_barang['id_idBarang'],
+				'id_warna' => $get_barang['id_idWarna'],
+				'kd_barang' => $get_barang['kd_barang'],
+				'nama' => $get_barang['nama'],
+				'hpp' => rupiah($get_barang['hpp']),
+				'harga_pasar' => rupiah($get_barang['harga_pasar']),
+				'market_place' => rupiah($get_barang['market_place']),
+				'harga_ig' => rupiah($get_barang['harga_ig']),
 				'foto' => $cekFoto,
-				'ket' => $result['ket'],
+				'ket' => $get_barang['ket'],
 			);
 		}
 
@@ -517,18 +432,13 @@
 			'kondisi' => "WHERE kd_barang = $id",
 		);
 
-		// panggil fungsi get datatable
-		$query = get_dataTable($config_db);
-
-		// persiapkan eksekusi query
-		$statement = $koneksi->prepare($query);
-		$statement->execute();
-		$result = $statement->fetchAll();
+		// get data stok barang
+		$data_stokBarang = get_all_stok($koneksi, $config_db);
 
 		// siapkan data untuk isi datatable
 		$data = array();
 		$no_urut = $_POST['start'];
-		foreach($result as $row){
+		foreach($data_stokBarang as $row){
 			$no_urut++;
 
 			$dataRow = array();
