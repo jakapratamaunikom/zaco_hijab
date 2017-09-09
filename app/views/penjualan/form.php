@@ -285,7 +285,7 @@
 				// on click tambah item
 				$("#btn_tambahItem").click(function(){
 					var index = indexItem++;
-					var item_text = $("#fKd_barang option:selected").text().trim();
+					var item_text = get_namaItem();
 					var item_val = $("#fKd_barang").val().trim();
 					var qty = parseInt($("#fQty").val());
 					var jenisDiskon = $("#fJenisDiskon").val().trim();
@@ -325,21 +325,27 @@
 								dataItem.hpp = parseInt(hasil.harga.hpp);
 								dataItem.subTotal = subTotal;
 
-								listItem.push(dataItem);
-								$("#tabel_item_penjualan > tbody:last-child").append(
-									"<tr>"+
-									"<td></td>"+ // nomor
-									"<td>"+item_text+"</td>"+ // item
-									"<td>Rp. "+harga+",00</td>"+ // harga
-									"<td>"+fieldQty(qty, index)+"</td>"+ // qty
-									"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
-									"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
-									"<td>Rp. "+subTotal+",00</td>"+
-									"<td>"+btnAksi(index)+"</td>"+ // aksi
-									"</tr>"
-								);
-								numberingList();
-								clearBarang();
+								if(validBarang(item_val)){
+									alertify.error(item_text+' sudah ada di list');
+									indexItem -= 1;
+								}
+								else{
+									listItem.push(dataItem);
+									$("#tabel_item_penjualan > tbody:last-child").append(
+										"<tr>"+
+										"<td></td>"+ // nomor
+										"<td>"+item_text+"</td>"+ // item
+										"<td>Rp. "+harga+",00</td>"+ // harga
+										"<td>"+fieldQty(qty, index)+"</td>"+ // qty
+										"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
+										"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
+										"<td>Rp. "+subTotal+",00</td>"+
+										"<td>"+btnAksi(index)+"</td>"+ // aksi
+										"</tr>"
+									);
+									numberingList();
+									clearBarang();
+								}	
 							}
 							else{
 								// kurangi index
@@ -408,7 +414,35 @@
 					return false;
 				});
 			});
-	
+			
+			// pemecah nama item dgn stok
+			function get_namaItem(){
+				var item = $("#fKd_barang").select2('data')[0].text;
+				var split = item.split('-');
+
+				return split[0].trim();
+			}
+
+			// cek barang pada list
+			function validBarang(barangIn){
+		        var ada = false;
+
+		        $.each(listItem, function(i, item){
+		        	if(barangIn==item.kd_barang && item.status != "hapus") ada = true;
+		        });
+
+		        // $('#tabel_item_penjualan tbody tr').each(function (index) {
+
+		        //     //mendapatkan kd barang dari list
+		        //     var barangList = $(this).children("td:eq(1)").children().html().trim();
+
+		        //     // cek apakah barang yg akan ditambahkan ke list sudah ada di list
+		        //     if(barangIn==barangList) ada = true;
+		        // });
+
+		        return ada;
+		    }
+
 			// fungsi get data
 			function getDataForm(){
 				var dataPenjualan = {
@@ -504,7 +538,7 @@
 
 			// fungsi cetak field qty di tabel
 			function fieldQty(qty, index){
-				var field = '<input type="number" min="0" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'">';
+				var field = '<input type="number" min="1" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'">';
         		return field;
 			}
 
@@ -553,12 +587,14 @@
 		    			// sesuaikan ulang sub total
 		    			if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
 		    			else diskon=item.diskon;
-		    			item.subTotal = (item.harga*item.qty)-diskon;	
+		    			item.subTotal = (item.harga*item.qty)-diskon;
+		    			$(val).parent().parent().children("td:eq(6)").html("Rp. "+item.subTotal+",00");	
 		    		} 
 		    		// console.log(item);
 		    	});
 		    	numberingList();
 		    	console.log(listItem);
+		    	// console.log($(val).parent().parent().children("td:eq(6)").html("0"));
 		    }
 
 		    // fungsi onchange diskon
@@ -573,6 +609,7 @@
 		    			if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
 		    			else diskon=item.diskon;
 		    			item.subTotal = (item.harga*item.qty)-diskon;	
+		    			$(val).parent().parent().children("td:eq(6)").html("Rp. "+item.subTotal+",00");
 		    		} 
 		    		// console.log(item);
 		    	});
@@ -692,8 +729,7 @@
 		                });
 		                // console.log(data);
 		            },
-		            error: function (jqXHR, textStatus, errorThrown) // error handling
-		            {
+		            error: function (jqXHR, textStatus, errorThrown){ // error handling
 		                swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
 		                console.log(jqXHR, textStatus, errorThrown);
 		            }

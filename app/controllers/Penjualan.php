@@ -10,6 +10,7 @@
 	// load model
 	include_once("../models/Penjualan_model.php");
 	include_once("../models/Barang_model.php");
+	// include_once("../models/Stok_model.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
 
@@ -310,7 +311,8 @@
 
 		$status = false;
 
-		// get harga, dan stok barang
+		// get harga
+		$hargaBarang = get_harga_barang($koneksi, $dataList['kd_barang']);
 		$configData = configDataList($dataList, $koneksi);
 		$validasi = set_validasi($configData);
 		$cek = $validasi['cek'];
@@ -321,11 +323,12 @@
 		$output = array(
 			'status' => $status,
 			'pesanError' => $pesanError,
+			'harga' => $hargaBarang,
 		);
 
 		echo json_encode($output);
 	}
-	
+
 	function getKdPenjualan($koneksi){
 		$kd_penjualan = get_kd_penjualan($koneksi);
 		echo json_encode($kd_penjualan);
@@ -388,8 +391,8 @@
 	// fungsi set data validasi list item
 	function configDataList($data, $koneksi){
 		// get max qty item dan diskon
-		$ketBarang = getKetBarang($koneksi, $data['kd_barang']);
-		$maxQty = $ketBarang['stok'];
+		$get_stok = get_stok_by_id($koneksi, $data['kd_barang']);
+		$maxQty = $get_stok['stok'];
 		$maxDiskon = $data['jenisDiskon'] === "p" ? 100 : 999999;
 		
 		$configData = array(
