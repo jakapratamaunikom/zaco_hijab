@@ -1,27 +1,23 @@
 <?php
 	// action
 	date_default_timezone_set('Asia/Jakarta');
-	if(!isset($_SESSION)) 
-    { 
-        session_start(); 
-    }
 	
 	// Load semua fungsi yang dibutuhkan
 	include_once("../function/helper.php");
 	include_once("../function/koneksi.php");
 	include_once("../function/validasi_form.php");
 	include_once("../function/datatable.php");
+	include_once("../models/Pembelian_model.php");
+	include_once("../models/Barang_model.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
-	// $action = "list";
 
 	// proteksi halaman
 	if(!$action) die("Dilarang Akses Halaman Ini !!");
 	else{
-
 		switch (strtolower($action)) {
 			case 'list':
-
+				list_pembelian($koneksi);
 				break;
 
 			case 'tambah':
@@ -56,119 +52,213 @@
 		}
 	}
 
-	
-
-	// fungsi action add
-	function actionAdd($koneksi){
-		$dataForm = isset($_POST['dataPembelian']) ? $_POST['dataPembelian'] : false;
-
-		$kd_pembelian = $dataForm['kd_pembelian'];
-		$tgl = $dataForm['tgl'];
-		$listBarang = $dataForm['listBarang'];
-
-		$status = true;
-		$errorDb = false;
-
-		
-
-		// tambah ke tabel pembelian (dummy ket,username)
-		$query = "INSERT INTO pembelian(kd_pembelian, tgl, ket, username) VALUES(:kd_pembelian, :tgl, '-', 'admin');";
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// bind
-		$statement->bindParam(':kd_pembelian', $kd_pembelian);
-		$statement->bindParam(':tgl', $tgl);
-
-		// execute
-		$result = $statement->execute(
-			array(
-				':kd_pembelian' => $kd_pembelian,
-				':tgl' => $tgl,
-			)
+	function list_pembelian($koneksi){
+		$config_db = array(
+			'tabel' => 'v_pembelian',
+			'kolomOrder' => array(null, 'kd_pembelian', 'tgl', 'item', 'total', null, null),
+			'kolomCari' => array('kd_pembelian', 'tgl', 'item', 'total'),
+			'orderBy' => array('id' => 'desc'),
+			'kondisi' => false,
 		);
 
-		
-		// jika sukses eksekusi tambah pembelian
-		// tambah detail pembelian
-		if($result){
+		$data_pembelian = get_all_pembelian($koneksi, $config_db);
 
-			// insert data ke detail pembelian
-			for($i=0;$i<sizeOf($listBarang);$i++){
+		// siapkan data untuk isi datatable
+		$data = array();
+		$no_urut = $_POST['start'];
+		foreach($data_pembelian as $row){
+			$no_urut++;
+			$ket = !empty($row['ket']) ? $row['ket'] : "-";
+			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=pembelian&p=view&id='.$row["id"].'">Detail</a>';
+			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=pembelian&p=form&id='.$row["id"].'">Edit</a>';
+			
+			$dataRow = array();
+			$dataRow[] = $no_urut;
+			$dataRow[] = $row['kd_pembelian'];
+			$dataRow[] = cetakTgl($row['tgl'],"full");
+			$dataRow[] = cetakListItem($row['item']);
+			$dataRow[] = rupiah($row['total']);
+			$dataRow[] = $ket;
+			$dataRow[] = $aksi;
 
-				$harga = $listBarang[$i]['harga'] / $listBarang[$i]['qty'];
-
-				$query = "CALL tambah_pembelian(:kd_pembelian, :tgl, :kd_barang, :harga, :qty, :subtotal, :ket)";
-				// prepare
-				$statement = $koneksi->prepare($query);
-
-				$statement->bindParam(':kd_pembelian', $kd_pembelian);
-				$statement->bindParam(':tgl', $tgl);
-				$statement->bindParam(':kd_barang', $listBarang[$i]['kd_barang']);
-				$statement->bindParam(':harga', $harga);
-				$statement->bindParam(':qty', $listBarang[$i]['qty']);
-				$statement->bindParam(':subtotal', $listBarang[$i]['harga']);
-				$statement->bindParam(':ket', $listBarang[$i]['ket']);
-
-				$result = $statement->execute(
-					array(
-						':kd_pembelian' => $kd_pembelian,
-						':tgl' => $tgl,
-						':kd_barang' => $listBarang[$i]['kd_barang'],
-						':harga' => $harga,
-						':qty' => $listBarang[$i]['qty'],
-						':subtotal' => $listBarang[$i]['harga'],
-						':ket' => $listBarang[$i]['ket'],
-					)
-				);
-
-				// jika terdapat error saat eksekusi
-				// keluar dari iterasi
-				if(!$result){
-					$errorDb = true;
-					$status = false;
-					break;
-				}
-			}
-
-			// jika tidak ada error saat penambahan detail
-			// tambah data ke tabel pengeluaran
-			if(!$errorDb){
-				$kd_pengeluaran = getKdPengeluaran($koneksi);
-				$query = "CALL tambah_pengeluaran_pembelian(:kd_pengeluaran,:kd_pembelian, :tgl, 'admin');";
-				// prepare
-				$statement = $koneksi->prepare($query);
-
-				$statement->bindParam(':kd_pengeluaran', $kd_pengeluaran);
-				$statement->bindParam(':kd_pembelian', $kd_pembelian);
-				$statement->bindParam(':tgl', $tgl);
-
-				$result = $statement->execute(
-					array(
-						':kd_pengeluaran' => $kd_pengeluaran,
-						':kd_pembelian' => $kd_pembelian,
-						':tgl' => $tgl,
-					)
-				);
-
-				if(!$result){
-					$status = false;
-					$errorDb = true;
-				}else{
-					$status = true;
-					$errorDb = false;
-					$_SESSION['notif'] = "Tambah Data Berhasil";
-				}
-			}
-
-
-		}else{
-			$status = false;
-			$errorDb = true;
+			$data[] = $dataRow;
 		}
 
 		$output = array(
+			'draw' => $_POST['draw'],
+			'recordsTotal' => recordTotal($koneksi, $config_db),
+			'recordsFiltered' => recordFilter($koneksi, $config_db),
+			'data' => $data,
+		);
+
+		echo json_encode($output);
+	}
+
+	// fungsi action add
+	function actionAdd($koneksi){
+		$dataPembelian = isset($_POST['dataPembelian']) ? $_POST['dataPembelian'] : false;
+		$dataLisItem = isset($_POST['dataLisItem']) ? $_POST['dataLisItem'] : false;
+
+		// validasi
+			// inisialisasi
+			$status = $errorDb = $duplikat = $cekArray = false;
+			$pesanError_pembelian = $set_value_pembelian = "";
+
+			if($dataLisItem){ // cek isi list item ada / tidak
+				if(cekArray($dataLisItem)) $cekArray = false; // array kosong
+				else $cekArray = true;
+			}
+
+			if($cekArray){ // jika ada list lanjutkan
+				$configData_pembelian = configData($dataPembelian);
+				$validasi_pembelian = set_validasi($configData_pembelian);
+				$cek = $validasi_pembelian['cek'];
+				$pesanError_pembelian = $validasi_pembelian['pesanError'];
+				$set_value_pembelian = $validasi_pembelian['set_value'];
+			}
+			else $cek = false;
+		// ======================================== //
+
+		// $kd_pembelian = $dataForm['kd_pembelian'];
+		// $tgl = $dataForm['tgl'];
+		// $listBarang = $dataForm['listBarang'];
+
+		// $status = true;
+		// $errorDb = false;
+
+		if($cek){
+			$dataPembelian = array(
+				'kd_pembelian' => validInputan($dataPembelian['kd_pembelian'], false, false),
+				'tgl' => validInputan($dataPembelian['tgl'], false, false),
+				'ket' => validInputan($dataPembelian['ket'], false, false),
+			);
+
+			// cek duplikat
+			$config_duplikat = array(
+				'tabel' => 'pembelian',
+				'field' => 'kd_pembelian',
+				'value' => $dataPembelian['kd_pembelian'],
+			);
+
+			if(cekDuplikat($koneksi, $config_duplikat)){ // jika ada yg sama
+				$status = $errorDb = false;
+				$duplikat = true;
+			}
+			else{
+				$duplikat = false;
+
+				// insert pembelian
+				if(insertPembelian($koneksi, $dataPembelian)){
+					// insert ke detail pembelian
+					foreach($dataLisItem as $index => $array){
+						// insert hanya yg statusnya bukan hapus
+						if($dataLisItem[$index]['status'] != "hapus"){
+							$dataInsert['kd_pembelian'] = $dataPembelian['kd_pembelian'];
+							$dataInsert['tgl'] = $dataPembelian['tgl'];
+							// get data list item
+							foreach ($dataLisItem[$index] as $key => $value) {
+								$dataInsert[$key] = $value;
+							}
+							insertDetail_pembelian($koneksi,$dataInsert);
+						}
+					}
+					$status = true;
+					session_start();
+					$_SESSION['notif'] = "Tambah Data Berhasil";
+				}
+				else{
+					$status = false;
+					$errorDb = true;
+				}
+
+			}
+		}
+		else $status = false;
+		
+		// jika sukses eksekusi tambah pembelian
+		// tambah detail pembelian
+		// if($result){
+		// 	// insert data ke detail pembelian
+		// 	for($i=0;$i<sizeOf($listBarang);$i++){
+
+		// 		$harga = $listBarang[$i]['harga'] / $listBarang[$i]['qty'];
+
+		// 		$query = "CALL tambah_pembelian(:kd_pembelian, :tgl, :kd_barang, :harga, :qty, :subtotal, :ket)";
+		// 		// prepare
+		// 		$statement = $koneksi->prepare($query);
+
+		// 		$statement->bindParam(':kd_pembelian', $kd_pembelian);
+		// 		$statement->bindParam(':tgl', $tgl);
+		// 		$statement->bindParam(':kd_barang', $listBarang[$i]['kd_barang']);
+		// 		$statement->bindParam(':harga', $harga);
+		// 		$statement->bindParam(':qty', $listBarang[$i]['qty']);
+		// 		$statement->bindParam(':subtotal', $listBarang[$i]['harga']);
+		// 		$statement->bindParam(':ket', $listBarang[$i]['ket']);
+
+		// 		$result = $statement->execute(
+		// 			array(
+		// 				':kd_pembelian' => $kd_pembelian,
+		// 				':tgl' => $tgl,
+		// 				':kd_barang' => $listBarang[$i]['kd_barang'],
+		// 				':harga' => $harga,
+		// 				':qty' => $listBarang[$i]['qty'],
+		// 				':subtotal' => $listBarang[$i]['harga'],
+		// 				':ket' => $listBarang[$i]['ket'],
+		// 			)
+		// 		);
+
+		// 		// jika terdapat error saat eksekusi
+		// 		// keluar dari iterasi
+		// 		if(!$result){
+		// 			$errorDb = true;
+		// 			$status = false;
+		// 			break;
+		// 		}
+		// 	}
+
+		// 	// jika tidak ada error saat penambahan detail
+		// 	// tambah data ke tabel pengeluaran
+		// 	if(!$errorDb){
+		// 		$kd_pengeluaran = getKdPengeluaran($koneksi);
+		// 		$query = "CALL tambah_pengeluaran_pembelian(:kd_pengeluaran,:kd_pembelian, :tgl, 'admin');";
+		// 		// prepare
+		// 		$statement = $koneksi->prepare($query);
+
+		// 		$statement->bindParam(':kd_pengeluaran', $kd_pengeluaran);
+		// 		$statement->bindParam(':kd_pembelian', $kd_pembelian);
+		// 		$statement->bindParam(':tgl', $tgl);
+
+		// 		$result = $statement->execute(
+		// 			array(
+		// 				':kd_pengeluaran' => $kd_pengeluaran,
+		// 				':kd_pembelian' => $kd_pembelian,
+		// 				':tgl' => $tgl,
+		// 			)
+		// 		);
+
+		// 		if(!$result){
+		// 			$status = false;
+		// 			$errorDb = true;
+		// 		}else{
+		// 			$status = true;
+		// 			$errorDb = false;
+		// 			$_SESSION['notif'] = "Tambah Data Berhasil";
+		// 		}
+		// 	}
+
+
+		// }else{
+		// 	$status = false;
+		// 	$errorDb = true;
+		// }
+
+		$output = array(
 			'status' => $status,
-			'errorDb' => $errorDb, 
+			'cekList' => $cekArray,
+			'errorDb' => $errorDb,
+			'duplikat' => $duplikat,
+			'pesanError' => $pesanError_pembelian,
+			'set_value' => $set_value_pembelian,
 		);
 
 		echo json_encode($output);
@@ -245,99 +335,18 @@
 	function actionEdit($koneksi){
 	}
 
-	// fungsi get data select
-	function getSelect($koneksi){
-		$query = "SELECT id, nama FROM barang";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// execute
-		$statement->execute();
-		$result = $statement->fetchAll();
-
-		echo json_encode($result);
-	}
-
-	// mendapatkan kode pembelian terakhir pada hari ini
-	function getKdPembelian($koneksi){
-		$kode = date("Y").date("m").date("d");
-		$query = "SELECT kd_pembelian FROM pembelian WHERE kd_pembelian LIKE '%".$kode."%' ORDER BY id desc LIMIT 1";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// execute
-		$statement->execute();
-		$result = $statement->fetchAll();
-		echo json_encode($result);
-	}
-
-	// mendapatkan kode pengeluaran terakhir pada hari ini (internal)
-	function getKdPengeluaran($koneksi){
-		$kode = date("Y").date("m").date("d");
-		$query = "SELECT kd_pengeluaran FROM pengeluaran WHERE kd_pengeluaran LIKE '%".$kode."%' ORDER BY id desc LIMIT 1";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// execute
-		$statement->execute();
-		$result = $statement->fetch();
-		
-		$kd_pengeluaran = "";
-		if(empty($result)){
-			$kd_pengeluaran = 'PG-'.$kode.'-1';
-		}else{
-			$iterasi = explode("-", $result['kd_pengeluaran']);
-			// var_dump($iterasi);
-			$count = $iterasi[2] + 1;
-			$kd_pengeluaran = $kd_pengeluaran = 'PG-'.$kode.'-'.$count;
-		}
-		
-		return $kd_pengeluaran;
-	}
-
 	//cek validasi pada saat menambahkan list
 	function validList(){
 		$dataForm = isset($_POST['dataForm']) ? $_POST['dataForm'] : false;
 
-		$kd_barang = $dataForm['kd_barang']; 
-		$qty = $dataForm['qty']; 
-		$harga = $dataForm['harga']; 
-
-		$cek = true;
 		$status = false;
-		$kd_barangError = $qtyError = $hargaError = "";
-		$pesanError = "";
+		
+		$configData = configDataList($dataForm);
+		$validasi = set_validasi($configData);
+		$cek = $validasi['cek'];
+		$pesanError = $validasi['pesanError'];
 
-
-		$validKd_barang = validString('Barang',$kd_barang,1,5,true);
-		$validQty = validAngka('Qty',$qty,1,999,true);
-		$validHarga = validAngka('Harga',$harga,1,9999999,true);
-
-		// cek valid
-		if(!$validKd_barang['cek']){
-			$cek = false;
-			$kd_barangError = $validKd_barang['error'];
-		}
-
-		if(!$validQty['cek']){
-			$cek = false;
-			$qtyError = $validQty['error'];
-		}
-
-		if(!$validHarga['cek']){
-			$cek = false;
-			$hargaError = $validHarga['error'];
-		}
-
-		$pesanError = array(
-			'kd_barangError' => $kd_barangError,
-			'qtyError' => $qtyError,
-			'hargaError' => $hargaError, 
-		);
-
-		if($cek){
-			$status = true;
-		}
+		if($cek) $status = true;
 
 		$output = array(
 			'status' => $status,
@@ -347,6 +356,84 @@
 		echo json_encode($output);
 	}
 
+	// mendapatkan kode pembelian terakhir pada hari ini
+	function getKdPembelian($koneksi){
+		$kd_pembelian = get_kd_pembelian($koneksi);
+		echo json_encode($kd_pembelian);
+	}
 
+	// mendapatkan kode pengeluaran terakhir pada hari ini (internal)
+	// function getKdPengeluaran($koneksi){
+	// 	$kode = date("Y").date("m").date("d");
+	// 	$query = "SELECT kd_pengeluaran FROM pengeluaran WHERE kd_pengeluaran LIKE '%".$kode."%' ORDER BY id desc LIMIT 1";
 
-?>
+	// 	// prepare
+	// 	$statement = $koneksi->prepare($query);
+	// 	// execute
+	// 	$statement->execute();
+	// 	$result = $statement->fetch();
+		
+	// 	$kd_pengeluaran = "";
+	// 	if(empty($result)){
+	// 		$kd_pengeluaran = 'PG-'.$kode.'-1';
+	// 	}else{
+	// 		$iterasi = explode("-", $result['kd_pengeluaran']);
+	// 		// var_dump($iterasi);
+	// 		$count = $iterasi[2] + 1;
+	// 		$kd_pengeluaran = $kd_pengeluaran = 'PG-'.$kode.'-'.$count;
+	// 	}
+		
+	// 	return $kd_pengeluaran;
+	// }
+
+	// fungsi get data select
+	function getSelect($koneksi){
+		$data_barang = get_ket_barang($koneksi);
+		echo json_encode($data_barang);
+	}
+
+	// config data pembelian
+	function configData($data){
+		$configData = array(
+			// data kd_pembelian
+			array(
+				'field' => $data['kd_pembelian'], 'label' => 'Kode Pembelian', 'error' => 'kd_pembelianError',
+				'value' => 'kd_pembelian', 'rule' => 'string | 13 | 16 | required',
+			),
+			// data tgl
+			// array(
+			// 	'field' => $data['tgl'], 'label' => 'Tanggal', 'error' => 'tglError',
+			// 	'value' => 'tgl', 'rule' => 'string | 10 | 10 | required',
+			// ),
+		);
+
+		return $configData;
+	}
+
+	// config data detail pembelian
+	function configDataList($data){
+		$configData = array(
+			// data kd_barang
+			array(
+				'field' => $data['kd_barang'], 'label' => 'Item', 'error' => 'kd_barangError',
+				'value' => 'kd_barang', 'rule' => 'angka | 1 | 99999 | required',
+			),
+			// data harga
+			array(
+				'field' => $data['harga'], 'label' => 'Harga', 'error' => 'hargaError',
+				'value' => 'harga', 'rule' => 'angka | 1 | 999999 | required',
+			),
+			// data qty
+			array(
+				'field' => $data['qty'], 'label' => 'Qty', 'error' => 'qtyError',
+				'value' => 'qty', 'rule' => 'angka | 1 | 999 | required',
+			),
+			// data ket
+			array(
+				'field' => $data['ket'], 'label' => 'Keterangan', 'error' => 'ketError',
+				'value' => 'ket', 'rule' => 'string | 1 | 255 | not_required',
+			),
+		);
+
+		return $configData;
+	}

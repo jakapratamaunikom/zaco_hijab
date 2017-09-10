@@ -8,6 +8,7 @@
 	include_once("../function/koneksi.php");
 	include_once("../function/validasi_form.php");
 	include_once("../function/datatable.php");
+	include_once("../models/Id_barang_model.php");
 
 	$action = isset($_POST['action']) ? $_POST['action'] : false;
 	// $action = "list";
@@ -55,18 +56,12 @@
 			'kondisi' => false,
 		);
 
-		// panggil fungsi get datatable
-		$query = get_dataTable($config_db);
-
-		// persiapkan eksekusi query
-		$statement = $koneksi->prepare($query);
-		$statement->execute();
-		$result = $statement->fetchAll();
+		$data_id_barang = get_all_id_barang($koneksi, $config_db);
 
 		// siapkan data untuk isi datatable
 		$data = array();
 		$no_urut = $_POST['start'];
-		foreach($result as $row){
+		foreach($data_id_barang as $row){
 			$no_urut++;
 			$aksi = '<button type="button" class="btn btn-success btn-flat btn-sm" onclick="edit_id_barang('."'".$row["id"]."'".')">Edit</button>';
 			
@@ -124,18 +119,9 @@
 			}
 			else{
 				$duplikat = false;
-
-				$query = "INSERT INTO id_barang (id_barang, nama) VALUES (:id_barang, :nama)";
-				// prepare
-				$statement = $koneksi->prepare($query);
-				// bind
-				$statement->bindParam(':id_barang', $dataForm['id_barang']);
-				$statement->bindParam(':nama', $dataForm['nama']);
-				// execute
-				$result = $statement->execute();
 				
 				// jika query berhasil
-				if($result){
+				if(insertIdBarang($koneksi, $dataForm)){
 					$status = true;
 					$errorDb = false;
 				} 
@@ -161,20 +147,8 @@
 
 	// fungsi get data edit
 	function getEdit($koneksi, $id){
-		// $id = "11";
-		$tabel = "id_barang";
-		// query
-		$query = "SELECT id, id_barang, nama FROM $tabel WHERE id = :id";
-
-		// prepare
-		$statement = $koneksi->prepare($query);
-		// bind
-		$statement->bindParam(':id', $id);
-		// execute
-		$statement->execute();
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-		echo json_encode($result);
+		$data_id_barang = get_idBarang_by_id($koneksi, $id);
+		echo json_encode($data_id_barang);
 	}
 
 	// fungsi action edit
@@ -194,18 +168,9 @@
 		if($cek){
 			// validasi inputan dari inject
 			$dataForm['nama'] = validInputan($dataForm['nama'], false, false);
-
-			$query = "UPDATE id_barang SET nama = :nama WHERE id = :id";
-			// prepare
-			$statement = $koneksi->prepare($query);
-			// bind
-			$statement->bindParam(':nama', $dataForm['nama']);
-			$statement->bindParam(':id', $dataForm['id']);
-			// execute
-			$result = $statement->execute();
-			
+						
 			// jika query berhasil
-			if($result){
+			if(updateIdBarang($koneksi, $dataForm)){
 				$status = true;
 				$errorDb = false;
 			} 

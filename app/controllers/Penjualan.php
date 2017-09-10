@@ -76,6 +76,7 @@
 		$no_urut = $_POST['start'];
 		foreach($data_penjualan as $row){
 			$no_urut++;
+			$ket = !empty($row['ket']) ? $row['ket'] : "-";
 			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=view&id='.$row["id"].'">Detail</a>';
 			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=penjualan&p=form&id='.$row["id"].'">Edit</a>';
 			
@@ -87,7 +88,7 @@
 			$dataRow[] = cetakListItem($row['item']);
 			$dataRow[] = rupiah($row['total']);
 			$dataRow[] = $row['status'];
-			$dataRow[] = $row['ket'];
+			$dataRow[] = $ket;
 			$dataRow[] = $aksi;
 
 			$data[] = $dataRow;
@@ -133,9 +134,11 @@
 				'tgl' => validInputan($dataPenjualan['tgl'], false, false),
 				'jenis' => validInputan($dataPenjualan['jenis'], false, false),
 				'status' => validInputan($dataPenjualan['status'], false, false),
+				'ket' => validInputan($dataPenjualan['ket'], false, false),
 				'nama' => validInputan($dataPenjualan['nama'], false, false),
 				'no_telp' => validInputan($dataPenjualan['no_telp'], false, false),
 				'alamat' => validInputan($dataPenjualan['alamat'], false, false),
+				'ongkir' => validInputan($dataPenjualan['ongkir'], false, false),
 			);
 
 			// cek duplikat kd_penjualan
@@ -167,12 +170,15 @@
 							insertDetail_penjualan($koneksi,$dataInsert);
 						}
 					}
+					$status = true;
+					session_start();
+					$_SESSION['notif'] = "Tambah Data Berhasil";
 				}
 				else{
 					$status = false;
 					$errorDb = true;
 				}
-				$status = true;
+
 			}
 		}
 		else $status = false;
@@ -240,9 +246,11 @@
 				'tgl' => validInputan($dataPenjualan['tgl'], false, false),
 				'jenis' => validInputan($dataPenjualan['jenis'], false, false),
 				'status' => validInputan($dataPenjualan['status'], false, false),
+				'ket' => validInputan($dataPenjualan['ket'], false, false),
 				'nama' => validInputan($dataPenjualan['nama'], false, false),
 				'no_telp' => validInputan($dataPenjualan['no_telp'], false, false),
 				'alamat' => validInputan($dataPenjualan['alamat'], false, false),
+				'ongkir' => validInputan($dataPenjualan['ongkir'], false, false),
 			);
 
 			// update penjualan
@@ -368,6 +376,11 @@
 				'field' => $data['status'], 'label' => 'Status Transaksi', 'error' => 'statusError',
 				'value' => 'status', 'rule' => 'angka | 0 | 1 | required',
 			),
+			// data ket
+			array(
+				'field' => $data['ket'], 'label' => 'Keterangan', 'error' => 'ketError',
+				'value' => 'ket', 'rule' => 'string | 1 | 255 | not_required',
+			),
 			// data nama
 			array(
 				'field' => $data['nama'], 'label' => 'Nama Pembeli', 'error' => 'namaError',
@@ -382,6 +395,10 @@
 			array(
 				'field' => $data['alamat'], 'label' => 'Alamat', 'error' => 'alamatError',
 				'value' => 'alamat', 'rule' => 'string | 1 | 255 | '.$required,
+			),
+			array(
+				'field' => $data['ongkir'], 'label' => 'Ongkos Kirim', 'error' => 'ongkirError',
+				'value' => 'ongkir', 'rule' => 'angka | 0 | 999999 | '.$required,
 			),
 		);
 
@@ -403,7 +420,7 @@
 			),
 			// data kd_barang
 			array(
-				'field' => $data['kd_barang'], 'label' => 'Kode Barang', 'error' => 'kd_barangError',
+				'field' => $data['kd_barang'], 'label' => 'Item', 'error' => 'kd_barangError',
 				'value' => 'kd_barang', 'rule' => 'angka | 1 | 99999 | required',
 			),
 			// data qty

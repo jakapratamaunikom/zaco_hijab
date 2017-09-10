@@ -27,13 +27,39 @@
 		return $result;
 	}
 
-	// get ket barang by id
+	// get ket barang
 	function get_ket_barang($koneksi){
-		$query = "SELECT id, nama, hpp, harga_pasar, market_place, harga_ig, stok FROM v_barang";
+		$query = "SELECT id, nama, stok FROM v_barang";
 		
 		$statement = $koneksi->prepare($query);
 		$statement->execute();
 		$result = $statement->fetchAll();
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
+	// get harga barang
+	function get_harga_barang($koneksi, $id){
+		$query = "SELECT hpp, harga_pasar, market_place, harga_ig FROM v_barang WHERE id=:id";
+		
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':id', $id);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
+	// get max stok barang
+	function get_stok_by_id($koneksi, $id){
+		$query = "SELECT stok FROM v_barang WHERE id=:id";
+		
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(":id", $id);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
 		tutup_koneksi($koneksi);
 
 		return $result;

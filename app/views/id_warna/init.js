@@ -23,7 +23,7 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: base_url+"module/id_warna/action.php",
+            url: base_url+"app/controllers/Id_warna.php",
             type: 'POST',
             data: {
                 "action" : "list",
@@ -59,7 +59,7 @@ $(document).ready(function(){
 
            // request action
             $.ajax({
-                url: base_url+"module/id_warna/action.php",
+                url: base_url+"app/controllers/Id_warna.php",
                 type: "post",
                 dataType: "json",
                 data: {
@@ -122,7 +122,7 @@ $(document).ready(function(){
 // fungsi get data edit
 function edit_id_warna(id){
     $.ajax({
-        url: base_url+"module/id_warna/action.php",
+        url: base_url+"app/controllers/Id_warna.php",
         type: "post",
         dataType: "json",
         data: {
@@ -130,10 +130,10 @@ function edit_id_warna(id){
             "action" : "getEdit",
         },
         beforeSend: function(){
-            $("body").addClass("loading_gif"); // tampilkan loading, jikalau saat req. memakan waktu lama
+            $(".overlay").css("display", "block"); // tampilkan loading, jikalau saat req. memakan waktu lama
         },
         success: function(data){
-            $("body").removeClass("loading_gif");
+            $(".overlay").css("display", "none");
             // reset modal
             reset_form();
             // tampilkan modal
@@ -148,6 +148,7 @@ function edit_id_warna(id){
         error: function (jqXHR, textStatus, errorThrown) // error handling
         {
             swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+            $(".overlay").css("display", "none");
             $("#modal_idWarna").modal('hide');
             reset_form();
             console.log(jqXHR, textStatus, errorThrown);

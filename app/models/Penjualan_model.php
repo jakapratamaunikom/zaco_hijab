@@ -64,8 +64,6 @@
 
 	// insert data penjualan
 	function insertPenjualan($koneksi, $data){
-		$ket = "";
-		$ongkir = 0;
 		$username = "admin";
 
 		$query = "INSERT INTO penjualan ";
@@ -79,9 +77,9 @@
 		$statement->bindParam(':nama',$data['nama']);
 		$statement->bindParam(':telp',$data['no_telp']);
 		$statement->bindParam(':alamat',$data['alamat']);
-		$statement->bindParam(':ongkir',$ongkir);
+		$statement->bindParam(':ongkir',$data['ongkir']);
 		$statement->bindParam(':status',$data['status']);
-		$statement->bindParam(':ket',$ket);
+		$statement->bindParam(':ket',$data['ket']);
 		$statement->bindParam(':username',$username);
 		$result = $statement->execute();
 		tutup_koneksi($koneksi);

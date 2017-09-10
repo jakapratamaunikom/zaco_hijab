@@ -130,10 +130,10 @@ function edit_id_barang(id){
             "action" : "getEdit",
         },
         beforeSend: function(){
-            $("body").addClass("loading_gif"); // tampilkan loading, jikalau saat req. memakan waktu lama
+            $(".overlay").css("display", "block"); // tampilkan loading, jikalau saat req. memakan waktu lama
         },
         success: function(data){
-            $("body").removeClass("loading_gif");
+            $(".overlay").css("display", "none");
             // reset modal
             reset_form();
             // tampilkan modal
@@ -147,6 +147,7 @@ function edit_id_barang(id){
         },
         error: function (jqXHR, textStatus, errorThrown){ // error handling
             swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+            $(".overlay").css("display", "none");
             $("#modal_idBarang").modal('hide');
             reset_form();
             console.log(jqXHR, textStatus, errorThrown);

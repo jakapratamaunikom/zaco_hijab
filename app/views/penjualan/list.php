@@ -109,6 +109,9 @@
         <script type="text/javascript">
             // setting datatable
             $(document).ready(function(){
+                if(notif == "gagal") alertify.error("Data Tidak Ditemukan");
+                else if(notif != false) alertify.success(notif);
+
                 var tabel_penjualan = $("#tabel_penjualan").DataTable({
                     "language" : {
                         "lengthMenu": "Tampilkan _MENU_ data/page",

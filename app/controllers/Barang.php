@@ -89,6 +89,7 @@
 		$data = array();
 		$no_urut = $_POST['start'];
 		foreach($data_barang as $row){
+			$ket = !empty($row['ket']) ? $row['ket'] : "-";
 			$no_urut++;
 			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=view&id='.$row["id"].'">Detail</a>';
 			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=form&id='.$row["id"].'">Edit</a>';
@@ -101,7 +102,7 @@
 			$dataRow[] = rupiah($row['harga_pasar']);
 			$dataRow[] = rupiah($row['market_place']);
 			$dataRow[] = rupiah($row['harga_ig']);
-			$dataRow[] = $row['ket'];
+			$dataRow[] = $ket;
 			$dataRow[] = $row['stok'];
 			$dataRow[] = $aksi;
 
@@ -303,7 +304,6 @@
 				'name' => $foto['name'],
 				'tmp_name' => $foto['tmp_name'],
 				'max' => 2*1048576,
-				// 'path' => "../../assets/gambar/",
 			);
 			$valid_foto = validFoto($configFoto);
 			if(!$valid_foto['cek']){

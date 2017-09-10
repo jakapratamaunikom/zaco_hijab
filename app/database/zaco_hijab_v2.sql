@@ -142,7 +142,6 @@ create table detail_pembelian(
 	id int AUTO_INCREMENT NOT NULL,
 	kd_pembelian int, -- fk dari pembelian
 	kd_barang int, -- fk dari pembelian
-	-- hpp double(8,2),
     harga double(8,2),
     qty SMALLINT,
     subtotal double(12,2),
@@ -194,9 +193,9 @@ create table stok (
 
 -- ============== INDEX ============== --
 
--- index di penjualan
-CREATE INDEX 
-ON penjualan() USING BTREE;
+-- -- index di penjualan
+-- CREATE INDEX 
+-- ON penjualan() USING BTREE;
 
 -- ============ PROCEDURE ============ --
 
@@ -934,6 +933,23 @@ CREATE OR REPLACE VIEW v_penjualan AS
     GROUP BY p.id
 
 -- ==============================================================
+
+CREATE OR REPLACE VIEW v_pembelian AS
+    SELECT
+        p.id, p.kd_pembelian, tgl,
+        GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') item, 
+        CAST(SUM(dp.subtotal) as DECIMAL(12,2)) as total,
+        p.ket 
+    FROM pembelian p
+    JOIN detail_pembelian dp
+        ON dp.kd_pembelian = p.id
+    JOIN barang b
+        ON b.id = dp.kd_barang
+    JOIN id_barang ib
+        ON ib.id = b.id_barang
+    JOIN id_warna iw
+        ON iw.id = b.id_warna
+    GROUP BY p.id 
 
 -- CREATE OR REPLACE VIEW v_pengeluaran
 -- AS
