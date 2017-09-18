@@ -158,19 +158,32 @@ create table detail_pembelian(
 create table pengeluaran(
 	id int AUTO_INCREMENT NOT NULL,
 	kd_pengeluaran varchar(16) NOT NULL UNIQUE,
-    kd_pembelian int,
+    -- kd_pembelian int,
     tgl date,
     -- kd_pembelian int, -- fk dari tabel pembelian
     -- kd_pembelian varchar(16), -- fk dari tabel pembelian
     ket text,
-    nominal double(12,2),
-    qty SMALLINT,
-    total double(12,2),
+    -- nominal double(12,2),
+    -- qty SMALLINT,
+    -- total double(12,2),
     jenis enum('PRODUKSI','MARKETING','OPERASIONAL','GAJI','AKTIVA TETAP','LAINNYA'),
     username varchar(10), -- fk dari tabel admin
     CONSTRAINT pk_pengeluaran_id PRIMARY KEY(id),
-    CONSTRAINT fk_pengeluaran_kd_pembelian FOREIGN KEY(kd_pembelian) REFERENCES pembelian(id),
+    -- CONSTRAINT fk_pengeluaran_kd_pembelian FOREIGN KEY(kd_pembelian) REFERENCES pembelian(id),
     CONSTRAINT fk_pengeluaran_username FOREIGN KEY(username) REFERENCES admin(username)
+);
+-- ==============================================================
+
+-- tabel detail pengeluaran
+create table detail_pengeluaran(
+    id int AUTO_INCREMENT NOT NULL,
+    kd_pengeluaran int,
+    nominal double(12,2),
+    qty SMALLINT,
+    subtotal double(12,2),
+    ket text,
+    CONSTRAINT pk_detail_pengeluaran_id PRIMARY KEY(id),
+    CONSTRAINT fk_detail_pengeluaran_kd_pengeluaran FOREIGN KEY(kd_pengeluaran) REFERENCES pengeluaran(id)
 );
 
 -- ==============================================================
