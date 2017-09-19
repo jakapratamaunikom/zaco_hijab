@@ -51,7 +51,11 @@ create table admin(
 	password text NOT NULL,
     nama varchar(50),
     email varchar(100) UNIQUE,
+    telp varchar(15),
+    alamat text,
+    foto text,
     level enum('ADMIN','KASIR'),
+    status char(1), -- 1 aktif, 0 nonaktif
     CONSTRAINT pk_user_username PRIMARY KEY(username)
 );
 
@@ -166,7 +170,7 @@ create table pengeluaran(
     -- nominal double(12,2),
     -- qty SMALLINT,
     -- total double(12,2),
-    jenis enum('PRODUKSI','MARKETING','OPERASIONAL','GAJI','AKTIVA TETAP','LAINNYA'),
+    jenis enum('MARKETING','OPERASIONAL','GAJI','AKTIVA TETAP','LAINNYA'),
     username varchar(10), -- fk dari tabel admin
     CONSTRAINT pk_pengeluaran_id PRIMARY KEY(id),
     -- CONSTRAINT fk_pengeluaran_kd_pembelian FOREIGN KEY(kd_pembelian) REFERENCES pembelian(id),
