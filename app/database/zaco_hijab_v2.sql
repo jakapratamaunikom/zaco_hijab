@@ -50,7 +50,7 @@ create table admin(
 	username varchar(10) NOT NULL,
 	password text NOT NULL,
     nama varchar(50),
-    email varchar(100) UNIQUE,
+    email varchar(50) UNIQUE,
     telp varchar(15),
     alamat text,
     foto text,
