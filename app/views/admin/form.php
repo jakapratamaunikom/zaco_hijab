@@ -246,53 +246,11 @@
 		// submit barang
 		$("#form_admin").submit(function(e){
 			e.preventDefault();
+			submitAdmin();
 
-			var data = getDataForm();
-
-			$.ajax({
-				url : base_url+"app/controllers/Admin.php",
-				type : "post",
-				dataType : "json",
-				data: data,
-				contentType: false,
-			    cache: false,
-				processData: false,
-				success: function(hasil){
-					// if(hasil.status){
-					// 	// swal("username gak kosong");
-					// }
-					// else{
-					// 	// swal(hasil.error);
-					// }
-					if(hasil.duplikat){
-						swal("Pesan Error", "Username Tidak Tersedia","error");
-					}
-
-					console.log(hasil);
-				},
-				error: function (jqXHR, textStatus, errorThrown){ // error handling
-		            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-		            // reset_form("#form_barang");
-		            console.log(jqXHR, textStatus, errorThrown);
-		        }
-			})
-		
 			return false;
 		})
 	});
-
-	function setLevel(){
-		var arrayJenis = [
-			{value: "", text: "-- Level Admin --"},
-			{value: "SUPERADMIN",text: "SUPERADMIN"},
-			{value: "KASIR",text: "KASIR"},
-		];
-		
-		$.each(arrayJenis, function(index, item){
-			var option = new Option(item.text, item.value);
-			$("#fLevel").append(option);
-		});
-	}
 
 	function getDataForm(){
 		var data = new FormData();
@@ -310,5 +268,61 @@
 		
 		return data;
 	}
+
+	function submitAdmin(){
+		var data = getDataForm();
+
+		$.ajax({
+			url : base_url+"app/controllers/Admin.php",
+			type : "post",
+			dataType : "json",
+			data: data,
+			contentType: false,
+		    cache: false,
+			processData: false,
+			success: function(hasil){
+				if(hasil.status){
+					document.location=base_url+"index.php?m=admin&p=list";
+				}
+				else{
+					if(hasil.errorDb){ // jika db error
+						swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+	                    reset_form("#form_barang");
+					}
+					else{
+						if(hasil.duplikat){
+							swal("Pesan Error", "Username Tidak Tersedia","error");
+						}
+						else{
+							// set error
+						}
+						// set value
+
+					}	
+				}
+
+				console.log(hasil);
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+	            // reset_form("#form_barang");
+	            console.log(jqXHR, textStatus, errorThrown);
+	        }
+		})
+	}
+
+	function setLevel(){
+		var arrayJenis = [
+			{value: "", text: "-- Level Admin --"},
+			{value: "ADMIN",text: "ADMIN"},
+			{value: "KASIR",text: "KASIR"},
+		];
+		
+		$.each(arrayJenis, function(index, item){
+			var option = new Option(item.text, item.value);
+			$("#fLevel").append(option);
+		});
+	}
+
 </script>
 
