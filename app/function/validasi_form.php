@@ -49,6 +49,14 @@
 								$pesanError[$error] = $valid['error'];
 							}
 							break;
+
+						case 'email':
+							$valid = validEmail($label, $field, $min, $max, $required);
+							if(!$valid['cek']){
+								$cek = false;
+								$pesanError[$error] = $valid['error'];
+							}							
+							break;
 						
 						default:
 							die();
@@ -119,6 +127,55 @@
 					if(!empty($value)){ // jika diisi
 						// cek pattern
 						if(!preg_match($pattern, $value)){ // jika tidak sesuai
+							$setError = $error['pattern'];
+							$cek = false;
+						}
+						else{
+							// cek min-max karakter
+							if(strlen($value) <= $max){ // jika sesuai
+								$setError = "";
+								$cek = true;
+							}
+							else{
+								$setError = $error['length'];
+								$cek = false;
+							}
+						}
+					}
+					else{ // jika kosong
+						$setError = "";
+						$cek = true;
+					}
+				}
+			break;
+			case 'email':
+				if($required){
+					if(empty($value)){
+						$setError = $error['empty'];
+						$cek = false;
+					}
+					else{
+						if(!filter_var($value, FILTER_VALIDATE_EMAIL)){
+							$setError = $error['pattern'];
+							$cek = false;
+						}
+						else{
+							if(strlen($value) >= $min && strlen($value) <= $max){ // jika sesuai
+								$setError = "";
+								$cek = true;
+							}
+							else{
+								$setError = $error['length'];
+								$cek = false;
+							}
+						}
+					}
+				}
+				else{ // jika opsional
+					// jika diisi cek pattern --> cek max
+					if(!empty($value)){ // jika diisi
+						// cek pattern
+						if(!filter_var($value, FILTER_VALIDATE_EMAIL)){
 							$setError = $error['pattern'];
 							$cek = false;
 						}
@@ -295,8 +352,30 @@
 	}
 
 	/*
-		fungsi validasi foto, mengecek yg di upload adalah benar2 foto
+		fungsi validasi email
+	*/
+	function validEmail($label, $value, $min, $max, $required){
+		$cekValid['cek'] = true;
+		$cekValid['error'] = array(
+			'empty' => $label." Harus Diisi",
+			'pattern' => "Format ".$label." Tidak Sesuai",
+			'length' => "Panjang $label Min. $min dan Maks. $max Karakter",
+		);
+		$cekValid['value'] = trim($value);
+		$cekValid['label'] = trim($label);
+		$cekValid['min'] = $min;
+		$cekValid['max'] = $max;
+		$cekValid['required'] = $required;
+		$cekValid['jenis'] = "email";
+		$cekValid['pattern'] = "";
 
+		$output = validTemplate($cekValid);
+
+		return $output;
+	}
+
+	/*
+		fungsi validasi foto, mengecek yg di upload adalah benar2 foto
 	*/
 	function validFoto($configFoto){
 		$errorFile = $configFoto['error'];
@@ -374,6 +453,94 @@
 			'cek' => true,
 			'error' => "",
 			'namaFile' => $namaFileBaru,
+		);
+
+		return $output;
+	}
+
+	/*
+		fungsi validasi untuk password dan konfirm password
+	*/
+	function validPassword($label, $value, $confirm, $min, $max){
+		$cek = true;
+		$label = trim($label);
+		$value = trim($value);
+		$pattern = "/^[a-zA-Z0-9-_ ]*$/";
+		$error = array(
+			'empty' => $label." Harus Diisi",
+			'pattern' => "Format ".$label." Tidak Sesuai atau Mengandung Karakter Ilegal",
+			'length' => "Panjang $label Min. $min dan Maks. $max Karakter",
+			'confirm' => $label." Tidak Sesuai Dengan Konfirm Password",
+		);
+
+		// if($required){ // jika wajib
+			// cek kosong
+			if(empty($value)){ // jika kosong
+				$errorPassword = $errorConfirm = $error['empty'];
+				$cek = false;
+			}
+			else{
+				// cek pattern
+				if(!preg_match($pattern, $value)){ // jika tidak sesuai
+					$errorPassword = $errorConfirm = $error['pattern'];
+					$cek = false;
+				}
+				else{
+					// cek min-max karakter
+					if(strlen($value) >= $min && strlen($value) <= $max){ // jika sesuai
+						// cek konfirm password
+						if($value !== $confirm){
+							$cek = false;
+							$errorPassword = $errorConfirm = $error['confirm'];
+						}
+						else{
+							$errorPassword = $errorConfirm = "";
+							$cek = true;
+						}
+					}
+					else{
+						$errorPassword = $errorConfirm = $error['length'];
+						$cek = false;
+					}
+				}
+			}
+		// }
+		// else{ // jika opsional
+		// 	// jika diisi cek pattern --> cek max
+		// 	if(!empty($value)){ // jika diisi
+		// 		// cek pattern
+		// 		if(!preg_match($pattern, $value)){ // jika tidak sesuai
+		// 			$setError = $error['pattern'];
+		// 			$cek = false;
+		// 		}
+		// 		else{
+		// 			// cek min-max karakter
+		// 			if(strlen($value) <= $max){ // jika sesuai
+		// 				$setError = "";
+		// 				$cek = true;
+		// 			}
+		// 			else{
+		// 				$setError = $error['length'];
+		// 				$cek = false;
+		// 			}
+		// 		}
+		// 	}
+		// 	else{ // jika kosong
+		// 		$setError = "";
+		// 		$cek = true;
+		// 	}
+		// }
+		
+		$output = array(
+			'cek' => $cek,
+			'value' => array(
+				'password' => $value,
+				'confirm' => $confirm,
+			),
+			'error' => array(
+				'password' => $errorPassword,
+				'confirm' => $errorConfirm,
+			),
 		);
 
 		return $output;
