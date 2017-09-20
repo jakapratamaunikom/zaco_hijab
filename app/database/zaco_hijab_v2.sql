@@ -107,22 +107,35 @@ create table detail_penjualan(
 -- mencatat semua transaksi penjualan yg reject
 create table reject(
     id int AUTO_INCREMENT NOT NULL,
+    kd_reject varchar(16) NOT NULL UNIQUE,
     kd_penjualan int NOT NULL, -- fk dari penjualan
     tgl date,
+    ket text,
+    username varchar(10), -- fk
+    CONSTRAINT pk_reject_id PRIMARY KEY(id),
+    CONSTRAINT fk_reject_kd_penjualan FOREIGN KEY(kd_penjualan) REFERENCES penjualan(id),
+    CONSTRAINT fk_reject_username FOREIGN KEY(username) REFERENCES admin(username)
+);
+
+-- ==============================================================
+
+-- tabel detail reject
+create table detail_reject(
+    id int AUTO_INCREMENT NOT NULL,
+    kd_reject int,
     kd_barang int, -- fk dari tabel barang
     qty SMALLINT,
     kd_barang_ganti int,
+    jenis enum("REJECT", "RETURN"),
     hpp double(8,2),
     harga double(8,2),
     ongkir double(8,2),
     total double(12,2),
     rugi double(8,2),
     ket text,
-    username varchar(10), -- fk
-    CONSTRAINT pk_reject_id PRIMARY KEY(id),
-    CONSTRAINT fk_reject_kd_penjualan FOREIGN KEY(kd_penjualan) REFERENCES penjualan(id),
-    CONSTRAINT fk_reject_kd_barang FOREIGN KEY(kd_barang) REFERENCES barang(id),
-    CONSTRAINT fk_reject_username FOREIGN KEY(username) REFERENCES admin(username)
+    CONSTRAINT pk_detail_reject_id PRIMARY KEY(id),
+    CONSTRAINT fk_detail_reject_kd_reject FOREIGN KEY(kd_barang) REFERENCES barang(id),
+    CONSTRAINT fk_detail_reject_kd_barang FOREIGN KEY(kd_barang) REFERENCES barang(id)
 );
 
 -- ==============================================================

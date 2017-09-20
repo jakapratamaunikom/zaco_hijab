@@ -50,43 +50,43 @@
 	    							<fieldset>
 	          							<legend>Data Admin</legend>
 	          							<!-- username -->
-	          							<div class="form-group">
+	          							<div class="form-group field-username">
 	          								<label for="fUsername">Username</label>
 	          								<div class="input-group">
 								                <span class="input-group-addon">
 								                	<i class="fa fa-user"></i>
 								                </span>
 								                <input type="text" class="form-control" placeholder="Username" id="fUsername" name="fUsername">
-								                <span class="help-block small"></span>
               								</div>
+              								<span class="help-block small"></span>
 	          							</div>
 	          							
 	          							<!-- password -->
-	          							<div class="form-group">
+	          							<div class="form-group field-password">
 	          								<label for="fPass">Password</label>
 	          								<div class="input-group">
 								                <span class="input-group-addon">
 								                	<i class="fa fa-key"></i>
 								                </span>
 								                <input type="password" class="form-control" placeholder="Password" id="fPass" name="fPass">
-								                <span class="help-block small"></span>
               								</div>
+              								<span class="help-block small"></span>
 	          							</div>
 
 	          							<!-- confirm password -->
-	          							<div class="form-group">
+	          							<div class="form-group field-confirm">
 	          								<label for="fConf_pass">Confirm Password</label>
 	          								<div class="input-group">
 								                <span class="input-group-addon">
 								                	<i class="fa fa-lock"></i>
 								                </span>
 								                <input type="password" class="form-control" placeholder="Confirm Password" id="fConf_pass" name="fConf_pass">
-								                <span class="help-block small"></span>
               								</div>
+              								<span class="help-block small"></span>
 	          							</div>
 
 	          							<!-- email -->
-	          							<div class="form-group">
+	          							<div class="form-group field-email">
 	          								<label for="fEmail">Email</label>
 	          								<div class="input-group">
 								                <span class="input-group-addon">
@@ -98,10 +98,11 @@
 	          							</div>
 
 	          							<!-- level -->
-	                        			<div class="form-group">
+	                        			<div class="form-group field-level">
 	                        				<label for="fLevl">Level</label>
 	                        				<select id="fLevel" name="fLevel" class="form-control">
 	                        				</select>
+	                        				<span class="help-block small"></span>
 	                        			</div>
 	              					</fieldset>
 	    						</div>
@@ -111,14 +112,14 @@
 	    							<fieldset>
 	          							<legend>Data Pribadi</legend>
 	          							<!-- nama -->
-	          							<div class="form-group">
+	          							<div class="form-group field-nama">
       										<label for="fNama">Nama</label>
 	          								<input type="text" class="form-control" placeholder="Nama" id="fNama" name="fNama">
 	          								<span class="help-block small"></span>	
 	          							</div>
 
 	          							<!-- no telp -->
-	          							<div class="form-group">
+	          							<div class="form-group filed-telp">
 	          								<label for="fTelp">No. Telepon</label>
 	          								<div class="input-group">
 								                <div class="input-group-addon">
@@ -130,7 +131,7 @@
 	          							</div>
 
 	          							<!-- Alamat -->
-	          							<div class="form-group">
+	          							<div class="form-group field-alamat">
 	          								<label for="fAlamat">Alamat</label>
 	          								<textarea class="form-control" rows="2" placeholder="Alamat" id="fAlamat" name="fAlamat"></textarea>
 	          								<span class="help-block small"></span>
@@ -138,7 +139,7 @@
 	          							
 
 	          							<!-- foto -->
-						          		<div class="form-group" id="field_foto">
+						          		<div class="form-group field-foto">
 						          			<!-- preview foto -->
 						          			<label for="fFoto">Foto</label>
 						          			<div class="input-group image-preview">
@@ -152,7 +153,7 @@
 								                    <div class="btn btn-danger image-preview-input">
 								                        <span class="glyphicon glyphicon-folder-open"></span>
 								                        <span class="image-preview-input-title">Pilih Foto</span>
-								                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" /> <!-- rename it -->
+								                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" />
 								                    </div>
 								                </span>
 								            </div>

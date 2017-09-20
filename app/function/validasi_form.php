@@ -284,7 +284,7 @@
 		$cekValid['label'] = trim($label);
 		$cekValid['min'] = $min;
 		$cekValid['max'] = $max;
-		$cekValid['pattern'] = "/^[a-zA-Z0-9-_,.!?' ]*$/";
+		$cekValid['pattern'] = "/^[a-zA-Z0-9-_,.!?' \/]*$/";
 		$cekValid['required'] = $required;
 		$cekValid['jenis'] = "string";
 

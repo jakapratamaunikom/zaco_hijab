@@ -110,14 +110,12 @@
 			// cek password
 			$validPassword = validPassword("Password", $dataForm['password'], $dataForm['confirm'], 6, 50);
 			if(!$validPassword['cek']){
-				$cek = false;
-				$pesanError['passwordError'] = $validPassword['error']['password'];
-				$pesanError['passwordError'] = $validPassword['error']['confirm'];
+				$cek = false;	
 			}
-			else{
-				$set_value['password'] = $validPassword['value']['password'];
-				$set_value['confirm'] = $validPassword['value']['confirm'];	
-			}
+			$pesanError['passwordError'] = $validPassword['error']['password'];
+			$pesanError['confirmError'] = $validPassword['error']['confirm'];
+			$set_value['password'] = $validPassword['value']['password'];
+			$set_value['confirm'] = $validPassword['value']['confirm'];
 
 		// ======================================= //
 		if($cek){
@@ -130,6 +128,7 @@
 				'level' => validInputan($dataForm['level'], false, false),
 				'telp' => validInputan($dataForm['telp'], false, false),
 				'alamat' => validInputan($dataForm['alamat'], false, false),
+				'foto' => validInputan($valueFoto, false, true),
 			);
 
 			// cek duplikat id barang
