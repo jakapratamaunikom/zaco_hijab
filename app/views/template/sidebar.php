@@ -36,50 +36,49 @@
 
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
-            <li class="header">
-                Menu Navigasi
-            </li>
+            <li class="header">Menu Navigasi</li>
+            <?php echo cetak_menu($sess_akses); ?>
+            
             <!-- Optionally, you can add icons to the links -->
             
             <!-- menu beranda -->
-            <li <?php if(strtolower($m)=="beranda" || !$m) echo "class='active'"; ?> >
+           <!--  <li <?php if(strtolower($m)=="beranda" || !$m) echo "class='active'"; ?> >
                 <a href="<?= base_url; ?>">
                 <i class="fa fa-link"></i> 
                 <span>Beranda</span></a>
-            </li>
+            </li> -->
 
             <!-- menu data penjualan -->
-            <li <?php if(strtolower($m)=="penjualan") echo "class='active'"; ?> >
+           <!--  <li <?php if(strtolower($m)=="penjualan") echo "class='active'"; ?> >
                 <a href="<?= base_url."index.php?m=penjualan&p=list"; ?>"><i class="fa fa-link"></i>
                 <span>Data Penjualan</span></a>
-            </li>
+            </li> -->
 
             <!-- menu data reject -->
-            <li <?php if(strtolower($m)=="reject") echo "class='active'"; ?> >
+           <!--  <li <?php if(strtolower($m)=="reject") echo "class='active'"; ?> >
                 <a href="<?= base_url."index.php?m=reject&p=list"; ?>"><i class="fa fa-link"></i>
                 <span>Data Reject</span></a>
-            </li>
+            </li> -->
 
             <!-- menu data pembelian -->
-            <li <?php if(strtolower($m)=="pembelian") echo "class='active'"; ?> >
+            <!-- <li <?php if(strtolower($m)=="pembelian") echo "class='active'"; ?> >
                 <a href="<?= base_url."index.php?m=pembelian&p=list"; ?>"><i class="fa fa-link"></i>
                 <span>Data Pembelian</span></a>
-            </li>
+            </li> -->
 
             <!-- menu data stok -->
-            <li <?php if(strtolower($m)=="stok") echo "class='active'"; ?> >
+            <!-- <li <?php if(strtolower($m)=="stok") echo "class='active'"; ?> >
                 <a href="<?= base_url."index.php?m=stok&p=list"; ?>"><i class="fa fa-link"></i>
                 <span>Data Stok</span></a>
-            </li>
+            </li> -->
 
             <!-- menu data pengeluaran -->
-            <li <?php if(strtolower($m)=="pengeluaran") echo "class='active'"; ?> >
+            <!-- <li <?php if(strtolower($m)=="pengeluaran") echo "class='active'"; ?> >
                 <a href="<?= base_url."index.php?m=pengeluaran&p=list"; ?>"><i class="fa fa-link"></i>
                 <span>Data Pengeluaran</span></a>
-            </li>
-
+            </li> -->
             <!-- menu data master -->
-            <li class="treeview <?php if(strtolower($m)=="id_barang" || strtolower($m)=="id_warna" || strtolower($m)=="barang") echo "active" ?>">
+            <!-- <li class="treeview <?php if(strtolower($m)=="id_barang" || strtolower($m)=="id_warna" || strtolower($m)=="barang") echo "active" ?>">
                 <a href="javascript:;"><i class="fa fa-link"></i> 
                     <span>Data Master</span>
                     <span class="pull-right-container">
@@ -97,13 +96,13 @@
                         <a href="<?= base_url."index.php?m=barang&p=list"; ?>">Data Barang</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
 
             <!-- menu data admin -->
-            <li <?php if(strtolower($m)=="admin") echo "class='active'"; ?> >
+            <!-- <li <?php if(strtolower($m)=="admin") echo "class='active'"; ?> >
                 <a href="<?= base_url."index.php?m=admin&p=list"; ?>"><i class="fa fa-link"></i>
                 <span>Data Admin</span></a>
-            </li>
+            </li> -->
         </ul>
         <!-- /.sidebar-menu -->
     </section>
