@@ -10,6 +10,18 @@
 		return $result;
 	}
 
+	function get_login($koneksi, $username){
+		$query = "SELECT * FROM admin WHERE BINARY username = :username";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':username', $username);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
 	// insert barang
 	function insertAdmin($koneksi, $data){
 		$status = "1";
