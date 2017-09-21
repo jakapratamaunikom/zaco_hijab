@@ -130,3 +130,28 @@
 
 		return $cekKosong; // true --> list kosong, false --> ada isinya.
 	}
+
+	function cetak_menu($hak_akses){
+		$menu = '';
+		foreach ($hak_akses as $key => $value) {
+            if($key == "data_master"){
+                $menu .= '<li class="treeview menu-data-master">';
+                $menu .= '<a href="javascript:;"><i class="fa fa-link"></i>';
+                $menu .= '<span>Data Master</span><span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>';
+                $menu .= '</a><ul class="treeview-menu">';
+                foreach ($value as $value_data_master){
+                    $menu .= $value_data_master;
+                }
+                $menu .= '</ul></li>';
+            }
+            else $menu .= $value;
+        }
+
+        return $menu;
+	}
+
+	function get_hak_akses($menu, $hak_akses){
+		if($menu === false) $cek = true;
+		else $cek = array_key_exists($menu, $hak_akses) ? true : false;
+		return $cek;
+	}
