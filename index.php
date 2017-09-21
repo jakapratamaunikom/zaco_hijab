@@ -5,17 +5,41 @@
 	// include semua fungsi
 	include_once("app/function/helper.php");
 	include_once("app/function/koneksi.php");
+	include_once("app/function/validasi_form.php");
 
 	// start session
 	session_start();
+	$sess_login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
+	$sess_username = isset($_SESSION['sess_username']) ? $_SESSION['sess_username'] : false;
+	$sess_nama = isset($_SESSION['sess_nama']) ? $_SESSION['sess_nama'] : false;
+	$sess_email = isset($_SESSION['sess_email']) ? $_SESSION['sess_email'] : false;
+	$sess_foto = isset($_SESSION['sess_foto']) ? $_SESSION['sess_foto'] : false;
+	$sess_level = isset($_SESSION['sess_level']) ? $_SESSION['sess_level'] : false;
+	$sess_akses = isset($_SESSION['sess_akses']) ? $_SESSION['sess_akses'] : false;
+	$sess_lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
+	// $sess_time = isset($_SESSION['sess_time']) ? $_SESSION['sess_time'] : false;
+
+	// cek status login
+	if(!$sess_login){
+		header("Location: ".base_url."login.php");
+		die();
+	}
+
+	// cek waktu idle
+
 
 	// inisialisasi parameter get
 	// $m => get data menu/view
 	// $p => get data page yang ada di dalam views
 
-	$m = isset($_GET['m']) ? $_GET['m'] : false; // untuk get menu
-	$p = isset($_GET['p']) ? $_GET['p'] : false; // untuk get page
-		
+	$m = isset($_GET['m']) ? strtolower(validInputan($_GET['m'], false, false)) : false; // untuk get menu
+	$p = isset($_GET['p']) ? strtolower(validInputan($_GET['p'], false, false)) : false; // untuk get page
+	
+	// cek hak akses
+	if(!get_hak_akses($m, $sess_akses)){
+		header("Location: ".base_url);
+		die();
+	}	
 
 ?>
 <!DOCTYPE html>
