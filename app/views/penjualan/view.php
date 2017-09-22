@@ -83,7 +83,7 @@
 	<!-- Tabel Data Pengeluaran -->
 	<div class="row">
 		<div class="col-xs-12 table-responsive">
-			<table id="tabel_lihat_reject" class="table table-striped table-bordered table-hover">
+			<table id="tbl_reject" class="table table-striped table-bordered table-hover">
 				<thead>
 					<tr>
 						<th>No</th>
@@ -98,17 +98,6 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td>1</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-						<td>Dummy</td>
-					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -135,6 +124,8 @@
     var base_url = "<?php print base_url; ?>";
     var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
     // var id = "";
+    var listItem = [];
+    var indexItem = 0;
 </script>
 
 <?php
@@ -165,14 +156,11 @@
 			},
 			success: function(data){
 				console.log(data);
-				$('#lbl_tgl').text(data.penjualan.tgl);
-				$('#lbl_nama').text(data.penjualan.nama);
-				$('#lbl_alamat').text(data.penjualan.alamat);
-				$('#lbl_telp').text(data.penjualan.telp);
-				$('#lbl_no_penjualan').text(data.penjualan.kd_penjualan);
-				$('#lbl_jenis').text(data.penjualan.jenis);
-				$('#lbl_ongkir').text(data.penjualan.ongkir);
 
+				if(!data) document.location=base_url+"index.php?m=penjualan&p=list";
+				else{
+					setValue(data);
+				}
 			},
 			error: function (jqXHR, textStatus, errorThrown) { // error handling
 	            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
@@ -180,5 +168,69 @@
 	        }
 
 		})
+	}
+
+	function setValue(data) {
+		$('#lbl_tgl').text(data.penjualan.tgl);
+		$('#lbl_nama').text(data.penjualan.nama);
+		$('#lbl_alamat').text(data.penjualan.alamat);
+		$('#lbl_telp').text(data.penjualan.telp);
+		$('#lbl_no_penjualan').text(data.penjualan.kd_penjualan);
+		$('#lbl_jenis').text(data.penjualan.jenis);
+		$('#lbl_ongkir').text(data.penjualan.ongkir);
+
+		$.each(data.detail, function(index, item){
+			var index = indexItem++;
+			// masukkan data dari server ke array listItem
+			// var dataItem = {
+			// 	// aksi: "edit", 
+			// 	// status: "", 
+			// 	index: index, 
+			// 	id: item.id, 
+			// 	kd_barang: item.kd_barang, 
+			// 	nama: item.nama,
+			// 	qty: parseInt(item.qty), 
+			// 	hpp: parseInt(item.hpp),
+			// 	harga: parseInt(item.harga), 
+			// 	jenisDiskon: item.jenis,
+			// 	diskon: parseInt(item.diskon), 
+			// 	subTotal: parseInt(item.subtotal),
+			// 	ket: item.ket,
+			// };
+			// listItem.push(dataItem);
+			$("#tbl_reject > tbody:last-child").append(
+				"<tr>"+
+				"<td></td>"+ // nomor
+				"<td></td>"+ // kd_barang
+				"<td>"+item.nama+"</td>"+ // nama barang
+				"<td>"+item.harga+"</td>"+ // harga
+				"<td>"+item.qty+"</td>"+ // qty
+				"<td>"+item.diskon+"</td>"+ // diskon
+				"<td>"+item.subtotal+"</td>"+ // subtotal
+				"<td>"+item.ket+"</td>"+ // keterangan
+				"<td>"+btnAksi()+"</td>"+
+				"</tr>"
+			);
+			numberingList();
+		});
+		// console.log(listItem)
+	}
+
+	function btnAksi(){
+
+		// var disabled = respon ? '' : 'disabled';
+		// var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
+	 //                    '<i class="fa fa-trash"></button>';
+	    
+		var btn = '<button type="button" class="btn btn-danger btn-sm btn-flat" title="Reject">'+
+	                    '<i class="glyphicon glyphicon-retweet"></button>';
+	    return btn;
+	}
+
+	// fungsi penomeran berurut otomatis
+	function numberingList(){
+		$('#tbl_reject tbody tr').each(function (index) {
+	        $(this).children("td:eq(0)").html(index + 1);
+	    });
 	}
 </script>
