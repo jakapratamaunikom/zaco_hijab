@@ -168,7 +168,7 @@ function add_list(){
 							"<td></td>"+ // nomor
 							"<td>"+item_text+"</td>"+ // item
 							"<td>Rp. "+harga+",00</td>"+ // harga
-							"<td>"+fieldQty(qty, index)+"</td>"+ // qty
+							"<td>"+fieldQty(qty, index, )+"</td>"+ // qty
 							"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
 							"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
 							"<td>Rp. "+subTotal+",00</td>"+
@@ -277,20 +277,20 @@ function edit_penjualan(id){
 			"id" : id,
 			"action" : "getEdit",
 		},
-		success: function(data){
-			console.log(data);
-			var statusTranksaksi = data.penjualan.status;
+		success: function(hasil){
+			console.log(hasil);
+			var statusTranksaksi = hasil.data.penjualan.status;
 			// isi form penjualan
-			$("#id").val(data.penjualan.id);
-			$("#fKd_penjualan").val(data.penjualan.kd_penjualan);
-			$('#fTgl').datepicker('update',data.penjualan.tgl);
-			$("#fJenis").val(data.penjualan.jenis);
-			$("#fStatus").val(data.penjualan.status);
-			$("#fNama").val(data.penjualan.nama);
-			$("#fno_telepon").val(data.penjualan.telp);
-			$("#fAlamat").val(data.penjualan.alamat);
+			$("#id").val(hasil.data.penjualan.id);
+			$("#fKd_penjualan").val(hasil.data.penjualan.kd_penjualan);
+			$('#fTgl').datepicker('update',hasil.data.penjualan.tgl);
+			$("#fJenis").val(hasil.data.penjualan.jenis);
+			$("#fStatus").val(hasil.data.penjualan.status);
+			$("#fNama").val(hasil.data.penjualan.nama);
+			$("#fno_telepon").val(hasil.data.penjualan.telp);
+			$("#fAlamat").val(hasil.data.penjualan.alamat);
 
-			$.each(data.listItem, function(index, item){
+			$.each(hasil.data.listItem, function(index, item){
 				var index = indexItem++;
 				// masukkan data dari server ke array listItem
 				var dataItem = {
@@ -306,15 +306,16 @@ function edit_penjualan(id){
 					"<td></td>"+ // nomor
 					"<td>"+item.nama+"</td>"+ // item
 					"<td>Rp. "+parseInt(item.harga)+",00</td>"+ // harga
-					"<td>"+fieldQty(parseInt(item.qty), dataItem.index)+"</td>"+ // qty
+					"<td>"+fieldQty(parseInt(item.qty), dataItem.index, hasil.respon.qty)+"</td>"+ // qty
 					"<td>"+fieldDiskon(item.jenis_diskon, parseInt(item.diskon), dataItem.index, statusTranksaksi)+"</td>"+ // diskon
 					"<td>"+fieldKeterangan(dataItem.index, item.ket)+"</td>"+ // keterangan
 					"<td>Rp. "+parseInt(item.subtotal)+",00</td>"+
-					"<td>"+btnAksi(dataItem.index)+"</td>"+ // aksi
+					"<td>"+btnAksi(dataItem.index, hasil.respon.aksi)+"</td>"+ // aksi
 					"</tr>"
 				);
 				numberingList();
 			});
+			getResponse(hasil.respon);
 			console.log(listItem);
 		},
 		error: function (jqXHR, textStatus, errorThrown) { // error handling
@@ -322,6 +323,22 @@ function edit_penjualan(id){
             console.log(jqXHR, textStatus, errorThrown);
         }
 	})
+}
+
+function getResponse(respon){
+	if(!respon.listItem){
+		$('#fKd_barang').prop('disabled',true);
+		$('#fQty').prop('readonly',true);
+		$('#fDiskon').prop('readonly',true);
+		$('#fJenisDiskon').prop('disabled', true);
+		$('#btn_tambahItem').prop('disabled',true);
+	}
+	if(!respon.qty){
+		
+	}
+	if(!respon.aksi){
+		
+	}
 }
 
 // fungsi penomeran berurut otomatis
@@ -333,8 +350,10 @@ function numberingList(){
 }
 
 // fungsi cetak field qty di tabel
-function fieldQty(qty, index){
-	var field = '<input type="number" min="1" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'">';
+function fieldQty(qty, index, respon = true){
+
+	var disabled = respon ? '' : 'disabled';
+	var field = '<input type="number" min="1" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'" '+disabled+'>';
 	return field;
 }
 
@@ -366,8 +385,10 @@ function fieldDiskon(jenisDiskon, diskon, index, status){
 }
 
 // fungsi cetak btn aksi di tabel
-function btnAksi(index){
-	var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list">'+
+function btnAksi(index, respon = true){
+
+	var disabled = respon ? '' : 'disabled';
+	var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
                     '<i class="fa fa-trash"></button>';
     return btn;
 }

@@ -93,6 +93,10 @@
 				$cetak_tgl = $tgl_indo;
 				break;
 
+			case 'yyyymmdd':
+				$cetak_tgl = $getTahun.$getBulan.$getTgl;
+				break;
+
 			case 'full': // Senin, 27 Februari 2018
 			default:
 				$cetak_tgl = $arrHari[$num].", ".$tgl_indo;

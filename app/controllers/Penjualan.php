@@ -200,6 +200,8 @@
 		// get data penjualan
 		$data_penjualan = get_penjualan_by_id($koneksi, $id);
 
+		$output = array();
+
 		if(!$data_penjualan){
 			session_start();
 			$_SESSION['notif'] = "gagal";
@@ -212,7 +214,15 @@
 			$data['listItem'] = $data_detail;
 		}
 
-		echo json_encode($data);
+
+		// $respon = $data ? cekTanggal($data_penjualan['kd_penjualan']) : false;
+		$respon = cekTanggal($data_penjualan['kd_penjualan']);
+
+		$output = array(
+			'data' => $data,
+			'respon' => $respon,
+		);
+		echo json_encode($output);
 	}
 
 	// fungsi action edit
@@ -446,4 +456,30 @@
 		);
 
 		return $configData;
+	}
+
+	function cekTanggal($tgl){
+		$tgl = explode('-', $tgl);
+
+		// $tgl_sekarang = cetakTgl(date("Y-m-d"), 'yyyymmdd');
+
+		$tgl_sekarang = '20170923';
+
+		$respon = array();
+		if($tgl[1]==$tgl_sekarang) {
+			$respon = array(
+				'listItem' => true, 
+				'qty' => true,
+				'aksi' => true,
+			);
+		}
+		else {
+			$respon = array(
+				'listItem' => false, 
+				'qty' => false,
+				'aksi' => false,
+			);
+		}
+
+		return $respon;
 	}
