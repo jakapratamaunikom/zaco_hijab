@@ -40,7 +40,7 @@
 				validList($koneksi);
 				break;
 
-			case 'getView':
+			case 'getview':
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
 				getView($koneksi, $id);
 				break;
@@ -337,6 +337,10 @@
 			);
 		}
 		else{
+			$nama = !empty($get_penjualan['nama']) ? $get_penjualan['nama'] : "-";
+			$telp = !empty($get_penjualan['telp']) ? $get_penjualan['telp'] : "-";
+			$alamat = !empty($get_penjualan['alamat']) ? $get_penjualan['alamat'] : "-";
+
 			$status_penjualan = ($get_penjualan['status']=="1") ? "NORMAL" : "FREE";
 			$ket = !empty($get_penjualan['ket']) ? $get_penjualan['ket'] : "-";
 			$data = array(
@@ -345,9 +349,9 @@
 					'kd_penjualan' => $get_penjualan['kd_penjualan'],
 					'tgl' => cetakTgl($get_penjualan['tgl'], 'full'),
 					'jenis' => $get_penjualan['jenis'],
-					'nama' => $get_penjualan['nama'],
-					'telp' => $get_penjualan['telp'],
-					'alamat' => $get_penjualan['alamat'],
+					'nama' => $nama,
+					'telp' => $telp,
+					'alamat' => $alamat,
 					'ongkir' => rupiah($get_penjualan['ongkir']),
 					'status' => $status_penjualan,
 					'ket' => $ket,
@@ -360,18 +364,18 @@
 				$ket = !empty($row['ket']) ? $row['ket'] : "-";
 
 				$dataRow = array();
-				$dataRow[] = $row['id'];
-				$dataRow[] = $row['kd_penjualan'];
-				$dataRow[] = $row['kd_barang'];
-				$dataRow[] = $row['kode_barang'];
-				$dataRow[] = $row['nama'];
-				$dataRow[] = rupiah($row['hpp']);
-				$dataRow[] = rupiah($row['harga']);
-				$dataRow[] = $row['qty'];
-				$dataRow[] = $row['jenis_diskon'];
-				$dataRow[] = $diskon;
-				$dataRow[] = rupiah($row['subtotal']);
-				$dataRow[] = $ket;
+				$dataRow['id'] = $row['id'];
+				$dataRow['kd_penjualan'] = $row['kd_penjualan'];
+				$dataRow['kd_barang'] = $row['kd_barang'];
+				// $dataRow[] = $row['kode_barang'];
+				$dataRow['nama'] = $row['nama'];
+				$dataRow['hpp'] = rupiah($row['hpp']);
+				$dataRow['harga'] = rupiah($row['harga']);
+				$dataRow['qty'] = $row['qty'];
+				$dataRow['jenis_diskon'] = $row['jenis_diskon'];
+				$dataRow['diskon'] = $diskon;
+				$dataRow['subtotal'] = rupiah($row['subtotal']);
+				$dataRow['ket'] = $ket;
 
 				$temp_data[] = $dataRow;
 			}

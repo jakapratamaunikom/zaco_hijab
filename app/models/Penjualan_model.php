@@ -24,7 +24,7 @@
 
 	// get data edit detail penjualan
 	function get_detail_by_id($koneksi, $id){
-		$query = "SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.kode_barang, b.nama, dp.hpp, dp.harga, ";
+		$query = "SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.nama, dp.hpp, dp.harga, ";
 		$query .= "dp.qty, dp.jenis_diskon, dp.diskon, dp.subtotal, dp.ket ";
 		$query .= "FROM detail_penjualan dp JOIN penjualan p ON p.id=dp.kd_penjualan ";
 		$query .= "JOIN barang b ON b.id=dp.kd_barang WHERE dp.kd_penjualan= :id ORDER BY dp.id ASC";

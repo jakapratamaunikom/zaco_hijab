@@ -1,5 +1,7 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+
+	$id = isset($_GET['id']) ? $_GET['id'] : false;
 ?>
 
 <!-- List -->
@@ -41,17 +43,17 @@
         <div class="col-sm-4 col-xs-12 invoice-col">
 			Pembeli: <!-- Informasi Pembeli yang klaim Reject --> 
 			<address>
-				<strong>Nama: ABCDEFGHIJKL.</strong><br>
-				Alamat<br><br>
-				Telepon: (+62) 8170216057
+				<strong><p id="lbl_nama">Nama: ABCDEFGHIJKL.</p> </strong><br>
+				<div id="lbl_alamat">Alamat</div>
+				<div id="lbl_telepon">Telepon: </div>
 			</address>
         </div>
 
         <!-- /.col -->
         <div class="col-sm-4 col-xs-12 invoice-col">
         	<div class="pull-right">
-        		<b>No Penjualan #007612</b><br>
-				<b>Jenis:</b> 4F3S8J<br>
+        		<b id="lbl_no_penjualan">No Penjualan #007612</b><br>
+				<b id="lbl_jenis">Jenis: 4F3S8J</b><br>
 				<br><br>
 				<b>No Reject #007612</b><br>
         	</div>
@@ -77,32 +79,29 @@
         </div>
     </div>
 
-
+    <b>Ongkir #007612</b><br>
 	<!-- Tabel Data Pengeluaran -->
 	<div class="row">
 		<div class="col-xs-12 table-responsive">
-			<table id="tabel_lihat_reject" class="table table-striped">
+			<table id="tabel_lihat_reject" class="table table-striped table-bordered table-hover">
 				<thead>
 					<tr>
-						<th></th>
-						<th colspan="2"><center>Barang Lama</center> </th>
-						<th colspan="2"><center>Barang Ganti</center></th>
-						<th></th>
-						<th></th>
-					</tr>
-					<tr>
 						<th>No</th>
-						<th>Nama Barang</th>
+						<th>Kode Barang</th>
+						<th>Nama</th>
+						<th>Harga</th>
 						<th>Qty</th>
-						<th>Nama Barang</th>
-						<th>Qty</th>
-						<th>Jumlah</th>
+						<th>Diskon</th>
+						<th>Subtotal</th>
 						<th>Keterangan</th>
+						<th>Aksi</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-					<td>1</td>
+						<td>1</td>
+						<td>Dummy</td>
+						<td>Dummy</td>
 						<td>Dummy</td>
 						<td>Dummy</td>
 						<td>Dummy</td>
@@ -131,3 +130,49 @@
 
 <!-- untuk mengilangkan garis hitam dibawah -->
 <div class="clearfix"></div>
+
+<script type="text/javascript">
+    var base_url = "<?php print base_url; ?>";
+    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
+    // var id = "";
+</script>
+
+<?php
+	if(!$id){
+		?>
+		<script type="text/javascript">document.location=base_url+"index.php?m=penjualan&p=list";</script>
+		<?php
+	}
+?>
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		if(!jQuery.isEmptyObject(urlParams.id)){ // jika ada parameter get
+			var id = urlParams.id;
+			getView(id);
+		}
+	});
+
+	function getView(id){
+		$.ajax({
+			url: base_url+"app/controllers/Penjualan.php",
+			type: "post",
+			dataType: "json",
+			data: {
+				"id" : id,
+				"action" : "getView",
+			},
+			success: function(data){
+				console.log(data);
+				$('#lbl_nama').text(data.penjualan.nama);
+
+			},
+			error: function (jqXHR, textStatus, errorThrown) { // error handling
+	            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+	            console.log(jqXHR, textStatus, errorThrown);
+	        }
+
+		})
+	}
+</script>
