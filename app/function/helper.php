@@ -137,7 +137,7 @@
 
 	function cetak_menu($hak_akses){
 		$menu = '';
-		foreach ($hak_akses as $key => $value) {
+		foreach ($hak_akses as $key => $value){
             if($key == "data_master"){
                 $menu .= '<li class="treeview menu-data-master">';
                 $menu .= '<a href="javascript:;"><i class="fa fa-link"></i>';
