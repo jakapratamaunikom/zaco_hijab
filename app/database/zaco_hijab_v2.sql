@@ -474,7 +474,6 @@ create procedure edit_penjualan(
     -- in username_param varchar(10)
 )
 BEGIN
-    DECLARE tgl_skrng date;
     DECLARE kd_barang_penjualan int;
     DECLARE get_qty_penjualan SMALLINT;
     DECLARE get_stk_awal int;
@@ -489,145 +488,129 @@ BEGIN
     DECLARE brg_keluar_B SMALLINT;
     DECLARE stok_akhir_param int;
 
-    SELECT current_date into tgl_skrng;
     -- get data barang di detail penjualan
     SELECT kd_barang into kd_barang_penjualan FROM detail_penjualan WHERE id=id_detail_param; -- kd barang lama
 
-    -- cek tgl asli dgn tgl skrng
-    IF tgl_param = tgl_skrng THEN -- jika tgl penjualan dan tgl edit sama, maka boleh edit barang dan qty
+    -- jika barang sama (tidak ada perubahan)
+    IF kd_barang_param = kd_barang_penjualan THEN
 
-        -- jika barang sama (tidak ada perubahan)
-        IF kd_barang_param = kd_barang_penjualan THEN
-
-            -- dapatkan qty barangnya
-            SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+        -- dapatkan qty barangnya
+        SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+        
+        -- jika qty berubah
+        IF qty_param != get_qty_penjualan THEN
             
-            -- jika qty berubah
-            IF qty_param != get_qty_penjualan THEN
-                
-                SELECT stok_awal into get_stk_awal FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data stok_awal terbaru yg sesuai
-                SELECT brg_keluar into get_brg_keluar FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_keluar terbaru yg sesuai
-                SELECT brg_masuk into get_brg_masuk FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_masuk terbaru yg sesuai
+            SELECT stok_awal into get_stk_awal FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data stok_awal terbaru yg sesuai
+            SELECT brg_keluar into get_brg_keluar FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_keluar terbaru yg sesuai
+            SELECT brg_masuk into get_brg_masuk FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_masuk terbaru yg sesuai
 
+            UPDATE stok SET
+                brg_keluar=(get_brg_keluar+(qty_param-get_qty_penjualan)), stok_akhir=((get_stk_awal+get_brg_masuk)-(get_brg_keluar+(qty_param-get_qty_penjualan)))
+            WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+        end if;
+
+        -- update detail penjualan, ubah qty nya saja
+        UPDATE detail_penjualan SET
+            hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
+        WHERE id=id_detail_param;
+
+
+    -- jika barang berubah
+    ELSE
+        SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param; -- cek tgl
+        SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+
+        -- jika qty sama
+        IF qty_param = get_qty_penjualan THEN
+            -- get data lama (A)
+            SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+            SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+            SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+
+            -- get data yg baru (B)
+            SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+
+            -- update data lama
+            UPDATE stok SET
+                brg_keluar=(brg_keluar_A-qty_param), stok_akhir=(stok_awal_A+brg_masuk_A-(brg_keluar_A-qty_param))
+            WHERE tgl=tgl_param AND kd_barang=kd_barang_penjualan;
+
+            IF cek_tgl > 0 THEN
+
+                -- update data baru
                 UPDATE stok SET
-                    brg_keluar=(get_brg_keluar+(qty_param-get_qty_penjualan)), stok_akhir=((get_stk_awal+get_brg_masuk)-(get_brg_keluar+(qty_param-get_qty_penjualan)))
+                    brg_keluar=(brg_keluar_B+qty_param), stok_akhir=(stok_awal_B+brg_masuk_B-(brg_keluar_B+qty_param))
                 WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+            
+            ELSE
+                SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
+    
+                -- tambah stok
+                INSERT into stok(
+                    tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+                VALUES(
+                    tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
+
             end if;
 
-            -- update detail penjualan, ubah qty nya saja
+            -- update detail penjualan, ubah kd_barang nya saja
             UPDATE detail_penjualan SET
-                hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
+                kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
             WHERE id=id_detail_param;
 
-            -- -- update penjualan total
             -- UPDATE penjualan SET 
-            --     jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, 
+            --     qty=qty_param, jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, 
             --     diskon=diskon_param, total=total_param, laba=laba_param, status=status_param, ket=ket_param 
             -- WHERE id=id_param;
 
-        -- jika barang berubah
+        -- jika qty berubah
         ELSE
-            SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param; -- cek tgl
+
             SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+            -- pindah barang
+            SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+            SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+            SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
 
-            -- jika qty sama
-            IF qty_param = get_qty_penjualan THEN
-                -- get data lama (A)
-                SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
-                SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
-                SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+            -- get data yg baru (B)
+            SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
 
-                -- get data yg baru (B)
-                SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            -- update data lama
+            UPDATE stok SET
+                brg_keluar=(brg_keluar_A-get_qty_penjualan), stok_akhir=(stok_awal_A+brg_masuk_A-(brg_keluar_A-get_qty_penjualan))
+            WHERE tgl=tgl_param AND kd_barang=kd_barang_penjualan;
 
-                -- update data lama
+            IF cek_tgl > 0 THEN
+
+                -- update data baru
                 UPDATE stok SET
-                    brg_keluar=(brg_keluar_A-qty_param), stok_akhir=(stok_awal_A+brg_masuk_A-(brg_keluar_A-qty_param))
-                WHERE tgl=tgl_param AND kd_barang=kd_barang_penjualan;
-
-                IF cek_tgl > 0 THEN
-
-                    -- update data baru
-                    UPDATE stok SET
-                        brg_keluar=(brg_keluar_B+qty_param), stok_akhir=(stok_awal_B+brg_masuk_B-(brg_keluar_B+qty_param))
-                    WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
-                
-                ELSE
-                    SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
-        
-                    -- tambah stok
-                    INSERT into stok(
-                        tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
-                    VALUES(
-                        tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
-
-                end if;
-
-                -- update detail penjualan, ubah kd_barang nya saja
-                UPDATE detail_penjualan SET
-                    kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
-                WHERE id=id_detail_param;
-
-                -- UPDATE penjualan SET 
-                --     qty=qty_param, jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, 
-                --     diskon=diskon_param, total=total_param, laba=laba_param, status=status_param, ket=ket_param 
-                -- WHERE id=id_param;
-
-            -- jika qty berubah
+                    brg_keluar=(brg_keluar_B+qty_param), stok_akhir=(stok_awal_B+brg_masuk_B-(brg_keluar_B+qty_param))
+                WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+            
             ELSE
+                SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
 
-                SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
-                -- pindah barang
-                SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
-                SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
-                SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
-
-                -- get data yg baru (B)
-                SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-
-                -- update data lama
-                UPDATE stok SET
-                    brg_keluar=(brg_keluar_A-get_qty_penjualan), stok_akhir=(stok_awal_A+brg_masuk_A-(brg_keluar_A-get_qty_penjualan))
-                WHERE tgl=tgl_param AND kd_barang=kd_barang_penjualan;
-
-                IF cek_tgl > 0 THEN
-
-                    -- update data baru
-                    UPDATE stok SET
-                        brg_keluar=(brg_keluar_B+qty_param), stok_akhir=(stok_awal_B+brg_masuk_B-(brg_keluar_B+qty_param))
-                    WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
-                
-                ELSE
-                    SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
-
-                    -- tambah stok
-                    INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
-                    VALUES(tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
-                end if;
-
-                -- update detail penjualan, ubah kd barang dan qty
-                UPDATE detail_penjualan SET
-                    kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
-                WHERE id=id_detail_param;
-
-                -- UPDATE penjualan SET 
-                --     jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, hpp=hpp_param, 
-                --     harga=harga_param, diskon=diskon_param, total=total_param, laba=laba_param, status=status_param, ket=ket_param 
-                -- WHERE id=id_param;
-
+                -- tambah stok
+                INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+                VALUES(tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
             end if;
+
+            -- update detail penjualan, ubah kd barang dan qty
+            UPDATE detail_penjualan SET
+                kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
+            WHERE id=id_detail_param;
+
+            -- UPDATE penjualan SET 
+            --     jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, hpp=hpp_param, 
+            --     harga=harga_param, diskon=diskon_param, total=total_param, laba=laba_param, status=status_param, ket=ket_param 
+            -- WHERE id=id_param;
 
         end if;
 
-    ELSE
-        -- update biasa selain barang dan qty
-        UPDATE detail_penjualan SET 
-            hpp=hpp_param, harga=harga_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param 
-        WHERE id=id_detail_param;
     end if;
 
 end;
@@ -647,7 +630,6 @@ create procedure edit_pembelian(
     -- in username_param varchar(10)
 )
 BEGIN
-    DECLARE tgl_skrng date;
     DECLARE kd_barang_pembelian int;
     DECLARE get_qty_pembelian SMALLINT;
     DECLARE get_stk_awal int;
@@ -666,131 +648,122 @@ BEGIN
     -- get data penjualan
     SELECT kd_barang into kd_barang_pembelian FROM detail_pembelian WHERE id=id_detail_param; -- kd barang lama
 
-    -- cek tgl asli dgn tgl skrng
-    IF tgl_param = tgl_skrng THEN -- jika tgl penjualan dan tgl edit sama, maka boleh edit barang dan qty
-
         -- jika barang sama
-        IF kd_barang_param = kd_barang_pembelian THEN
+    IF kd_barang_param = kd_barang_pembelian THEN
 
-            SELECT qty into get_qty_pembelian FROM detail_pembelian WHERE id=id_detail_param;
+        SELECT qty into get_qty_pembelian FROM detail_pembelian WHERE id=id_detail_param;
+        
+        -- jika qty berubah
+        IF qty_param != get_qty_pembelian THEN
             
-            -- jika qty berubah
-            IF qty_param != get_qty_pembelian THEN
-                
-                SELECT stok_awal into get_stk_awal FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data stok_awal terbaru yg sesuai
-                SELECT brg_keluar into get_brg_keluar FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_keluar terbaru yg sesuai
-                SELECT brg_masuk into get_brg_masuk FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_masuk terbaru yg sesuai
+            SELECT stok_awal into get_stk_awal FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data stok_awal terbaru yg sesuai
+            SELECT brg_keluar into get_brg_keluar FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_keluar terbaru yg sesuai
+            SELECT brg_masuk into get_brg_masuk FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_masuk terbaru yg sesuai
 
+            UPDATE stok SET
+                brg_masuk=((get_brg_masuk-get_qty_pembelian)+qty_param), stok_akhir=((get_stk_awal+(get_brg_masuk-get_qty_pembelian)+qty_param)-get_brg_keluar)
+            WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+        end if;
+
+         -- update pembelian total
+        -- UPDATE pembelian SET 
+        --     kd_barang=kd_barang_param, qty=qty_param, harga=harga_param,  total=total_param, ket=ket_param 
+        -- WHERE id=id_param;
+
+        UPDATE detail_pembelian SET
+            harga=harga_param, qty=qty_param, subtotal=subtotal_param, ket=ket_param
+        WHERE id=id_detail_param;
+
+    -- jika barang berubah
+    ELSE
+        SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param; -- cek tgl
+        SELECT qty into get_qty_pembelian FROM detail_pembelian WHERE id=id_detail_param;
+
+        -- jika qty sama
+        IF qty_param = get_qty_pembelian THEN
+            -- get data lama (A)
+            SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
+            SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
+            SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
+
+            -- get data yg baru (B)
+            SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+
+            -- update data lama
+            UPDATE stok SET
+                brg_masuk=(brg_masuk_A-qty_param), stok_akhir=(stok_awal_A+(brg_masuk_A-qty_param)-brg_keluar_A)
+            WHERE tgl=tgl_param AND kd_barang=kd_barang_pembelian;
+
+            IF cek_tgl > 0 THEN
+
+                -- update data baru
                 UPDATE stok SET
-                    brg_masuk=((get_brg_masuk-get_qty_pembelian)+qty_param), stok_akhir=((get_stk_awal+(get_brg_masuk-get_qty_pembelian)+qty_param)-get_brg_keluar)
+                    brg_masuk=(brg_masuk_B+qty_param), stok_akhir=(stok_awal_B+(brg_masuk_B+qty_param)-brg_keluar_B)
                 WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+            
+            ELSE
+                SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
+    
+                -- tambah stok
+                INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+                VALUES(tgl_param,kd_barang_param,stok_akhir_param,qty_param,'',(stok_akhir_param+qty_param));
+
             end if;
 
-             -- update pembelian total
             -- UPDATE pembelian SET 
             --     kd_barang=kd_barang_param, qty=qty_param, harga=harga_param,  total=total_param, ket=ket_param 
             -- WHERE id=id_param;
 
             UPDATE detail_pembelian SET
-                harga=harga_param, qty=qty_param, subtotal=subtotal_param, ket=ket_param
+                kd_barang=kd_barang_param, harga=harga_param, subtotal=subtotal_param, ket=ket_param
             WHERE id=id_detail_param;
 
-        -- jika barang berubah
+        -- jika qty berubah
         ELSE
-            SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param; -- cek tgl
+
             SELECT qty into get_qty_pembelian FROM detail_pembelian WHERE id=id_detail_param;
+            -- pindah barang
+            SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
+            SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
+            SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
 
-            -- jika qty sama
-            IF qty_param = get_qty_pembelian THEN
-                -- get data lama (A)
-                SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
-                SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
-                SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
+            -- get data yg baru (B)
+            SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
 
-                -- get data yg baru (B)
-                SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+            -- update data lama
+            UPDATE stok SET
+                brg_masuk=(brg_masuk_A-get_qty_pembelian), stok_akhir=(stok_awal_A+(brg_masuk_A-get_qty_pembelian)-brg_keluar_A)
+            WHERE tgl=tgl_param AND kd_barang=kd_barang_pembelian;
 
-                -- update data lama
+            IF cek_tgl > 0 THEN
+
+                -- update data baru
                 UPDATE stok SET
-                    brg_masuk=(brg_masuk_A-qty_param), stok_akhir=(stok_awal_A+(brg_masuk_A-qty_param)-brg_keluar_A)
-                WHERE tgl=tgl_param AND kd_barang=kd_barang_pembelian;
-
-                IF cek_tgl > 0 THEN
-
-                    -- update data baru
-                    UPDATE stok SET
-                        brg_masuk=(brg_masuk_B+qty_param), stok_akhir=(stok_awal_B+(brg_masuk_B+qty_param)-brg_keluar_B)
-                    WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
-                
-                ELSE
-                    SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
-        
-                    -- tambah stok
-                    INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
-                    VALUES(tgl_param,kd_barang_param,stok_akhir_param,qty_param,'',(stok_akhir_param+qty_param));
-
-                end if;
-
-                -- UPDATE pembelian SET 
-                --     kd_barang=kd_barang_param, qty=qty_param, harga=harga_param,  total=total_param, ket=ket_param 
-                -- WHERE id=id_param;
-
-                UPDATE detail_pembelian SET
-                    kd_barang=kd_barang_param, harga=harga_param, subtotal=subtotal_param, ket=ket_param
-                WHERE id=id_detail_param;
-
-            -- jika qty berubah
+                    brg_masuk=(brg_masuk_B+qty_param), stok_akhir=(stok_awal_B+(brg_masuk_B+qty_param)-brg_keluar_B)
+                WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+            
             ELSE
+                SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
 
-                SELECT qty into get_qty_pembelian FROM detail_pembelian WHERE id=id_detail_param;
-                -- pindah barang
-                SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
-                SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
-                SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_pembelian AND tgl=tgl_param;
-
-                -- get data yg baru (B)
-                SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-                SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
-
-                -- update data lama
-                UPDATE stok SET
-                    brg_masuk=(brg_masuk_A-get_qty_pembelian), stok_akhir=(stok_awal_A+(brg_masuk_A-get_qty_pembelian)-brg_keluar_A)
-                WHERE tgl=tgl_param AND kd_barang=kd_barang_pembelian;
-
-                IF cek_tgl > 0 THEN
-
-                    -- update data baru
-                    UPDATE stok SET
-                        brg_masuk=(brg_masuk_B+qty_param), stok_akhir=(stok_awal_B+(brg_masuk_B+qty_param)-brg_keluar_B)
-                    WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
-                
-                ELSE
-                    SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
-
-                    -- tambah stok
-                    INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
-                    VALUES(tgl_param,kd_barang_param,stok_akhir_param,qty_param,'',(stok_akhir_param+qty_param));
-                end if;
-
-                -- UPDATE pembelian SET 
-                --     kd_barang=kd_barang_param, qty=qty_param, harga=harga_param,  total=total_param, ket=ket_param 
-                -- WHERE id=id_param;
-
-                UPDATE detail_pembelian SET
-                    kd_barang=kd_barang_param, harga=harga_param, qty=qty_param, subtotal=subtotal_param, ket=ket_param
-                WHERE id=id_detail_param;
-
+                -- tambah stok
+                INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+                VALUES(tgl_param,kd_barang_param,stok_akhir_param,qty_param,'',(stok_akhir_param+qty_param));
             end if;
+
+            -- UPDATE pembelian SET 
+            --     kd_barang=kd_barang_param, qty=qty_param, harga=harga_param,  total=total_param, ket=ket_param 
+            -- WHERE id=id_param;
+
+            UPDATE detail_pembelian SET
+                kd_barang=kd_barang_param, harga=harga_param, qty=qty_param, subtotal=subtotal_param, ket=ket_param
+            WHERE id=id_detail_param;
 
         end if;
 
-    ELSE
-        UPDATE detail_pembelian SET 
-            harga=harga_param, subtotal=subtotal_param, ket=ket_param
-        WHERE id=id_detail_param;
     end if;
 
 end;
