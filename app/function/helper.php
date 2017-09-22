@@ -151,7 +151,23 @@
 	}
 
 	function get_hak_akses($menu, $hak_akses){
+		$new_hakAkses = array();
+
+		if(array_filter($hak_akses, 'is_array')){
+			$temp_array = array_filter($hak_akses, 'is_array');
+			foreach ($temp_array as $key => $value) {
+				$new_hakAkses[$key] = $value;		
+			}
+		}
+		else if(array_filter($hak_akses, 'is_string')){
+			$temp_array = array_filter($hak_akses, 'is_string');
+			foreach ($temp_array as $key => $value) {
+				$new_hakAkses[$key] = $value;
+			}
+		}
+		
 		if($menu === false) $cek = true;
-		else $cek = array_key_exists($menu, $hak_akses) ? true : false;
+		else $cek = array_key_exists($menu, $new_hakAkses) ? true : false;
+
 		return $cek;
 	}
