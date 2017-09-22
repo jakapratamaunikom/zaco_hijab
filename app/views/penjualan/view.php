@@ -21,7 +21,7 @@
 		<div class="col-xs-12">
 			<h2 class="page-header">
 				<i class="fa fa-globe"></i> Faktur Penjualan
-				<small class="pull-right">Tanggal: 17/08/1945</small>
+				<small class="pull-right" id="lbl_tgl"></small>
 			</h2>
 		</div>
 	<!-- /.col -->
@@ -43,18 +43,19 @@
         <div class="col-sm-4 col-xs-12 invoice-col">
 			Pembeli: <!-- Informasi Pembeli yang klaim Reject --> 
 			<address>
-				<strong><p id="lbl_nama">Nama: ABCDEFGHIJKL.</p> </strong><br>
-				<div id="lbl_alamat">Alamat</div>
-				<div id="lbl_telepon">Telepon: </div>
+				<strong>Nama:&nbsp;</strong><nama id="lbl_nama"></nama> 
+				<div id="lbl_alamat"></div>
+				<br>
+				<strong>Telepon:&nbsp;</strong><tlp id="lbl_telp"></tlp>
 			</address>
         </div>
 
         <!-- /.col -->
         <div class="col-sm-4 col-xs-12 invoice-col">
         	<div class="pull-right">
-        		<b id="lbl_no_penjualan">No Penjualan #007612</b><br>
-				<b id="lbl_jenis">Jenis: 4F3S8J</b><br>
-				<br><br>
+        		<b><c id="lbl_no_penjualan"></c></b><br>
+				<b id="lbl_jenis"></b><br>
+				<b>Ongkir <c id="lbl_ongkir"></c></b><br><br>
 				<b>No Reject #007612</b><br>
         	</div>
         </div>
@@ -79,7 +80,6 @@
         </div>
     </div>
 
-    <b>Ongkir #007612</b><br>
 	<!-- Tabel Data Pengeluaran -->
 	<div class="row">
 		<div class="col-xs-12 table-responsive">
@@ -165,7 +165,13 @@
 			},
 			success: function(data){
 				console.log(data);
+				$('#lbl_tgl').text(data.penjualan.tgl);
 				$('#lbl_nama').text(data.penjualan.nama);
+				$('#lbl_alamat').text(data.penjualan.alamat);
+				$('#lbl_telp').text(data.penjualan.telp);
+				$('#lbl_no_penjualan').text(data.penjualan.kd_penjualan);
+				$('#lbl_jenis').text(data.penjualan.jenis);
+				$('#lbl_ongkir').text(data.penjualan.ongkir);
 
 			},
 			error: function (jqXHR, textStatus, errorThrown) { // error handling
