@@ -40,6 +40,11 @@
 				validList($koneksi);
 				break;
 
+			case 'getView':
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				getView($koneksi, $id);
+				break;
+
 			case 'getkdpenjualan':
 				getKdPenjualan($koneksi);
 				break;
@@ -316,6 +321,65 @@
 		);
 
 		echo json_encode($output);
+	}
+
+	// fungsi get view penjualan
+	function getView($koneksi, $id){
+		$get_penjualan = get_penjualan_by_id($koneksi, $id);
+		$get_detail_penjualan = get_detail_by_id($koneksi, $id);
+
+		if(!$get_penjualan || !$get_detail_penjualan){
+			session_start();
+			$_SESSION['notif'] = "gagal";
+			$data = array(
+				'penjualan' => false,
+				'detail' => false,
+			);
+		}
+		else{
+			$status_penjualan = ($get_penjualan['status']=="1") ? "NORMAL" : "FREE";
+			$ket = !empty($get_penjualan['ket']) ? $get_penjualan['ket'] : "-";
+			$data = array(
+				'penjualan' => array(
+					'id' => $get_penjualan['id'],
+					'kd_penjualan' => $get_penjualan['kd_penjualan'],
+					'tgl' => cetakTgl($get_penjualan['tgl'], 'full'),
+					'jenis' => $get_penjualan['jenis'],
+					'nama' => $get_penjualan['nama'],
+					'telp' => $get_penjualan['telp'],
+					'alamat' => $get_penjualan['alamat'],
+					'ongkir' => rupiah($get_penjualan['ongkir']),
+					'status' => $status_penjualan,
+					'ket' => $ket,
+				),
+			);
+
+			$temp_data = array();
+			foreach($get_detail_penjualan as $row){
+				$diskon = (strtolower($row['jenis_diskon'])=='r') ? rupiah($row['diskon']) : $row['diskon']." %";
+				$ket = !empty($row['ket']) ? $row['ket'] : "-";
+
+				$dataRow = array();
+				$dataRow[] = $row['id'];
+				$dataRow[] = $row['kd_penjualan'];
+				$dataRow[] = $row['kd_barang'];
+				$dataRow[] = $row['kode_barang'];
+				$dataRow[] = $row['nama'];
+				$dataRow[] = rupiah($row['hpp']);
+				$dataRow[] = rupiah($row['harga']);
+				$dataRow[] = $row['qty'];
+				$dataRow[] = $row['jenis_diskon'];
+				$dataRow[] = $diskon;
+				$dataRow[] = rupiah($row['subtotal']);
+				$dataRow[] = $ket;
+
+				$temp_data[] = $dataRow;
+			}
+
+			$data['detail'] = $temp_data;
+		}
+
+		echo json_encode($data);
 	}
 
 	// fungsi hapus detail penjualan
