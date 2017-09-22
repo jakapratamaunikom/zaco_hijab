@@ -155,11 +155,17 @@
 
 		if(array_filter($hak_akses, 'is_array')){
 			$temp_array = array_filter($hak_akses, 'is_array');
-			foreach ($temp_array as $key => $value) {
-				$new_hakAkses[$key] = $value;		
+			foreach ($temp_array as $value) {
+				// $new_hakAkses[$key] = $value;
+				// echo $value.'<br>';	
+				foreach ($value as $key => $val) {
+					$new_hakAkses[$key] = $val;
+				}	
 			}
+
+			// echo var_dump($temp_array);
 		}
-		else if(array_filter($hak_akses, 'is_string')){
+		if(array_filter($hak_akses, 'is_string')){
 			$temp_array = array_filter($hak_akses, 'is_string');
 			foreach ($temp_array as $key => $value) {
 				$new_hakAkses[$key] = $value;
@@ -168,6 +174,8 @@
 		
 		if($menu === false) $cek = true;
 		else $cek = array_key_exists($menu, $new_hakAkses) ? true : false;
+
+		// echo var_dump($new_hakAkses);
 
 		return $cek;
 	}

@@ -41,6 +41,8 @@
 		die();
 	}	
 
+	// get_hak_akses($m, $sess_akses);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -57,6 +59,8 @@
 
 	</head>
 	<body class="hold-transition skin-red sidebar-mini">
+
+		
 
 		<div class="wrapper">
 			<!-- Header -->
