@@ -461,9 +461,7 @@
 	function cekTanggal($tgl){
 		$tgl = explode('-', $tgl);
 
-		// $tgl_sekarang = cetakTgl(date("Y-m-d"), 'yyyymmdd');
-
-		$tgl_sekarang = '20170923';
+		$tgl_sekarang = cetakTgl(date("Y-m-d"), 'yyyymmdd');
 
 		$respon = array();
 		if($tgl[1]==$tgl_sekarang) {

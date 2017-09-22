@@ -18,7 +18,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h2 class="page-header">
-				<i class="fa fa-globe"></i> Faktur Reject
+				<i class="fa fa-globe"></i> Faktur Penjualan
 				<small class="pull-right">Tanggal: 17/08/1945</small>
 			</h2>
 		</div>
