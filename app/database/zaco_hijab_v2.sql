@@ -559,12 +559,7 @@ BEGIN
             UPDATE detail_penjualan SET
                 kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
             WHERE id=id_detail_param;
-
-            -- UPDATE penjualan SET 
-            --     qty=qty_param, jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, 
-            --     diskon=diskon_param, total=total_param, laba=laba_param, status=status_param, ket=ket_param 
-            -- WHERE id=id_param;
-
+            
         -- jika qty berubah
         ELSE
 
@@ -604,10 +599,6 @@ BEGIN
                 kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
             WHERE id=id_detail_param;
 
-            -- UPDATE penjualan SET 
-            --     jenis=jenis_param, nama=nama_param, telp=telp_param, alamat=alamat_param, ongkir=ongkir_param, hpp=hpp_param, 
-            --     harga=harga_param, diskon=diskon_param, total=total_param, laba=laba_param, status=status_param, ket=ket_param 
-            -- WHERE id=id_param;
 
         end if;
 
@@ -644,7 +635,6 @@ BEGIN
     DECLARE brg_keluar_B SMALLINT;
     DECLARE stok_akhir_param int;
 
-    SELECT current_date into tgl_skrng;
     -- get data penjualan
     SELECT kd_barang into kd_barang_pembelian FROM detail_pembelian WHERE id=id_detail_param; -- kd barang lama
 
