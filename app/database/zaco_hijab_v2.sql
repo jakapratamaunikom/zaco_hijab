@@ -760,83 +760,83 @@ end;
 
 -- ==============================================================
 
--- procedure khusus pembelian yg berpengaruh ke pengeluaran
-create procedure tambah_pengeluaran_pembelian(
-    in kd_pengeluaran_param varchar(16),
-    in kd_pembelian_param varchar(16),
-    in tgl_param date,
-    -- in ket_param text,
-    -- in nominal_param double(12,2),
-    -- in qty_param SMALLINT,
-    -- in total_param double(12,2),
-    -- in jenis_param varchar(15),
-    in username_param varchar(10)
-)
-BEGIN
-    DECLARE total_pembelian double(12,2);
-    DECLARE qty_pembelian int;
-    DECLARE ket_pembelian text;
-    DECLARE id_kd_pembelian_param int;
-    -- dapatkan id kode pmebelian
-    SELECT id INTO id_kd_pembelian_param FROM pembelian WHERE kd_pembelian = kd_pembelian_param;
-    -- dapatkan total dari detail pembelian
-    SELECT SUM(subtotal) into total_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
-    -- dapatkan qty dari detail pembelian
-    SELECT SUM(qty) into qty_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
-    -- dapatkan keterangan dari detail pembelian
-    SELECT GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') into ket_pembelian 
-        FROM detail_pembelian dp 
-        join barang b on b.id = dp.kd_barang
-        join id_barang ib on ib.id = b.id_barang
-        join id_warna iw on iw.id = b.id_warna 
-        where kd_pembelian=id_kd_pembelian_param;
+-- -- procedure khusus pembelian yg berpengaruh ke pengeluaran
+-- create procedure tambah_pengeluaran_pembelian(
+--     in kd_pengeluaran_param varchar(16),
+--     in kd_pembelian_param varchar(16),
+--     in tgl_param date,
+--     -- in ket_param text,
+--     -- in nominal_param double(12,2),
+--     -- in qty_param SMALLINT,
+--     -- in total_param double(12,2),
+--     -- in jenis_param varchar(15),
+--     in username_param varchar(10)
+-- )
+-- BEGIN
+--     DECLARE total_pembelian double(12,2);
+--     DECLARE qty_pembelian int;
+--     DECLARE ket_pembelian text;
+--     DECLARE id_kd_pembelian_param int;
+--     -- dapatkan id kode pmebelian
+--     SELECT id INTO id_kd_pembelian_param FROM pembelian WHERE kd_pembelian = kd_pembelian_param;
+--     -- dapatkan total dari detail pembelian
+--     SELECT SUM(subtotal) into total_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
+--     -- dapatkan qty dari detail pembelian
+--     SELECT SUM(qty) into qty_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
+--     -- dapatkan keterangan dari detail pembelian
+--     SELECT GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') into ket_pembelian 
+--         FROM detail_pembelian dp 
+--         join barang b on b.id = dp.kd_barang
+--         join id_barang ib on ib.id = b.id_barang
+--         join id_warna iw on iw.id = b.id_warna 
+--         where kd_pembelian=id_kd_pembelian_param;
 
-    -- insert ke pengeluaran
-    INSERT INTO pengeluaran(kd_pengeluaran, kd_pembelian, tgl, ket, nominal, qty, total, jenis, username) 
-    VALUES(kd_pengeluaran_param, id_kd_pembelian_param, tgl_param, ket_pembelian, total_pembelian, 1, total_pembelian, 'PRODUKSI', username_param);
+--     -- insert ke pengeluaran
+--     INSERT INTO pengeluaran(kd_pengeluaran, kd_pembelian, tgl, ket, nominal, qty, total, jenis, username) 
+--     VALUES(kd_pengeluaran_param, id_kd_pembelian_param, tgl_param, ket_pembelian, total_pembelian, 1, total_pembelian, 'PRODUKSI', username_param);
 
 
-end;
+-- end;
 
--- ==============================================================
+-- -- ==============================================================
 
--- procedure edit pengeluaran khusus pembelian
-create procedure edit_pengeluaran_pembelian(
+-- -- procedure edit pengeluaran khusus pembelian
+-- create procedure edit_pengeluaran_pembelian(
  
-    in kd_pembelian_param varchar(16)
-    -- in tgl_param date,
-    -- in ket_param text,
-    -- in nominal_param double(12,2),
-    -- in qty_param SMALLINT,
-    -- in total_param double(12,2),
-    -- in jenis_param varchar(15),
+--     in kd_pembelian_param varchar(16)
+--     -- in tgl_param date,
+--     -- in ket_param text,
+--     -- in nominal_param double(12,2),
+--     -- in qty_param SMALLINT,
+--     -- in total_param double(12,2),
+--     -- in jenis_param varchar(15),
 
-)
-BEGIN
-    DECLARE total_pembelian double(12,2);
-    DECLARE qty_pembelian int;
-    DECLARE ket_pembelian text;
-    DECLARE id_kd_pembelian_param int;
-    -- dapatkan id kode pmebelian
-    SELECT id INTO id_kd_pembelian_param FROM pembelian WHERE kd_pembelian = kd_pembelian_param;
-    -- dapatkan total dari detail pembelian
-    SELECT SUM(subtotal) into total_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
-    -- dapatkan qty dari detail pembelian
-    SELECT SUM(qty) into qty_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
-    -- dapatkan keterangan dari detail pembelian
-    SELECT GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') into ket_pembelian 
-        FROM detail_pembelian dp 
-        join barang b on b.id = dp.kd_barang
-        join id_barang ib on ib.id = b.id_barang
-        join id_warna iw on iw.id = b.id_warna 
-        where kd_pembelian=id_kd_pembelian_param;
+-- )
+-- BEGIN
+--     DECLARE total_pembelian double(12,2);
+--     DECLARE qty_pembelian int;
+--     DECLARE ket_pembelian text;
+--     DECLARE id_kd_pembelian_param int;
+--     -- dapatkan id kode pmebelian
+--     SELECT id INTO id_kd_pembelian_param FROM pembelian WHERE kd_pembelian = kd_pembelian_param;
+--     -- dapatkan total dari detail pembelian
+--     SELECT SUM(subtotal) into total_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
+--     -- dapatkan qty dari detail pembelian
+--     SELECT SUM(qty) into qty_pembelian from detail_pembelian where kd_pembelian=id_kd_pembelian_param;
+--     -- dapatkan keterangan dari detail pembelian
+--     SELECT GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') into ket_pembelian 
+--         FROM detail_pembelian dp 
+--         join barang b on b.id = dp.kd_barang
+--         join id_barang ib on ib.id = b.id_barang
+--         join id_warna iw on iw.id = b.id_warna 
+--         where kd_pembelian=id_kd_pembelian_param;
 
-    -- insert ke pengeluaran
-    UPDATE pengeluaran SET ket = ket_pembelian, nominal = total_pembelian, total = total_pembelian
-        WHERE kd_pembelian = id_kd_pembelian_param;
+--     -- insert ke pengeluaran
+--     UPDATE pengeluaran SET ket = ket_pembelian, nominal = total_pembelian, total = total_pembelian
+--         WHERE kd_pembelian = id_kd_pembelian_param;
 
 
-end;
+-- end;
 
 -- ==============================================================
 
@@ -965,3 +965,14 @@ CREATE OR REPLACE VIEW v_pembelian AS
 --     join id_warna iw on iw.id = b.id_warna 
 --     where s.id in(SELECT max(id) from stok GROUP by(kd_barang)) 
 --     ORDER by b.id asc
+
+CREATE OR REPLACE VIEW v_detail_penjualan AS
+    SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.kd_barang kode_barang, b.nama, 
+        dp.hpp, dp.harga, dp.qty, dp.jenis_diskon, dp.diskon, dp.subtotal, dp.ket
+    FROM detail_penjualan dp
+    JOIN penjualan p 
+        ON p.id=dp.kd_penjualan
+    JOIN v_barang b 
+        ON b.id=dp.kd_barang
+    ORDER BY dp.id ASC
+    
