@@ -912,7 +912,8 @@ CREATE OR REPLACE VIEW v_penjualan AS
     SELECT 
         p.id, p.kd_penjualan, tgl, jenis, 
         GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') item, 
-        CAST(SUM(dp.subtotal)+p.ongkir as DECIMAL(12,2)) as total, 
+        CAST(SUM(dp.subtotal)+p.ongkir as DECIMAL(12,2)) as total,
+        CAST(SUM(dp.laba) as DECIMAL(12,2)) as total_laba, 
         (case when (p.status = '1') then 'NORMAL' else 'FREE' end) status, p.ket 
     FROM penjualan p
     JOIN detail_penjualan dp 
