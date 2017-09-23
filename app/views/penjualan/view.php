@@ -120,6 +120,10 @@
 <!-- untuk mengilangkan garis hitam dibawah -->
 <div class="clearfix"></div>
 
+
+<!-- modal reject -->
+<?php include_once("app/views/modals/modal_reject.php"); ?>
+
 <script type="text/javascript">
     var base_url = "<?php print base_url; ?>";
     var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
@@ -183,8 +187,8 @@
 			var index = indexItem++;
 			// masukkan data dari server ke array listItem
 			// var dataItem = {
-			// 	// aksi: "edit", 
-			// 	// status: "", 
+			// 	aksi: "edit", 
+			// 	status: "", 
 			// 	index: index, 
 			// 	id: item.id, 
 			// 	kd_barang: item.kd_barang, 
@@ -216,15 +220,20 @@
 		// console.log(listItem)
 	}
 
-	function btnAksi(){
+	function btnAksi(index){
 
 		// var disabled = respon ? '' : 'disabled';
 		// var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
 	 //                    '<i class="fa fa-trash"></button>';
 	    
-		var btn = '<button type="button" class="btn btn-danger btn-sm btn-flat" title="Reject">'+
-	                    '<i class="glyphicon glyphicon-retweet"></button>';
+		var btn = '<button type="button" class="btn btn-danger btn-sm btn-flat" title="Reject"'+
+						' onclick="reject()">'+
+	                    'Reject</button>';
 	    return btn;
+	}
+
+	function reject() {
+		$("#modal_reject").modal('show');
 	}
 
 	// fungsi penomeran berurut otomatis
