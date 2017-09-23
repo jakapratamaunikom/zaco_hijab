@@ -975,4 +975,13 @@ CREATE OR REPLACE VIEW v_detail_penjualan AS
     JOIN v_barang b 
         ON b.id=dp.kd_barang
     ORDER BY dp.id ASC
-    
+
+CREATE OR REPLACE VIEW v_detail_pembelian AS
+    SELECT dp.id, dp.kd_pembelian, dp.kd_barang, b.kd_barang kode_barang, b.nama, 
+        dp.harga, dp.qty, dp.subtotal, dp.ket
+    FROM detail_pembelian dp
+    JOIN pembelian p 
+        ON p.id=dp.kd_pembelian
+    JOIN v_barang b 
+        ON b.id=dp.kd_barang
+    ORDER BY dp.id ASC
