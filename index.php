@@ -27,11 +27,6 @@
 
 	// cek waktu idle
 
-
-	// inisialisasi parameter get
-	// $m => get data menu/view
-	// $p => get data page yang ada di dalam views
-
 	$m = isset($_GET['m']) ? strtolower(validInputan($_GET['m'], false, false)) : false; // untuk get menu
 	$p = isset($_GET['p']) ? strtolower(validInputan($_GET['p'], false, false)) : false; // untuk get page
 	
@@ -39,9 +34,7 @@
 	if(!get_hak_akses($m, $sess_akses)){
 		header("Location: ".base_url);
 		die();
-	}	
-
-	// get_hak_akses($m, $sess_akses);
+	}
 
 ?>
 <!DOCTYPE html>
@@ -59,8 +52,6 @@
 
 	</head>
 	<body class="hold-transition skin-red sidebar-mini">
-
-		
 
 		<div class="wrapper">
 			<!-- Header -->
