@@ -43,19 +43,7 @@
 		return $string;
 	}
 
-	//fungsi format tgl indo
-	function cetakTgl($tgl, $format){
-		//array hari
-		$arrHari = array(
-					1 => "Senin",
-					2 => "Selasa",
-					3 => "Rabu",
-					4 => "Kamis",
-					5 => "Jumat",
-					6 => "Sabtu",
-					7 => "Minggu",
-				);
-		//array bulan
+	function get_bulanIndo($bulan){
 		$arrBulan = array(
 					1 => "Januari",
 					2 => "Februari",
@@ -70,14 +58,31 @@
 					11 => "November",
 					12 => "Desember",
 				);
+		$get_bulan = $arrBulan[(int)$bulan];
 
+		return $get_bulan;
+	}
+
+	//fungsi format tgl indo
+	function cetakTgl($tgl, $format){
+		//array hari
+		$arrHari = array(
+					1 => "Senin",
+					2 => "Selasa",
+					3 => "Rabu",
+					4 => "Kamis",
+					5 => "Jumat",
+					6 => "Sabtu",
+					7 => "Minggu",
+				);
+		
 		//explode $tgl
 		$split = explode("-", $tgl);
 		$getTgl = $split[2]; //get tgl
 		$getBulan = $split[1]; //get bulan
 		$getTahun = $split[0]; //get tahun
 
-		$tgl_indo = $getTgl." ".$arrBulan[(int)$getBulan]." ".$getTahun; //format dd bulan tahun
+		$tgl_indo = $getTgl." ".get_bulanIndo($getBulan)." ".$getTahun; //format dd bulan tahun
 		$num = date('N', strtotime($tgl)); //get tgl untuk disesuaikan dgn hari
 
 		switch ($format) {
