@@ -124,6 +124,9 @@
 <!-- modal reject -->
 <?php include_once("app/views/modals/modal_reject.php"); ?>
 
+<!-- SELECT2 -->
+<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
+
 <script type="text/javascript">
     var base_url = "<?php print base_url; ?>";
     var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
@@ -143,10 +146,16 @@
 <script type="text/javascript">
 
 	$(document).ready(function(){
+
+		$(".select2").select2();
+		setStatus();
+
 		if(!jQuery.isEmptyObject(urlParams.id)){ // jika ada parameter get
 			var id = urlParams.id;
 			getView(id);
 		}
+
+		setSelect($('#slc_nama'));
 	});
 
 	function getView(id){
@@ -234,6 +243,61 @@
 
 	function reject() {
 		$("#modal_reject").modal('show');
+	}
+
+	// funsgi set isi select id_barang dan qty
+	function setSelect(idSelect){
+	    // reset ulang select
+	    idSelect.find('option')
+	        .remove()
+	        .end()
+	        .append($('<option>',{
+	            value: "", 
+	            text: "-- Pilih Barang --"
+	        }));
+
+	    $.ajax({
+	        url: base_url+"app/controllers/Penjualan.php",
+	        type: "post",
+	        dataType: "json",
+	        data: {
+	            "action" : "getSelect",
+	        },
+	        success: function(data){
+	        	var disabled = false;
+	            $.each(data, function(index, item){
+	            	if(parseInt(item.stok) <= 0) disabled = true; 
+	            	else disabled = false;
+
+	                idSelect.append($("<option>", {
+	                    value: item.id,
+	                    text: item.nama+' - STOK: '+item.stok,
+	                    disabled: disabled,
+	                }));                 
+	            });
+	            // console.log(data);
+	        },
+	        error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+	            console.log(jqXHR, textStatus, errorThrown);
+	        }
+	    })
+	} 
+
+	// fungsi set status transaksi
+	function setStatus(){
+		var arrayStatus = [
+			{value: "", text: "-- Pilih Status --"},
+			{value: "1", text: "REJECT"},
+			{value: "2", text: "RETURN"},
+		];
+
+		$.each(arrayStatus, function(index, item){
+			var option = new Option(item.text, item.value);
+			$("#slc_status").append(option);
+		});
+
+		$("#slc_status").val("");
 	}
 
 	// fungsi penomeran berurut otomatis
