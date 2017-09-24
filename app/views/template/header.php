@@ -7,7 +7,7 @@
 <header class="main-header">
     
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="<?= base_url ?>" class="logo">
       	<!-- mini logo for sidebar mini 50x50 pixels -->
       	<span class="logo-mini"><b>Z</b>H</span>
       	<!-- logo for regular state and mobile devices -->
@@ -30,34 +30,19 @@
             		<!-- Menu Toggle Button -->
             		<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
               			<!-- The user image in the navbar-->
-              			<img src="<?= base_url."assets/dist/img/user2-160x160.jpg"; ?>" class="user-image" alt="User Image">
+              			<img src="<?= base_url."assets/gambar/admin/".$sess_foto; ?>" class="user-image" alt="User Image">
               			<!-- hidden-xs hides the username on small devices so only the image appears. -->
-              			<span class="hidden-xs">Alexander Pierce</span>
+              			<span class="hidden-xs"><?= $sess_nama ?></span>
             		</a>
             		<ul class="dropdown-menu">
               			<!-- The user image in the menu -->
               			<li class="user-header">
-                			<img src="<?= base_url."assets/dist/img/user2-160x160.jpg"; ?>" class="img-circle" alt="User Image">
+                			<img src="<?= base_url."assets/gambar/admin/".$sess_foto; ?>" class="img-circle" alt="User Image">
                 			<p>
-                  				Alexander Pierce - Web Developer
-                  				<small>Member since Nov. 2012</small>
+                  				<?= $sess_nama ?>
+                  				<small><?= $sess_level ?></small>
                 			</p>
               			</li>
-              			<!-- Menu Body -->
-	              		<li class="user-body">
-	                		<div class="row">
-	                  			<div class="col-xs-4 text-center">
-	                    			<a href="javascript:;">Followers</a>
-	                  			</div>
-	                  			<div class="col-xs-4 text-center">
-	                    			<a href="javascript:;">Sales</a>
-	                  			</div>
-	                  			<div class="col-xs-4 text-center">
-	                    			<a href="javascript:;">Friends</a>
-	                  			</div>
-	                		</div>
-	                		<!-- /.row -->
-	              		</li>
 	              		<!-- Menu Footer-->
 	              		<li class="user-footer">
 	                		<div class="pull-left">
