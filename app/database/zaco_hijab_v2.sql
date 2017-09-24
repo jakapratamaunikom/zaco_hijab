@@ -986,3 +986,20 @@ CREATE OR REPLACE VIEW v_detail_pembelian AS
     JOIN v_barang b 
         ON b.id=dp.kd_barang
     ORDER BY dp.id ASC
+
+CREATE OR REPLACE VIEW v_stok_terbaru AS
+    SELECT s.id, s.tgl, s.kd_barang, b.kd_barang kode_barang, b.nama, s.stok_awal,
+        s.brg_masuk, s.brg_keluar, s.stok_akhir 
+    FROM stok s
+    JOIN v_barang b
+        ON b.id = s.kd_barang
+    WHERE s.id IN(SELECT MAX(id) FROM stok GROUP BY(kd_barang))
+    ORDER BY b.kd_barang ASC
+
+CREATE OR REPLACE VIEW v_stok_all AS
+    SELECT s.id, s.tgl, s.kd_barang, b.kd_barang kode_barang, b.nama, s.stok_awal,
+        s.brg_masuk, s.brg_keluar, s.stok_akhir 
+    FROM stok s
+    JOIN v_barang b
+        ON b.id = s.kd_barang
+    ORDER BY b.kd_barang ASC
