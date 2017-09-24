@@ -20,6 +20,33 @@
 
 	}
 
+	function get_ket_pembelian($koneksi, $date, $ket){
+		$bulan = $date['bulan'];
+		$tahun = $date['tahun'];
+		switch (strtolower($ket)) {
+			// total penjualan
+			case 'total_pembelian':
+				$select = "SUM(total) total, MONTH(tgl) bulan, YEAR(tgl) tahun";
+				break;
+
+			// total transaksi penjualan
+			default:
+				$select = "COUNT(*) total, MONTH(tgl) bulan, YEAR(tgl) tahun";
+				break;
+		}
+
+		$query = "SELECT $select FROM v_pembelian WHERE MONTH(tgl) = :bulan AND YEAR(tgl) = :tahun ORDER BY MONTH(tgl)";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':bulan', $bulan);
+		$statement->bindParam(':tahun', $tahun);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
 	// insert data pembelian
 	function insertPembelian($koneksi, $data){
 		$username = "admin";

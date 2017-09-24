@@ -37,10 +37,65 @@
 		return $result;
 	}
 
+	function get_ket_penjualan($koneksi, $date, $ket){
+		$bulan = $date['bulan'];
+		$tahun = $date['tahun'];
+		switch (strtolower($ket)) {
+			// total penjualan
+			case 'total_penjualan':
+				$select = "SUM(total) total, MONTH(tgl) bulan, YEAR(tgl) tahun";
+				break;
+
+			// total transaksi penjualan
+			case 'transaksi_penjualan':
+				$select = "COUNT(*) total, MONTH(tgl) bulan, YEAR(tgl) tahun";
+				break;
+			
+			// total laba
+			default:
+				$select = "SUM(total_laba) total_laba";
+				break;
+		}
+
+		$query = "SELECT $select FROM v_penjualan WHERE MONTH(tgl) = :bulan AND YEAR(tgl) = :tahun ORDER BY MONTH(tgl)";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':bulan', $bulan);
+		$statement->bindParam(':tahun', $tahun);
+		$statement->execute();
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
+	function get_penjualan_laba($koneksi, $tahun){
+		$query = "SELECT MONTH(tgl) bulan, SUM(total) total_penjualan, SUM(total_laba) total_laba FROM v_penjualan WHERE YEAR(tgl) = :tahun GROUP BY MONTH(tgl)";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':tahun', $tahun);
+		$statement->execute();
+		$result = $statement->fetchAll();
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
+	// function get_ket_penjualan_item($koneksi, $date){
+	// 	$bulan = $date['bulan'];
+	// 	$tahun = $date['tahun'];
+	// 	$query = "SELECT dp.kd_barang, SUM(dp.qty) jumlah FROM penjualan p JOIN detail_penjualan dp ON dp.kd_penjualan = p.id WHERE MONTH(p.tgl) = :bulan AND YEAR(p.tgl) = :tahun GROUP BY dp.kd_barang ORDER BY jumlah DESC";
+
+	// 	$statement = $koneksi->prepare($query);
+	// 	$statement->bindParam(':bulan', $bulan);
+	// 	$statement->bindParam(':tahun', $tahun);
+	// 	$statement->execute();
+	// }
+
 	// get kd penjualan
 	function get_kd_penjualan($koneksi){
 		$kode = date("Y").date("m").date("d");
-		$query = "SELECT kd_penjualan FROM penjualan WHERE kd_penjualan LIKE '%".$kode."%' ORDER BY kd_penjualan desc LIMIT 1";
+		$query = "SELECT kd_penjualan FROM penjualan WHERE kd_penjualan LIKE '%".$kode."%' ORDER BY id desc LIMIT 1";
 
 		// prepare
 		$statement = $koneksi->prepare($query);
@@ -79,7 +134,7 @@
 
 	// insert data detail_penjualan
 	function insertDetail_penjualan($koneksi, $data){
-		$laba = $data['harga']-$data['hpp'];
+		$laba = $data['subTotal']-($data['hpp']*$data['qty']);
 
 		$query = "CALL tambah_penjualan ";
 		$query .= "(:kd_penjualan, :tgl, :kd_barang, :hpp, :harga, ";
