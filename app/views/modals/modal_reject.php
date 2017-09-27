@@ -82,7 +82,9 @@
                 </div>
 
                 <div class="box-footer">
-                    <button class="btn btn-success pull-right btn-flat" type="submit" id="btn_reject">Simpan</button>
+                    <button class="btn btn-success pull-right btn-flat" type="submit" id="btn_reject">
+                        <i class="fa fa-check"></i> Simpan
+                    </button>
                     <button type="button" class="btn btn-default btn-flat" data-dismiss="modal">Batal</button>
                 </div>
             </form>

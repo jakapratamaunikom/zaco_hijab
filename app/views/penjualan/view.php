@@ -108,7 +108,7 @@
 	<!-- button bawah -->
 	<div class="row">
 		<div class="col-xs-12">
-			<a href="<?= base_url."index.php?m=reject&p=list" ?>" class="btn btn-default btn-lg pull-right" role=button>
+			<a href="<?= base_url."index.php?m=penjualan&p=list" ?>" class="btn btn-default btn-lg pull-right" role=button>
 				<i class="fa fa-reply"></i> Kembali
 			</a>
 
@@ -168,7 +168,7 @@
 				"action" : "getView",
 			},
 			success: function(data){
-				console.log(data);
+				// console.log(data);
 
 				if(!data) document.location=base_url+"index.php?m=penjualan&p=list";
 				else{
@@ -195,22 +195,23 @@
 		$.each(data.detail, function(index, item){
 			var index = indexItem++;
 			// masukkan data dari server ke array listItem
-			// var dataItem = {
-			// 	aksi: "edit", 
-			// 	status: "", 
-			// 	index: index, 
-			// 	id: item.id, 
-			// 	kd_barang: item.kd_barang, 
-			// 	nama: item.nama,
-			// 	qty: parseInt(item.qty), 
-			// 	hpp: parseInt(item.hpp),
-			// 	harga: parseInt(item.harga), 
-			// 	jenisDiskon: item.jenis,
-			// 	diskon: parseInt(item.diskon), 
-			// 	subTotal: parseInt(item.subtotal),
-			// 	ket: item.ket,
-			// };
-			// listItem.push(dataItem);
+			var dataItem = {
+				aksi: "reject", 
+				status: "", 
+				index: index, 
+				id: item.id, 
+				kd_penjualan: item.kd_penjualan, 
+				kd_barang: item.kd_barang,
+				nama: item.nama, 
+				hpp: item.hpp,
+				harga: item.harga,
+				qty: item.qty,
+				diskon: item.diskon,
+				subtotal: item.subtotal,
+				jenis_diskon: item.jenis_diskon,
+				ket: item.ket,
+			};
+			listItem.push(dataItem);
 			$("#tbl_reject > tbody:last-child").append(
 				"<tr>"+
 				"<td></td>"+ // nomor
@@ -221,12 +222,13 @@
 				"<td>"+item.diskon+"</td>"+ // diskon
 				"<td>"+item.subtotal+"</td>"+ // subtotal
 				"<td>"+item.ket+"</td>"+ // keterangan
-				"<td>"+btnAksi()+"</td>"+
+				"<td>"+btnAksi(dataItem.index)+"</td>"+
 				"</tr>"
 			);
 			numberingList();
+			// console.log(dataItem.index);
 		});
-		// console.log(listItem)
+		
 	}
 
 	function btnAksi(index){
@@ -236,13 +238,17 @@
 	 //                    '<i class="fa fa-trash"></button>';
 	    
 		var btn = '<button type="button" class="btn btn-danger btn-sm btn-flat" title="Reject"'+
-						' onclick="reject()">'+
+						' onclick="reject('+index+', this)">'+
 	                    'Reject</button>';
 	    return btn;
 	}
 
-	function reject() {
+	function reject(index, val) {
 		$("#modal_reject").modal('show');
+		$('#txt_nama').val(listItem[index].nama);
+		$('#txt_qty').val(listItem[index].qty);
+		$('#txt_subtotal').val(listItem[index].subtotal);
+		console.log($(val));
 	}
 
 	// funsgi set isi select id_barang dan qty
