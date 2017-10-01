@@ -1,5 +1,4 @@
 <?php
-	// get all data barang
 	function get_all_admin($koneksi, $config_db){
 		$query = get_dataTable($config_db);
 		$statement = $koneksi->prepare($query);
@@ -22,7 +21,6 @@
 		return $result;
 	}
 
-	// insert barang
 	function insertAdmin($koneksi, $data){
 		$status = "1";
 		$query = "INSERT INTO admin (username, password, nama, email, telp, alamat, foto, level, status) VALUES (:username, :password, :nama, :email, :telp, :alamat, :foto, :level, :status)";

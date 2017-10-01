@@ -14,175 +14,175 @@
 
 	<!-- -->
 
-	<!-- isi konten -->
-	<section class="content-header">
-  		<h1>Admin</h1>
-  		<ol class="breadcrumb">
-    		<li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i>Zaco Hijab</a></li>
-    		<li>Admin</li>
-    		<li><a href="<?= base_url."index.php?m=admin&p=list" ?>">Data Admin</a></li>
-    		<li><i class="active"></i>Form Data Admin</a></li>
-  		</ol>
-	</section>
+<!-- isi konten -->
+<section class="content-header">
+	<h1>Admin</h1>
+	<ol class="breadcrumb">
+		<li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i>Zaco Hijab</a></li>
+		<li>Admin</li>
+		<li><a href="<?= base_url."index.php?m=admin&p=list" ?>">Data Admin</a></li>
+		<li><i class="active"></i>Form Data Admin</a></li>
+	</ol>
+</section>
 
-	<!-- isi -->
-	<section class="content">
-		<div class="row">
-    		<div class="col-xs-12">
-    			<!-- panel box -->
-    			<div class="box">
-    				<!-- judul panel box -->
-    				<div class="box-header">
-                        <div class="row">
-                            <div class="col-sm-6 col-xs-12">
-                                <h3 class="box-title">Form Data Admin</h3>
-                            </div>
+<!-- isi -->
+<section class="content">
+	<div class="row">
+		<div class="col-xs-12">
+			<!-- panel box -->
+			<div class="box">
+				<!-- judul panel box -->
+				<div class="box-header">
+                    <div class="row">
+                        <div class="col-sm-6 col-xs-12">
+                            <h3 class="box-title">Form Data Admin</h3>
                         </div>
+                    </div>
+				</div>
+				<form id="form_admin" role="form" enctype="multipart/form-data">
+					<input type="hidden" name="id" id="id">
+    				<!-- isi panel box -->
+    				<div class="box-body">
+    					<!-- fieldset data admin -->
+    					<div class="row">
+    						<!-- data admin -->
+    						<div class="col-md-6">
+    							<fieldset>
+          							<legend>Data Admin</legend>
+          							<!-- username -->
+          							<div class="form-group field-username">
+          								<label for="fUsername">Username</label>
+          								<div class="input-group">
+							                <span class="input-group-addon">
+							                	<i class="fa fa-user"></i>
+							                </span>
+							                <input type="text" class="form-control" placeholder="Username" id="fUsername" name="fUsername">
+          								</div>
+          								<span class="help-block small"></span>
+          							</div>
+          							
+          							<!-- password -->
+          							<div class="form-group field-password">
+          								<label for="fPass">Password</label>
+          								<div class="input-group">
+							                <span class="input-group-addon">
+							                	<i class="fa fa-key"></i>
+							                </span>
+							                <input type="password" class="form-control" placeholder="Password" id="fPass" name="fPass">
+          								</div>
+          								<span class="help-block small"></span>
+          							</div>
+
+          							<!-- confirm password -->
+          							<div class="form-group field-confirm">
+          								<label for="fConf_pass">Confirm Password</label>
+          								<div class="input-group">
+							                <span class="input-group-addon">
+							                	<i class="fa fa-lock"></i>
+							                </span>
+							                <input type="password" class="form-control" placeholder="Confirm Password" id="fConf_pass" name="fConf_pass">
+          								</div>
+          								<span class="help-block small"></span>
+          							</div>
+
+          							<!-- email -->
+          							<div class="form-group field-email">
+          								<label for="fEmail">Email</label>
+          								<div class="input-group">
+							                <span class="input-group-addon">
+							                	<i class="fa fa-envelope"></i>
+							                </span>
+							                <input type="text" class="form-control" placeholder="Email" id="fEmail" name="fEmail">
+          								</div>
+          								<span class="help-block small"></span>
+          							</div>
+
+          							<!-- level -->
+                        			<div class="form-group field-level">
+                        				<label for="fLevel">Level</label>
+                        				<select id="fLevel" name="fLevel" class="form-control">
+                        				</select>
+                        				<span class="help-block small"></span>
+                        			</div>
+              					</fieldset>
+    						</div>
+
+    						<!-- data diri -->
+    						<div class="col-md-6">
+    							<fieldset>
+          							<legend>Data Pribadi</legend>
+          							<!-- nama -->
+          							<div class="form-group field-nama">
+  										<label for="fNama">Nama</label>
+          								<input type="text" class="form-control" placeholder="Nama" id="fNama" name="fNama">
+          								<span class="help-block small"></span>	
+          							</div>
+
+          							<!-- no telp -->
+          							<div class="form-group filed-telp">
+          								<label for="fTelp">No. Telepon</label>
+          								<div class="input-group">
+							                <div class="input-group-addon">
+							                    <i class="fa fa-phone"></i>
+							                </div>
+							                <input type="text" class="form-control" data-inputmask='"mask": "9999-9999-9999"' data-mask id="fTelp" name="fTelp">
+							                <span class="help-block small"></span>
+            							</div>
+          							</div>
+
+          							<!-- Alamat -->
+          							<div class="form-group field-alamat">
+          								<label for="fAlamat">Alamat</label>
+          								<textarea class="form-control" rows="2" placeholder="Alamat" id="fAlamat" name="fAlamat"></textarea>
+          								<span class="help-block small"></span>
+          							</div>
+          							
+
+          							<!-- foto -->
+					          		<div class="form-group field-foto">
+					          			<!-- preview foto -->
+					          			<label for="fFoto">Foto</label>
+					          			<div class="input-group image-preview">
+							                <input type="text" id="fFoto_text" class="form-control image-preview-filename" disabled="disabled">
+							                <span class="input-group-btn">
+							                    <!-- image-preview-clear button -->
+							                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
+							                        <span class="glyphicon glyphicon-remove"></span> Hapus
+							                    </button>
+							                    <!-- image-preview-input -->
+							                    <div class="btn btn-danger image-preview-input">
+							                        <span class="glyphicon glyphicon-folder-open"></span>
+							                        <span class="image-preview-input-title">Pilih Foto</span>
+							                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" />
+							                    </div>
+							                </span>
+							            </div>
+							            <span class="help-block small"></span>
+					                </div>
+              					</fieldset>
+    						</div>					
+    					</div>	
     				</div>
-    				<form id="form_admin" role="form" enctype="multipart/form-data">
-    					<input type="hidden" name="id" id="id">
-	    				<!-- isi panel box -->
-	    				<div class="box-body">
-	    					<!-- fieldset data admin -->
-	    					<div class="row">
-	    						<!-- data admin -->
-	    						<div class="col-md-6">
-	    							<fieldset>
-	          							<legend>Data Admin</legend>
-	          							<!-- username -->
-	          							<div class="form-group field-username">
-	          								<label for="fUsername">Username</label>
-	          								<div class="input-group">
-								                <span class="input-group-addon">
-								                	<i class="fa fa-user"></i>
-								                </span>
-								                <input type="text" class="form-control" placeholder="Username" id="fUsername" name="fUsername">
-              								</div>
-              								<span class="help-block small"></span>
-	          							</div>
-	          							
-	          							<!-- password -->
-	          							<div class="form-group field-password">
-	          								<label for="fPass">Password</label>
-	          								<div class="input-group">
-								                <span class="input-group-addon">
-								                	<i class="fa fa-key"></i>
-								                </span>
-								                <input type="password" class="form-control" placeholder="Password" id="fPass" name="fPass">
-              								</div>
-              								<span class="help-block small"></span>
-	          							</div>
 
-	          							<!-- confirm password -->
-	          							<div class="form-group field-confirm">
-	          								<label for="fConf_pass">Confirm Password</label>
-	          								<div class="input-group">
-								                <span class="input-group-addon">
-								                	<i class="fa fa-lock"></i>
-								                </span>
-								                <input type="password" class="form-control" placeholder="Confirm Password" id="fConf_pass" name="fConf_pass">
-              								</div>
-              								<span class="help-block small"></span>
-	          							</div>
-
-	          							<!-- email -->
-	          							<div class="form-group field-email">
-	          								<label for="fEmail">Email</label>
-	          								<div class="input-group">
-								                <span class="input-group-addon">
-								                	<i class="fa fa-envelope"></i>
-								                </span>
-								                <input type="text" class="form-control" placeholder="Email" id="fEmail" name="fEmail">
-              								</div>
-              								<span class="help-block small"></span>
-	          							</div>
-
-	          							<!-- level -->
-	                        			<div class="form-group field-level">
-	                        				<label for="fLevl">Level</label>
-	                        				<select id="fLevel" name="fLevel" class="form-control">
-	                        				</select>
-	                        				<span class="help-block small"></span>
-	                        			</div>
-	              					</fieldset>
-	    						</div>
-
-	    						<!-- data diri -->
-	    						<div class="col-md-6">
-	    							<fieldset>
-	          							<legend>Data Pribadi</legend>
-	          							<!-- nama -->
-	          							<div class="form-group field-nama">
-      										<label for="fNama">Nama</label>
-	          								<input type="text" class="form-control" placeholder="Nama" id="fNama" name="fNama">
-	          								<span class="help-block small"></span>	
-	          							</div>
-
-	          							<!-- no telp -->
-	          							<div class="form-group filed-telp">
-	          								<label for="fTelp">No. Telepon</label>
-	          								<div class="input-group">
-								                <div class="input-group-addon">
-								                    <i class="fa fa-phone"></i>
-								                </div>
-								                <input type="text" class="form-control" data-inputmask='"mask": "9999-9999-9999"' data-mask id="fTelp" name="fTelp">
-								                <span class="help-block small"></span>
-                							</div>
-	          							</div>
-
-	          							<!-- Alamat -->
-	          							<div class="form-group field-alamat">
-	          								<label for="fAlamat">Alamat</label>
-	          								<textarea class="form-control" rows="2" placeholder="Alamat" id="fAlamat" name="fAlamat"></textarea>
-	          								<span class="help-block small"></span>
-	          							</div>
-	          							
-
-	          							<!-- foto -->
-						          		<div class="form-group field-foto">
-						          			<!-- preview foto -->
-						          			<label for="fFoto">Foto</label>
-						          			<div class="input-group image-preview">
-								                <input type="text" id="fFoto_text" class="form-control image-preview-filename" disabled="disabled">
-								                <span class="input-group-btn">
-								                    <!-- image-preview-clear button -->
-								                    <button type="button" class="btn btn-default image-preview-clear" style="display:none;">
-								                        <span class="glyphicon glyphicon-remove"></span> Hapus
-								                    </button>
-								                    <!-- image-preview-input -->
-								                    <div class="btn btn-danger image-preview-input">
-								                        <span class="glyphicon glyphicon-folder-open"></span>
-								                        <span class="image-preview-input-title">Pilih Foto</span>
-								                        <input type="file" accept="image/png, image/jpeg, image/gif" name="fFoto" id="fFoto" />
-								                    </div>
-								                </span>
-								            </div>
-								            <span class="help-block small"></span>
-						                </div>
-	              					</fieldset>
-	    						</div>					
-	    					</div>	
+    				<!-- footer -->
+	    			<div class="box-footer text-right">
+	    				<div class="form-group">
+	    					<button type="submit" class="btn btn-default btn-lg" id="btn_submit_admin" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
+							<a href="<?=base_url."index.php?m=admin&p=list" ?>" class="btn btn-default btn-lg"><i class="fa fa-reply"></i>  Batal</a>
 	    				</div>
+					</div>
+				</form>		
+			</div>
+		</div>
+	</div>	
+</section>
 
-	    				<!-- footer -->
-		    			<div class="box-footer text-right">
-		    				<div class="form-group">
-		    					<button type="submit" class="btn btn-default btn-lg" id="btn_submit_admin" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
-								<a href="<?=base_url."index.php?m=barang&p=list" ?>" class="btn btn-default btn-lg"><i class="fa fa-reply"></i>  Batal</a>
-		    				</div>
-						</div>
-					</form>		
-    			</div>
-    		</div>
-    	</div>	
-	</section>
+<script type="text/javascript">
+    var base_url = "<?php print base_url; ?>";
+    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
+</script>
 
-	<script type="text/javascript">
-        var base_url = "<?php print base_url; ?>";
-        var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
-	</script>
-
-	<script type="text/javascript">
+<script type="text/javascript">
 	$(document).ready(function(){
 		setLevel();
 		// onchange foto
@@ -250,7 +250,7 @@
 			submitAdmin();
 
 			return false;
-		})
+		});
 	});
 
 	function getDataForm(){
