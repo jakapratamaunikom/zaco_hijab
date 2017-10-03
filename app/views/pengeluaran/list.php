@@ -131,9 +131,7 @@
 
 <script type="text/javascript">
 	//setting datatable
-    var base_url = "<?php print base_url; ?>";
-
-    
+   
 
 	$(function(){
         if(notif == "gagal") 

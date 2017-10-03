@@ -55,12 +55,13 @@
 				// cek level dan hak akses
 				$hak_akses = set_hak_akses($data_login['level']);
 				$status = true;
+				$foto = empty($data_login['foto']) ? "default.jpg" : $data_login['foto'];
 				// set session
 				$_SESSION['sess_login'] = $status;
 				$_SESSION['sess_username'] = $data_login['username'];
 				$_SESSION['sess_nama'] = $data_login['nama'];
 				$_SESSION['sess_email'] = $data_login['email'];
-				$_SESSION['sess_foto'] = $data_login['foto'];
+				$_SESSION['sess_foto'] = $foto;
 				$_SESSION['sess_status'] = $data_login['status'];
 				$_SESSION['sess_level'] = $data_login['level'];
 				$_SESSION['sess_akses'] = $hak_akses;
@@ -104,9 +105,9 @@
 			'stok' => '<li class="menu-stok"><a href="'.base_url.'index.php?m=stok&p=list"><i class="fa fa-link"></i><span>Data Stok</span></a></li>', 
 			'pengeluaran' => '<li class="menu-pengeluaran"><a href="'.base_url.'index.php?m=pengeluaran&p=list"><i class="fa fa-link"></i><span>Data Pengeluaran</span></a></li>',
 			'data_master' => array(
-					'id_barang' => '<li><a href="'.base_url.'index.php?m=id_barang&p=list">Data Id Barang</a></li>', 
-					'id_warna' => '<li><a href="'.base_url.'index.php?m=id_warna&p=list">Data Id Warna</a></li>', 
-					'barang' => '<li><a href="'.base_url.'index.php?m=barang&p=list">Data Barang</a></li>',
+					'id_barang' => '<li class="menu-id-barang"><a href="'.base_url.'index.php?m=id_barang&p=list">Data Id Barang</a></li>', 
+					'id_warna' => '<li class="menu-id-warna"><a href="'.base_url.'index.php?m=id_warna&p=list">Data Id Warna</a></li>', 
+					'barang' => '<li class="menu-barang"><a href="'.base_url.'index.php?m=barang&p=list">Data Barang</a></li>',
 				),  
 			'admin' => '<li class="menu-admin"><a href="'.base_url.'index.php?m=admin&p=list"><i class="fa fa-link"></i><span>Data Admin</span></a></li>',
 		);

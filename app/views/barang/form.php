@@ -225,9 +225,5 @@
 
 	<!-- js -->
 		<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
-		<script type="text/javascript">
-            var base_url = "<?php print base_url; ?>";
-            var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
-        </script>
 		<script type="text/javascript" src="<?= base_url."app/views/barang/init_form.js" ?>"></script>
     <!-- -->

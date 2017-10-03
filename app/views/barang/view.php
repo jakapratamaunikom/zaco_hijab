@@ -168,11 +168,6 @@
 		<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 		<!-- js modal export -->
         <script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
-		<script type="text/javascript">
-            var base_url = "<?php print base_url; ?>";
-            var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
-            // var id = "";
-        </script>
         <?php
         	if(!$id){
 				?>

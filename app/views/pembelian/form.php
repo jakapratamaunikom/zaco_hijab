@@ -156,8 +156,6 @@
 <!-- Select2 -->
 <script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
 <script type="text/javascript">
-    var base_url = "<?php print base_url; ?>";
-    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
     var listItem = [];
     var indexItem = 0;
 </script>

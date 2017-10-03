@@ -172,9 +172,6 @@
 <!-- js -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/chartjs/Chart.min.js" ?>"></script>
 <script type="text/javascript">
-    var base_url = "<?php print base_url; ?>";
-</script>
-<script type="text/javascript">
 	$(document).ready(function(){
 		// load panel info
 		load_panel_info();

@@ -176,12 +176,6 @@
 		</div>
 	</div>	
 </section>
-
-<script type="text/javascript">
-    var base_url = "<?php print base_url; ?>";
-    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
-</script>
-
 <script type="text/javascript">
 	$(document).ready(function(){
 		setLevel();
