@@ -103,14 +103,13 @@
                     	<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
               		</div>
         		</div>
-        		<!-- grafik -->
+        		<!-- tab -->
         		<div class="box-body">
               		<div class="nav-tabs-custom">
 		    			<ul class="nav nav-tabs">
-		              		<li class="active"><a href="#tab_terlaris-1" data-toggle="tab">Terlaris</a></li>
+		              		<li class="active"><a href="#tab_terlaris" data-toggle="tab">Terlaris</a></li>
              				<li><a href="#tab_kurang_laku" data-toggle="tab">Kurang Laku</a></li>
-             				<!-- <li><a href="#tab_reject" data-toggle="tab">Reject</a></li>
-             				<li><a href="#tab_return" data-toggle="tab">Return</a></li> -->
+             				<li><a href="#tab_belum_terjual" data-toggle="tab">Belum Terjual</a></li>
 		    			</ul>
 		    			<div class="tab-content">
 		    				<!-- content terlaris -->
@@ -118,6 +117,9 @@
 		    				</div>
 		    				<!-- konten kurang laku -->
 		    				<div class="tab-pane" id="tab_kurang_laku">
+		    				</div>
+		    				<!-- konten belum terjual -->
+		    				<div class="tab-pane" id="tab_belum_terjual">
 		    				</div>
 		    			</div>
 		    		</div>
@@ -286,13 +288,17 @@
 			data: {
 				"action": "get_panel_item"
 			},
+			beforeSend: function(){
+	            $('.box-keterangan-item .overlay').css('display', 'block');
+	        },
 			success: function(data){
 				console.log(data);
-				// set_value_panel(data);
+				$('.box-keterangan-item .overlay').css('display', 'none');
+				setValue_panelItem(data);
 			},
 			error: function (jqXHR, textStatus, errorThrown){ // error handling
 	            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
-	            // clearBarang();
+	            $('.box-keterangan-item .overlay').css('display', 'none');
 	            console.log(jqXHR, textStatus, errorThrown);
 	        }
 		})
@@ -315,7 +321,61 @@
 
 	// set value panel item
 	function setValue_panelItem(data){
-		
+		var base_url_item = base_url+'index.php?m=barang&p=view&id=';
+
+		// tab terlaris
+		$('#tab_terlaris').append('<ul class="products-list products-list-in-box"></ul>');
+		$.each(data.terlaris, function(index, item){
+			var list = '';
+			list += '<li class="item">';
+			list += '<div class="product-img">';
+			list += '<img src="'+base_url+'assets/dist/img/default-50x50.gif">';
+			list += '</div>'; // end div product-img
+			list += '<div class="product-info">';
+			list += '<a href="'+base_url_item+item.kd_barang+'" class="product-title" target="_blank">';
+			list += item.kode_barang+' <span class="label label-success pull-right" style="font-size: 100%;">'+item.total+'</span>';
+			list += '</a>'; // end a product-title
+			list += '<span class="product-description">'+item.nama+'</span>'
+			list += '</div>'; // end div product-info
+			list += '</li>';
+			$('#tab_terlaris .products-list').append(list);
+		});
+
+		// tab kurang laku
+		$('#tab_kurang_laku').append('<ul class="products-list products-list-in-box"></ul>');
+		$.each(data.kurang_laku, function(index, item){
+			var list = '';
+			list += '<li class="item">';
+			list += '<div class="product-img">';
+			list += '<img src="'+base_url+'assets/dist/img/default-50x50.gif">';
+			list += '</div>'; // end div product-img
+			list += '<div class="product-info">';
+			list += '<a href="'+base_url_item+item.kd_barang+'" class="product-title" target="_blank">';
+			list += item.kode_barang+' <span class="label label-warning pull-right" style="font-size: 100%;">'+item.total+'</span>';
+			list += '</a>'; // end a product-title
+			list += '<span class="product-description">'+item.nama+'</span>'
+			list += '</div>'; // end div product-info
+			list += '</li>';
+			$('#tab_kurang_laku .products-list').append(list);
+		});
+
+		// tab belum terjual
+		$('#tab_belum_terjual').append('<ul class="products-list products-list-in-box"></ul>');
+		$.each(data.belum_terjual, function(index, item){
+			var list = '';
+			list += '<li class="item">';
+			list += '<div class="product-img">';
+			list += '<img src="'+base_url+'assets/dist/img/default-50x50.gif">';
+			list += '</div>'; // end div product-img
+			list += '<div class="product-info">';
+			list += '<a href="'+base_url_item+item.kd_barang+'" class="product-title" target="_blank">';
+			list += item.kode_barang+' <span class="label label-danger pull-right" style="font-size: 100%;">'+item.total+'</span>';
+			list += '</a>'; // end a product-title
+			list += '<span class="product-description">'+item.nama+'</span>'
+			list += '</div>'; // end div product-info
+			list += '</li>';
+			$('#tab_belum_terjual .products-list').append(list);
+		});	
 	}
 
 </script>

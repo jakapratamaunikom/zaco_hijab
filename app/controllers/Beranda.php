@@ -128,7 +128,7 @@
 			'bulan' => date("m"),
 			'tahun' => date("Y"),
 		);
-		$get_item_terlaris = get_ket_penjualan_item($koneksi, $date, 'DESC', 5);
+		$get_item_terlaris = get_ket_penjualan_item($koneksi, $date, 'terlaris');
 		$data_item_terlaris = array();
 		$no_urut = 0;
 		foreach($get_item_terlaris as $value){
@@ -143,7 +143,7 @@
 			$data_item_terlaris[] = $dataRow;
 		}
 
-		$get_item_kurang_laku = get_ket_penjualan_item($koneksi, $date, 'ASC', 5);
+		$get_item_kurang_laku = get_ket_penjualan_item($koneksi, $date, 'kurang_laku');
 		$data_item_kurang_laku = array();
 		$no_urut = 0;
 		foreach($get_item_kurang_laku as $value){
@@ -158,10 +158,26 @@
 			$data_item_kurang_laku[] = $dataRow;
 		}
 
+		$get_item_belum_terjual = get_ket_penjualan_item($koneksi, $date, 'belum_terjual');
+		$data_item_belum_terjual = array();
+		$no_urut = 0;
+		foreach($get_item_belum_terjual as $value){
+			$no_urut++;
+			$dataRow = array();
+			$dataRow['no_urut'] = $no_urut;
+			$dataRow['kd_barang'] = $value['kd_barang'];
+			$dataRow['kode_barang'] = $value['kode_barang'];
+			$dataRow['nama'] = $value['nama'];
+			$dataRow['total'] = $value['total'];
+
+			$data_item_belum_terjual[] = $dataRow;
+		}		
+
 
 		$output = array(
 			'terlaris' => $data_item_terlaris,
 			'kurang_laku' => $data_item_kurang_laku,
+			'belum_terjual' => $data_item_belum_terjual,
 			// 'bulan' => get_bulanIndo($date['bulan']), 
 			// 'tahun' => $date['tahun'],
 		);

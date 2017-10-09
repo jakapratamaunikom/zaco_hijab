@@ -1,0 +1,84 @@
+# PROGRESS Zaco Hijab #
+
+# Module :
+
+=> Data Master:
+	-> Data id barang (80 %)
+		> Tambah Data (100 %)
+		> Edit Data (100 %)
+		> Import Excel (0 %)
+			>> Belum dikerjakan
+		> Import Pdf (0 %)
+			>> Belum dikerjakan
+
+	-> Data id warna (80 %)
+		> Tambah Data (100 %)
+		> Edit Data (100 %)
+		> Import Excel (0 %)
+			>> Belum dikerjakan
+		> Import Pdf (0 %)
+			>> Belum dikerjakan
+
+	-> Data barang
+		> Tambah Data (100 %)
+		> Edit Data (100 %)
+		> View Data (100 %)
+		> Import Excel (0 %)
+			>> Belum dikerjakan
+		> Import Pdf (0 %)
+			>> Belum dikerjakan
+
+=> Data Penjualan
+	-> Tambah
+		> Tambah Data (80 %)
+		> Generate langsung ke Pdf (0 %)
+			>> Belum dikerjakan
+	-> Edit Data (80 %)
+	-> View Data (50 %)
+	-> Import Excel (0 %)
+		>> Belum dikerjakan
+	-> Import Pdf (0 %)
+		>> Belum dikerjakan
+	-> Cetak Termal (0 %)
+		>> Belum dikerjakan
+
+=> Data Pembelian
+	-> Tambah Data
+	-> Edit Data
+	-> View Data
+	-> Import Excel
+	-> Import Pdf
+
+=> Data Pengeluaran
+	-> Tambah Data
+	-> Edit Data
+	-> View Data
+	-> Import Excel
+	-> Import Pdf
+
+=> Data Reject
+	-> Tambah Data
+	-> Edit Data
+	-> View Data
+	-> Import Excel
+	-> Import Pdf
+
+=> Beranda / Dashboard
+	-> Panel Info (4 info)
+	-> Panel Perbandingan Penjualan dan Laba (line chart)
+	-> Panel Pembelian dan Pengeluaran (bar chart)
+	-> Panel keterangan item (terlaris, kurang laku, belum terjual)
+
+=> Login
+	-> Proses Login (100%)
+	-> Proses Logout (100%)
+	-> Lockscreen (0%)
+		>> Belum dikerjakan
+
+=> Maintance
+	-> Backup/Export Database (0%)
+		>> Belum dikerjakan
+	-> Import Database (0%)
+		>> Belum dikerjakan
+	-> Update Sistem ( COMING SOON )
+		>> New Fitur
