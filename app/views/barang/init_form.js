@@ -230,7 +230,7 @@ function submitBarang(){
 			else{ // jika status false
 				// cek jenis error
 				if(hasil.errorDb){ // jika db error
-					swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error")
+					swal("Pesan Error", "Koneksi Database Error, Silahkan Coba Lagi", "error");
                     reset_form("#form_barang");
 				}
 				else{
