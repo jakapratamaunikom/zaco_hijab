@@ -21,7 +21,7 @@
 					$max = $rule[2];
 					$required = strtolower($rule[3]) == "required" ? true : false;
 					
-					$pesanError[$error] = "";
+					$setError[$error] = "";
 					$set_value[$setValue] = $field;
 					
 					// get fungsi validasi
@@ -30,7 +30,7 @@
 							$valid = validString($label, $field, $min, $max, $required);
 							if(!$valid['cek']){
 								$cek = false;
-								$pesanError[$error] = $valid['error'];
+								$setError[$error] = $valid['error'];
 							}
 							break;
 
@@ -38,7 +38,7 @@
 							$valid = validHuruf($label, $field, $min, $max, $required);
 							if(!$valid['cek']){
 								$cek = false;
-								$pesanError[$error] = $valid['error'];
+								$setError[$error] = $valid['error'];
 							}
 							break;
 
@@ -46,7 +46,15 @@
 							$valid = validAngka($label, $field, $min, $max, $required);
 							if(!$valid['cek']){
 								$cek = false;
-								$pesanError[$error] = $valid['error'];
+								$setError[$error] = $valid['error'];
+							}
+							break;
+
+						case 'nilai':
+							$valid = validNilai($label, $field, $min, $max, $required);
+							if(!$valid['cek']){
+								$cek = false;
+								$setError[$error] = $valid['error'];
 							}
 							break;
 
@@ -54,7 +62,7 @@
 							$valid = validEmail($label, $field, $min, $max, $required);
 							if(!$valid['cek']){
 								$cek = false;
-								$pesanError[$error] = $valid['error'];
+								$setError[$error] = $valid['error'];
 							}							
 							break;
 						
@@ -65,8 +73,8 @@
 
 					$output = array(
 						'cek' => $cek,
-						'pesanError' => $pesanError,
-						'set_value' => $set_value,
+						'setError' => $setError,
+						'setValue' => $set_value,
 					);
 				}
 			}
@@ -197,12 +205,64 @@
 					}
 				}
 			break;
-
 			case 'angka':
 				// cek required
 				if($required){ // jika wajib
 					// cek kosong
-					if(empty($value)){ // jika kosong
+					if($value === ""){ // jika kosong
+						$setError = $error['empty'];
+						$cek = false;
+					}
+					else{
+						// cek pattern
+						if(!preg_match($pattern, $value)){ // jika tidak sesuai
+							$setError = $error['pattern'];
+							$cek = false;
+						}
+						else{
+							// cek min-max karakter
+							if(strlen($value) >= $min && strlen($value) <= $max){ // jika sesuai
+								$setError = "";
+								$cek = true;
+							}
+							else{
+								$setError = $error['length'];
+								$cek = false;
+							}
+						}
+					}
+				}
+				else{ // jika opsional
+					// jika diisi cek pattern --> cek max
+					if($value !== ""){ // jika diisi
+						// cek pattern
+						if(!preg_match($pattern, $value)){ // jika tidak sesuai
+							$setError = $error['pattern'];
+							$cek = false;
+						}
+						else{
+							// cek min-max karakter
+							if(strlen($value) >= $min && strlen($value) <= $max){ // jika sesuai
+								$setError = "";
+								$cek = true;
+							}
+							else{
+								$setError = $error['length'];
+								$cek = false;
+							}
+						}
+					}
+					else{ // jika kosong
+						$setError = "";
+						$cek = true;
+					}
+				}
+				break;
+				case 'nilai':
+				// cek required
+				if($required){ // jika wajib
+					// cek kosong
+					if($value === ""){ // jika kosong
 						$setError = $error['empty'];
 						$cek = false;
 					}
@@ -227,7 +287,7 @@
 				}
 				else{ // jika opsional
 					// jika diisi cek pattern --> cek max
-					if(!empty($value)){ // jika diisi
+					if($value !== ""){ // jika diisi
 						// cek pattern
 						if(!preg_match($pattern, $value)){ // jika tidak sesuai
 							$setError = $error['pattern'];
@@ -251,7 +311,6 @@
 					}
 				}
 				break;
-
 			default:
 				die();
 				break;
@@ -284,7 +343,7 @@
 		$cekValid['label'] = trim($label);
 		$cekValid['min'] = $min;
 		$cekValid['max'] = $max;
-		$cekValid['pattern'] = "/^[a-zA-Z0-9-_,.!?' \/]*$/";
+		$cekValid['pattern'] = "/^[a-zA-Z0-9-_,.!?&' \/\r\n]*$/";
 		$cekValid['required'] = $required;
 		$cekValid['jenis'] = "string";
 
@@ -302,6 +361,27 @@
 		# $required --> wajib diisi atau tidak (true - false)
 	*/
 	function validAngka($label, $value, $min, $max, $required){
+		// inisialisasi
+		$cekValid['cek'] = true;
+		$cekValid['error'] = array(
+			'empty' => $label." Harus Diisi",
+			'pattern' => $label." Harus Berupa Angka",
+			'length' => "Panjang $label Min. $min dan Maks. $max",
+		);
+		$cekValid['value'] = trim($value);
+		$cekValid['label'] = trim($label);
+		$cekValid['min'] = $min;
+		$cekValid['max'] = $max;
+		$cekValid['pattern'] = "/^[0-9]*$/";
+		$cekValid['required'] = $required;
+		$cekValid['jenis'] = "angka";
+
+		$output = validTemplate($cekValid);
+
+		return $output;
+	}
+
+	function validNilai($label, $value, $min, $max, $required){
 		// inisialisasi
 		$cekValid['cek'] = true;
 		$cekValid['error'] = array(
