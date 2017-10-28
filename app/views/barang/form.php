@@ -218,12 +218,12 @@
 	</section>
 
 	<!-- modal tambah data id barang -->
-    <?php include_once("app/views/modals/modal_id_barang.php"); ?>
+    <?php include_once("app/views/id_barang/form.php"); ?>
 
     <!-- modal tambah data id warna -->
-    <?php include_once("app/views/modals/modal_id_warna.php"); ?>
+    <?php include_once("app/views/id_warna/form.php"); ?>
 
 	<!-- js -->
 		<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
-		<script type="text/javascript" src="<?= base_url."app/views/barang/init_form.js" ?>"></script>
+		<script type="text/javascript" src="<?= base_url."app/views/barang/js/initForm.js" ?>"></script>
     <!-- -->

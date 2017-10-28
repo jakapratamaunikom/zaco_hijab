@@ -1,4 +1,3 @@
-//setting datatable
 $(document).ready(function(){
 	// console.log(jQuery.isEmptyObject(urlParams.id));
 	// console.log(urlParams);

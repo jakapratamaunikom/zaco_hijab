@@ -30,7 +30,7 @@
 	 	<!-- jQuery -->
 		<script src="<?= base_url."assets/plugins/jQuery/jquery-2.2.3.min.js"; ?>"></script>
 		<!-- CSS -->
-		<?php include_once("app/views/template/css.php") ?>
+		<?php include_once("app/views/template/css/autoload_css.php") ?>
 	</head>
 	<body class="hold-transition login-page">
 		<div class="login-box">
@@ -66,7 +66,7 @@
 		  	<!-- /.login-box-body -->
 		</div>
 		<!-- JavaScript -->
-		<?php include_once("app/views/template/javascript.php") ?>
+		<?php include_once("app/views/template/js/autoload_js.php") ?>
 		<!-- js custom -->
 		<script type="text/javascript">
             var base_url = "<?php print base_url; ?>";

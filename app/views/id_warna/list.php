@@ -85,10 +85,10 @@
 </section>
 
 <!-- modal tambah data -->
-<?php include_once("app/views/modals/modal_id_warna.php"); ?>
+<?php include_once("app/views/id_warna/form.php"); ?>
 
-<!-- modal ekspor data -->
-<?php include_once("app/views/modals/modal_export.php"); ?>
+<!-- modal export -->
+<?php include_once("app/views/export/formExport.php"); ?>
 
 <!-- js -->
 <!-- DataTables -->
@@ -101,5 +101,6 @@
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 <!-- js list -->
 <!-- js modal export -->
-<script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
-<script type="text/javascript" src="<?= base_url."app/views/id_warna/init.js"; ?>"></script>
+<script type="text/javascript" src="<?= base_url."app/views/export/js/initExport.js"; ?>"></script>
+<script type="text/javascript" src="<?= base_url."app/views/id_warna/js/initList.js"; ?>"></script>
+<script type="text/javascript" src="<?= base_url."app/views/id_warna/js/initForm.js"; ?>"></script>

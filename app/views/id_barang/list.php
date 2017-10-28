@@ -77,10 +77,10 @@
     </section>
 
     <!-- modal tambah data -->
-    <?php include_once("app/views/modals/modal_id_barang.php"); ?>
+    <?php include_once("app/views/id_barang/form.php"); ?>
 
     <!-- modal export -->
-    <?php include_once("app/views/modals/modal_export.php"); ?>
+    <?php include_once("app/views/export/formExport.php"); ?>
 
     <div class="loadingPage"></div>
 
@@ -95,7 +95,8 @@
         
         <!-- js list -->
         <!-- js modal export -->
-        <script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
-        <script type="text/javascript" src="<?= base_url."app/views/id_barang/init.js"; ?>"></script>
+        <script type="text/javascript" src="<?= base_url."app/views/export/js/initExport.js"; ?>"></script>
+        <script type="text/javascript" src="<?= base_url."app/views/id_barang/js/initList.js"; ?>"></script>
+        <script type="text/javascript" src="<?= base_url."app/views/id_barang/js/initForm.js"; ?>"></script>
         
     <!-- -->    
