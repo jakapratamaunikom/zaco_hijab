@@ -113,7 +113,7 @@
 				$configData_pembelian = configData($dataPembelian);
 				$validasi_pembelian = set_validasi($configData_pembelian);
 				$cek = $validasi_pembelian['cek'];
-				$pesanError_pembelian = $validasi_pembelian['pesanError'];
+				$pesanError_pembelian = $validasi_pembelian['setError'];
 				$set_value_pembelian = $validasi_pembelian['set_value'];
 			}
 			else $cek = false;
@@ -344,7 +344,7 @@
 		$configData = configDataList($dataForm);
 		$validasi = set_validasi($configData);
 		$cek = $validasi['cek'];
-		$pesanError = $validasi['pesanError'];
+		$pesanError = $validasi['setError'];
 
 		if($cek) $status = true;
 
