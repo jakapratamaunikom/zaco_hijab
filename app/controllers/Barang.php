@@ -508,27 +508,27 @@
 			// data hpp
 			array(
 				'field' => $data['hpp'], 'label' => 'HPP', 'error' => 'hppError',
-				'value' => 'hpp', 'rule' => 'angka | 1 | 999999 | required',
+				'value' => 'hpp', 'rule' => 'nilai | 1 | 999999 | required',
 			),
 			// data harga_pasar
 			array(
 				'field' => $data['harga_pasar'], 'label' => 'Harga Pasar', 'error' => 'harga_pasarError',
-				'value' => 'harga_pasar', 'rule' => 'angka | 1 | 999999 | required',
+				'value' => 'harga_pasar', 'rule' => 'nilai | 1 | 999999 | required',
 			),
 			// data market place
 			array(
 				'field' => $data['market_place'], 'label' => 'Harga Market Place', 'error' => 'market_placeError',
-				'value' => 'market_place', 'rule' => 'angka | 1 | 999999 | required',
+				'value' => 'market_place', 'rule' => 'nilai | 1 | 999999 | required',
 			),
 			// data harga ig
 			array(
 				'field' => $data['harga_ig'], 'label' => 'Harga IG', 'error' => 'harga_igError',
-				'value' => 'harga_ig', 'rule' => 'angka | 1 | 999999 | required',
+				'value' => 'harga_ig', 'rule' => 'nilai | 1 | 999999 | required',
 			),
 			// data stok awal
 			array(
 				'field' => $data['stokAwal'], 'label' => 'Stok Awal', 'error' => 'stokAwalError',
-				'value' => 'stokAwal', 'rule' => 'angka | 1 | 999999 | '.$required,
+				'value' => 'stokAwal', 'rule' => 'nilai | 1 | 999999 | '.$required,
 			),
 		);
 

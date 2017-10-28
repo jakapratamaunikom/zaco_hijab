@@ -476,7 +476,7 @@
 			),
 			array(
 				'field' => $data['ongkir'], 'label' => 'Ongkos Kirim', 'error' => 'ongkirError',
-				'value' => 'ongkir', 'rule' => 'angka | 0 | 999999 | '.$required,
+				'value' => 'ongkir', 'rule' => 'nilai | 0 | 999999 | '.$required,
 			),
 		);
 
@@ -504,7 +504,7 @@
 			// data qty
 			array(
 				'field' => $data['qty'], 'label' => 'Qty', 'error' => 'qtyError',
-				'value' => 'qty', 'rule' => 'angka | 1 | '.$maxQty.' | required',
+				'value' => 'qty', 'rule' => 'nilai | 1 | '.$maxQty.' | required',
 			),
 			// data jenis diskon
 			array(
@@ -514,7 +514,7 @@
 			// data diskon
 			array(
 				'field' => $data['diskon'], 'label' => 'Diskon', 'error' => 'diskonError',
-				'value' => 'Diskon', 'rule' => 'angka | 0 | '.$maxDiskon.' | not_required',
+				'value' => 'Diskon', 'rule' => 'nilai | 0 | '.$maxDiskon.' | not_required',
 			),
 			// data ket
 			array(
