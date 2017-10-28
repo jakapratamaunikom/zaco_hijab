@@ -70,7 +70,7 @@
 		$tgl = date("Y-m-d");
 		$query = "CALL tambah_barang(
 			:id_barang, :id_warna, :nama, :hpp, :harga_pasar, 
-			:market_place, :harga_ig, :foto, :ket, :tgl, :stokAwal)";
+			:market_place, :harga_ig, :foto, :ket, :status, :tgl, :stokAwal)";
 
 		$statement = $koneksi->prepare($query);
 		$statement->bindParam(':id_barang', $data['id_barang']);
@@ -82,6 +82,7 @@
 		$statement->bindParam(':harga_ig', $data['harga_ig']);
 		$statement->bindParam(':foto', $data['foto']);
 		$statement->bindParam(':ket', $data['ket']);
+		$statement->bindParam(':status', $data['status']);
 		$statement->bindParam(':tgl', $tgl);
 		$statement->bindParam(':stokAwal', $data['stokAwal']);
 		$result = $statement->execute();
@@ -102,6 +103,19 @@
 		$statement->bindParam(':harga_ig', $data['harga_ig']);
 		$statement->bindParam(':ket', $data['ket']);
 		$statement->bindParam(':id', $data['id']);
+		$result = $statement->execute();
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
+	// update status barang
+	function updateStatusBarang($koneksi, $id, $status){
+		$query = "UPDATE barang SET status=:status WHERE id = :id";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':status', $status);
+		$statement->bindParam(':id', $id);
 		$result = $statement->execute();
 		tutup_koneksi($koneksi);
 

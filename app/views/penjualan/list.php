@@ -79,7 +79,7 @@
     </section>
 
     <!-- modal export -->
-    <?php include_once("app/views/modals/modal_export.php"); ?>
+    <?php include_once("app/views/export/formExportTgl.php"); ?>
 
     <!-- js -->
         <!-- DataTables -->
@@ -90,7 +90,7 @@
         <!-- js datepicker -->
         <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
         <!-- js modal export -->
-        <script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
+        <script type="text/javascript" src="<?= base_url."app/views/export/js/initExportTgl.js"; ?>"></script>
         <?php 
             if($notif){
                 ?>

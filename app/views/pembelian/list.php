@@ -85,7 +85,7 @@
 
 
 <!-- modal ekspor data -->
-<?php include_once("app/views/modals/modal_export.php"); ?>
+<?php include_once("app/views/export/formExportTgl.php"); ?>
 
 <!-- js -->
 <!-- DataTables -->
@@ -152,6 +152,6 @@
 </script>
 
 <!-- js modal export -->
-<script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
+<script type="text/javascript" src="<?= base_url."app/views/export/initExportTgl.js"; ?>"></script>
 
 <!-- -->

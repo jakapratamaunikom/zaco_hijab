@@ -33,9 +33,65 @@ $(document).ready(function(){
         },
         "columnDefs": [
             {
-                "targets":[0, 7, 9], // disable order di kolom 1 dan 3
+                "targets":[0, 7, 10], // disable order di kolom 1 dan 3
                 "orderable":false,
             }
         ],
     });
 });
+
+function edit_status(id, status){
+    var text = status = pesan = "";
+
+    // cek status
+    if(status == "aktif"){
+        text = "Status Barang Akan di NON-AKTIFKAN !";
+        status = "0";
+        pesan = "Barang Berhasil Di Non-Aktifkan";
+    }
+    else{
+        text = "Status Barang Akan di AKTIFKAN !";
+        status = "1";
+        pesan = "Barang Berhasil Di Aktifkan Kembali";
+    }
+
+    swal({
+        title: "Apakah Anda Yakin ?",
+        text: text,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        closeOnConfirm: false,
+        },function(){ // saat confirm
+            $.ajax({
+                url: base_url+"app/controllers/Barang.php",
+                type: "post",
+                dataType: "json",
+                data: {
+                    "id" : id,
+                    "status": status,
+                    "action" : "setStatus",
+                },
+                success: function(hasil){
+                    if(hasil.status){
+                        swal({
+                                title: "Pesan",
+                                text: pesan,
+                                type: "success",
+                            }, function(){
+                                $("#tabel_barang").DataTable.ajax.reload();
+                            }
+                        );
+                    }
+                    else swal("Pesan!", "Status Barang Gagal Di Ubah", "error");
+                    console.log(hasil);
+                },
+                error: function (jqXHR, textStatus, errorThrown) { // error handling
+                    swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+                    console.log(jqXHR, textStatus, errorThrown);
+                }
+            })
+        }
+    );
+}

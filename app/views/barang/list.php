@@ -69,6 +69,7 @@
 		                                <th>Harga IG</th>
 		                                <th>Keterangan</th>
 		                                <th>Stok</th>
+		                                <th>Status</th>
 		                                <th>Aksi</th>
 	                            	</tr>
 	                        	</thead>

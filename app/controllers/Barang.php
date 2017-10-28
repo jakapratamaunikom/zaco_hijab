@@ -36,6 +36,12 @@
 				actionEdit($koneksi); // aksi edit
 				break;
 
+			case 'setstatus':
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				$status = isset($_POST['status']) ? $_POST['status'] : false;
+				setStatus($koneksi, $id, $status);
+				break;
+
 			case 'edit_foto':
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
 				edit_foto($koneksi, $id);
@@ -77,8 +83,8 @@
 		*/
 		$config_db = array(
 			'tabel' => 'v_barang',
-			'kolomOrder' => array(null, 'kd_barang', 'nama', 'hpp', 'harga_pasar', 'market_place', 'harga_ig', null, 'stok', null),
-			'kolomCari' => array('kd_barang', 'nama', 'hpp', 'harga_pasar', 'market_place', 'harga_ig', 'stok'),
+			'kolomOrder' => array(null, 'kd_barang', 'nama', 'hpp', 'harga_pasar', 'market_place', 'harga_ig', null, 'stok', 'status', null),
+			'kolomCari' => array('kd_barang', 'nama', 'hpp', 'harga_pasar', 'market_place', 'harga_ig', 'stok', 'status'),
 			'orderBy' => false,
 			'kondisi' => false,
 		);
@@ -90,9 +96,12 @@
 		$no_urut = $_POST['start'];
 		foreach($data_barang as $row){
 			$ket = !empty($row['ket']) ? $row['ket'] : "-";
+			$status = strtolower($row['status'])=='aktif' ? '<span class="label label-success label-rouded">'.$row['status'].'</span>' : '<span class="label label-info label-rouded">'.$row['status'].'</span>';
+
 			$no_urut++;
 			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=view&id='.$row["id"].'">Detail</a>';
 			$aksi .= '<a role="button" class="btn btn-success btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=form&id='.$row["id"].'">Edit</a>';
+			$aksi .= '<button type="button" class="btn btn-danger btn-flat btn-sm" onclick="edit_status('."'".$row["id"]."'".', '."'".strtolower($row["status"])."'".')">Edit Status</button>';
 			
 			$dataRow = array();
 			$dataRow[] = $no_urut;
@@ -104,6 +113,7 @@
 			$dataRow[] = rupiah($row['harga_ig']);
 			$dataRow[] = $ket;
 			$dataRow[] = $row['stok'];
+			$dataRow[] = $status;
 			$dataRow[] = $aksi;
 
 			$data[] = $dataRow;
@@ -168,6 +178,7 @@
 				'harga_ig' => validInputan($dataForm['harga_ig'], false, false),
 				'stokAwal' => validInputan($dataForm['stokAwal'], false, false),
 				'foto' => validInputan($valueFoto, false, true),
+				'status' => '1',
 			);
 
 			// cek duplikat id barang
@@ -288,6 +299,23 @@
 		);
 
 		echo json_encode($output);
+	}
+
+	// fungsi edit status
+	function setStatus($koneksi, $id, $status){
+		if(updateStatusBarang($koneksi, $id, $status)){
+			$status = true;
+			$errorDb = false;
+		}
+		else{
+			$status = false;
+			$errorDb = true;
+		}
+
+		$output = array(
+			'status' => $status,
+			'errorDb' => $errorDb,
+		);
 	}
 
 	// fungsi edit foto
