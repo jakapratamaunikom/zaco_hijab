@@ -894,7 +894,7 @@ CREATE OR REPLACE VIEW v_barang AS
     SELECT 
         b.id, concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, 
         b.nama,  b.hpp,  b.harga_pasar, b.market_place, b.harga_ig, b.foto, b.ket, 
-        b.status (case when (p.status = '1') then 'AKTIF' else 'NON AKTIF' end) status, 
+        (case when (b.status = '1') then 'AKTIF' else 'NON AKTIF' end) status, 
         s.stok_akhir stok 
     from 
         stok s 
@@ -928,7 +928,7 @@ CREATE OR REPLACE VIEW v_penjualan AS
         ON ib.id = b.id_barang
     JOIN id_warna iw
         ON iw.id = b.id_warna
-    GROUP BY p.id
+    GROUP BY p.id DESC;
 
 -- ==============================================================
 
@@ -947,7 +947,7 @@ CREATE OR REPLACE VIEW v_pembelian AS
         ON ib.id = b.id_barang
     JOIN id_warna iw
         ON iw.id = b.id_warna
-    GROUP BY p.id 
+    GROUP BY p.id DESC;
 
 -- CREATE OR REPLACE VIEW v_pengeluaran
 -- AS
@@ -979,7 +979,7 @@ CREATE OR REPLACE VIEW v_detail_penjualan AS
         ON p.id=dp.kd_penjualan
     JOIN v_barang b 
         ON b.id=dp.kd_barang
-    ORDER BY dp.id ASC
+    ORDER BY dp.id ASC;
 
 CREATE OR REPLACE VIEW v_detail_pembelian AS
     SELECT dp.id, dp.kd_pembelian, dp.kd_barang, b.kd_barang kode_barang, b.nama, 
@@ -989,7 +989,7 @@ CREATE OR REPLACE VIEW v_detail_pembelian AS
         ON p.id=dp.kd_pembelian
     JOIN v_barang b 
         ON b.id=dp.kd_barang
-    ORDER BY dp.id ASC
+    ORDER BY dp.id ASC;
 
 CREATE OR REPLACE VIEW v_stok_terbaru AS
     SELECT s.id, s.tgl, s.kd_barang, b.kd_barang kode_barang, b.nama, s.stok_awal,
@@ -998,7 +998,7 @@ CREATE OR REPLACE VIEW v_stok_terbaru AS
     JOIN v_barang b
         ON b.id = s.kd_barang
     WHERE s.id IN(SELECT MAX(id) FROM stok GROUP BY(kd_barang))
-    ORDER BY b.kd_barang ASC
+    ORDER BY b.kd_barang ASC;
 
 CREATE OR REPLACE VIEW v_stok_all AS
     SELECT s.id, s.tgl, s.kd_barang, b.kd_barang kode_barang, b.nama, s.stok_awal,
@@ -1006,4 +1006,4 @@ CREATE OR REPLACE VIEW v_stok_all AS
     FROM stok s
     JOIN v_barang b
         ON b.id = s.kd_barang
-    ORDER BY b.kd_barang ASC
+    ORDER BY b.kd_barang ASC;

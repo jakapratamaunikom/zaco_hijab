@@ -79,7 +79,7 @@
 			'tabel' => 'v_barang',
 			'kolomOrder' => array(null, 'kd_barang', 'nama', 'hpp', 'harga_pasar', 'market_place', 'harga_ig', null, 'stok', null),
 			'kolomCari' => array('kd_barang', 'nama', 'hpp', 'harga_pasar', 'market_place', 'harga_ig', 'stok'),
-			'orderBy' => array('id' => 'asc'),
+			'orderBy' => false,
 			'kondisi' => false,
 		);
 

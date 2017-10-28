@@ -57,7 +57,7 @@
 			'tabel' => 'v_pembelian',
 			'kolomOrder' => array(null, 'kd_pembelian', 'tgl', 'item', 'total', null, null),
 			'kolomCari' => array('kd_pembelian', 'tgl', 'item', 'total'),
-			'orderBy' => array('id' => 'desc'),
+			'orderBy' => false,
 			'kondisi' => false,
 		);
 

@@ -70,7 +70,7 @@
 			'tabel' => 'v_penjualan',
 			'kolomOrder' => array(null, 'kd_penjualan', 'tgl', 'jenis', 'item', 'total', 'status', null, null),
 			'kolomCari' => array('kd_penjualan', 'tgl', 'jenis', 'item', 'total', 'status'),
-			'orderBy' => array('id' => 'desc'),
+			'orderBy' => false,
 			'kondisi' => false,
 		);
 
