@@ -87,7 +87,7 @@
 			$configData = configData($dataForm);
 			$validasi = set_validasi($configData);
 			$cek = $validasi['cek'];
-			$pesanError = $validasi['setError'];
+			$pesanError = $validasi['setValue'];
 			$set_value = $validasi['set_value'];
 
 			if($foto){

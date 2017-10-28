@@ -128,8 +128,8 @@
 				$configData_penjualan = configData($dataPenjualan);
 				$validasi_penjualan = set_validasi($configData_penjualan);
 				$cek = $validasi_penjualan['cek'];
-				$pesanError_penjualan = $validasi_penjualan['pesanError'];
-				$set_value_penjualan = $validasi_penjualan['set_value'];
+				$pesanError_penjualan = $validasi_penjualan['setError'];
+				$set_value_penjualan = $validasi_penjualan['setValue'];
 			}
 			else $cek = false;
 		// ======================================== //
@@ -249,8 +249,8 @@
 				$configData_penjualan = configData($dataPenjualan);
 				$validasi_penjualan = set_validasi($configData_penjualan);
 				$cek = $validasi_penjualan['cek'];
-				$pesanError_penjualan = $validasi_penjualan['pesanError'];
-				$set_value_penjualan = $validasi_penjualan['set_value'];
+				$pesanError_penjualan = $validasi_penjualan['setError'];
+				$set_value_penjualan = $validasi_penjualan['setValue'];
 			}
 			else $cek = false;
 		// ======================================== //
@@ -402,7 +402,7 @@
 		$configData = configDataList($dataList, $koneksi);
 		$validasi = set_validasi($configData);
 		$cek = $validasi['cek'];
-		$pesanError = $validasi['pesanError'];
+		$pesanError = $validasi['setError'];
 
 		if($cek) $status = true;
 

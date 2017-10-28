@@ -114,7 +114,7 @@
 				$validasi_pembelian = set_validasi($configData_pembelian);
 				$cek = $validasi_pembelian['cek'];
 				$pesanError_pembelian = $validasi_pembelian['setError'];
-				$set_value_pembelian = $validasi_pembelian['set_value'];
+				$set_value_pembelian = $validasi_pembelian['setValue'];
 			}
 			else $cek = false;
 		// ======================================== //

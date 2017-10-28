@@ -96,7 +96,7 @@
 			$validasi = set_validasi($configData);
 			$cek = $validasi['cek'];
 			$pesanError = $validasi['setError'];
-			$set_value = $validasi['set_value'];
+			$set_value = $validasi['setValue'];
 			
 		// ==================================== //
 		if($cek){
@@ -161,7 +161,7 @@
 			$validasi = set_validasi($configData);
 			$cek = $validasi['cek'];
 			$pesanError = $validasi['setError'];
-			$set_value = $validasi['set_value'];
+			$set_value = $validasi['setValue'];
 		// ==================================== //
 
 		if($cek){

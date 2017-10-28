@@ -132,8 +132,8 @@
 			$configData = configData($dataForm);
 			$validasi = set_validasi($configData);
 			$cek = $validasi['cek'];
-			$pesanError = $validasi['pesanError'];
-			$set_value = $validasi['set_value'];
+			$pesanError = $validasi['setError'];
+			$set_value = $validasi['setValue'];
 
 			// jika terdeteksi ada input foto
 			if($foto){
@@ -245,8 +245,8 @@
 			$configData = configData($dataForm);
 			$validasi = set_validasi($configData);
 			$cek = $validasi['cek'];
-			$pesanError = $validasi['pesanError'];
-			$set_value = $validasi['set_value'];
+			$pesanError = $validasi['setError'];
+			$set_value = $validasi['setValue'];
 		// ==================================== //
 
 		if($cek){
