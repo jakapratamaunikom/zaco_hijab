@@ -37,6 +37,7 @@ create table barang(
     harga_ig double(8,2),
     foto text,
     ket text,
+    status char(1), -- 1: aktif, 0: non-aktif
     CONSTRAINT pk_barang_id PRIMARY KEY(id),
     CONSTRAINT fk_barang_id_barang FOREIGN KEY(id_barang) REFERENCES id_barang(id),
     CONSTRAINT fk_barang_id_warna FOREIGN KEY(id_warna) REFERENCES id_warna(id)
@@ -242,6 +243,7 @@ create PROCEDURE tambah_barang(
     in harga_ig_param double(8,2),
     in foto_param text,
     in ket_param text,
+    in status_param char,
     in tgl_param date,
     in stok_awal_param int
 )
@@ -252,8 +254,8 @@ BEGIN
     SELECT `AUTO_INCREMENT` INTO id_param FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'zaco_hijab' AND   TABLE_NAME   = 'barang';
 
 	-- insert ke barang
-	INSERT INTO barang(id_barang, id_warna, nama, hpp, harga_pasar, market_place, harga_ig, foto,ket)
-    VALUES(id_barang_param, id_warna_param, nama_param, hpp_param, harga_pasar_param, market_place_param, harga_ig_param, foto_param, ket_param);
+	INSERT INTO barang(id_barang, id_warna, nama, hpp, harga_pasar, market_place, harga_ig, foto, ket, status)
+    VALUES(id_barang_param, id_warna_param, nama_param, hpp_param, harga_pasar_param, market_place_param, harga_ig_param, foto_param, ket_param, status_param);
     
     -- insert stok
     INSERT INTO stok(tgl, kd_barang, stok_awal, brg_masuk, brg_keluar, stok_akhir)
@@ -891,7 +893,9 @@ end;
 CREATE OR REPLACE VIEW v_barang AS
     SELECT 
         b.id, concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, 
-        b.nama,  b.hpp,  b.harga_pasar, b.market_place, b.harga_ig, b.foto, b.ket, s.stok_akhir stok 
+        b.nama,  b.hpp,  b.harga_pasar, b.market_place, b.harga_ig, b.foto, b.ket, 
+        b.status (case when (p.status = '1') then 'AKTIF' else 'NON AKTIF' end) status, 
+        s.stok_akhir stok 
     from 
         stok s 
     join 
@@ -902,7 +906,7 @@ CREATE OR REPLACE VIEW v_barang AS
         id_warna iw on iw.id = b.id_warna 
     where 
         s.id in(SELECT max(id) from stok GROUP by(kd_barang)) 
-    ORDER by b.id asc
+    ORDER by b.id asc, status desc
 
 
 -- ==============================================================
