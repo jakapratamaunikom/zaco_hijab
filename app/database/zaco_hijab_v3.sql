@@ -3,7 +3,7 @@
 -- ============= Tabel Master ============= --
 
 	-- Tabel User / Admin
-	CREATE TABLE user(
+	CREATE TABLE admin(
 		username varchar(10) NOT NULL,
 		password text NOT NULL,
 		nama varchar(50),
@@ -13,7 +13,7 @@
 		level enum('ADMIN', 'KASIR'),
 		status char(1), -- 1: aktif, 0: non-aktif
 
-		CONSTRAINT pk_user_username PRIMARY KEY(username) 
+		CONSTRAINT pk_admin_username PRIMARY KEY(username) 
 	);
 
 	-- Tabel id barang --
@@ -69,7 +69,7 @@
 		    user varchar(10),
 
 		    CONSTRAINT pk_penjualan_id PRIMARY KEY(id),
-		    CONSTRAINT fk_penjualan_user FOREIGN KEY(user) REFERENCES user(username)
+		    CONSTRAINT fk_penjualan_user FOREIGN KEY(user) REFERENCES admin(username)
 		);
 
 		-- Detail Penjualan
@@ -102,7 +102,7 @@
 
 			CONSTRAINT pk_reject_id PRIMARY KEY(id),
 			CONSTRAINT fk_reject_kd_penjualan FOREIGN KEY(kd_penjualan) REFERENCES penjualan(id),
-			CONSTRAINT fk_reject_user FOREIGN KEY(user) REFERENCES user(username)
+			CONSTRAINT fk_reject_user FOREIGN KEY(user) REFERENCES admin(username)
 		);
 
 		-- Detail Reject (belum final)
@@ -130,7 +130,7 @@
 			user varchar(10),
 
 			CONSTRAINT pk_pembelian_id PRIMARY KEY(id),
-			CONSTRAINT fk_pembelian_user FOREIGN KEY(user) REFERENCES user(username)
+			CONSTRAINT fk_pembelian_user FOREIGN KEY(user) REFERENCES admin(username)
 		);
 
 		-- Detail Pembelian
@@ -158,7 +158,7 @@
 			user varchar(10),
 
 			CONSTRAINT pk_pengeluaran_id PRIMARY KEY(id),
-			CONSTRAINT fk_pengeluaran_user FOREIGN KEY(user) REFERENCES user(username)
+			CONSTRAINT fk_pengeluaran_user FOREIGN KEY(user) REFERENCES admin(username)
 		);
 
 		-- Detail Pembelian
