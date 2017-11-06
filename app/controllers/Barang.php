@@ -96,7 +96,7 @@
 		$no_urut = $_POST['start'];
 		foreach($data_barang as $row){
 			$ket = !empty($row['ket']) ? $row['ket'] : "-";
-			$status = strtolower($row['status'])=='aktif' ? '<span class="label label-success label-rouded">'.$row['status'].'</span>' : '<span class="label label-info label-rouded">'.$row['status'].'</span>';
+			$status = strtolower($row['status'])=='aktif' ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 			$no_urut++;
 			$aksi = '<a role="button" class="btn btn-info btn-flat btn-sm" href="'.base_url.'index.php?m=barang&p=view&id='.$row["id"].'">Detail</a>';
@@ -159,7 +159,7 @@
 					$cek = false;
 					$pesanError['fotoError'] = $valid_foto['error'];
 				}
-				else $valueFoto = $valid_foto['namaFile'];
+				else $valueFoto = "barang/".$valid_foto['namaFile'];
 			}
 			else $valueFoto = "";
 
@@ -316,6 +316,8 @@
 			'status' => $status,
 			'errorDb' => $errorDb,
 		);
+
+		echo json_encode($output);
 	}
 
 	// fungsi edit foto
