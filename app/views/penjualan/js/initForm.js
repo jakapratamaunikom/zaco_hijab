@@ -38,15 +38,24 @@ $(document).ready(function(){
 
 	// onchange jenis transaksi
 	$("#fJenis").change(function(){
-		if(this.value === "") setDataPembeli(false);
-		else if((this.value.toLowerCase() != "harga pasar") && (this.value.toLowerCase() != "reseller"))
+		if(this.value === "") {
+			setDataPembeli(false);
+			this.disabled = false;
+		}
+		else if((this.value.toLowerCase() != "harga pasar") && (this.value.toLowerCase() != "reseller")){
 			setDataPembeli();
-		else setDataPembeli(false);
+			this.disabled = true;
+		}
+		else{
+			setDataPembeli(false);
+			this.disabled = true;
+		}
 	});
 
 	// on change status transaksi
 	$("#fStatus").change(function(){
 		if(this.value === "1"){ // normal
+			this.disabled = true;
 			// set jenis diskon jadi persen
 			$("#fJenisDiskon").val("p");
 			$("#fJenisDiskon").prop("disabled",false);
@@ -55,6 +64,7 @@ $(document).ready(function(){
 			$("#fDiskon").prop("readonly",false);
 		}
 		else{ // free
+			this.disabled = true;
 			// set jenis diskon jadi persen
 			$("#fJenisDiskon").val("p");
 			$("#fJenisDiskon").prop("disabled",true);
@@ -255,6 +265,9 @@ function submit_penjualan(){
 					else if(!hasil.cekList){
 						swal("Pesan", "List Item Belum Diisi !", "warning");
 					}
+
+					setError(hasil.pesanError);
+					// setValue(hasil.setValue);
 				}
 			}
 			console.log(hasil);
@@ -325,166 +338,174 @@ function edit_penjualan(id){
 	})
 }
 
-function getResponse(respon){
-	if(!respon.listItem){
-		$('#fKd_barang').prop('disabled',true);
-		$('#fQty').prop('readonly',true);
-		$('#fDiskon').prop('readonly',true);
-		$('#fJenisDiskon').prop('disabled', true);
-		$('#btn_tambahItem').prop('disabled',true);
+// Functuin list data penjualan
+	
+	// fungsi protect btn akis dan qty
+	function getResponse(respon){
+		if(!respon.listItem){
+			$('#fKd_barang').prop('disabled',true);
+			$('#fQty').prop('readonly',true);
+			$('#fDiskon').prop('readonly',true);
+			$('#fJenisDiskon').prop('disabled', true);
+			$('#btn_tambahItem').prop('disabled',true);
+		}
+		if(!respon.qty){
+			
+		}
+		if(!respon.aksi){
+			
+		}
 	}
-	if(!respon.qty){
+
+	// fungsi penomeran berurut otomatis
+	function numberingList(){
+		$('#tabel_item_penjualan tbody tr').each(function (index) {
+	        $(this).children("td:eq(0)").html(index + 1);
+	    });
+	    $("#tampilHarga").text("Rp. "+hitungTotal());
+	}
+
+	// fungsi cetak field qty di tabel
+	function fieldQty(qty, index, respon = true){
+
+		var disabled = respon ? '' : 'disabled';
+		var field = '<input type="number" min="1" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'" '+disabled+'>';
+		return field;
+	}
+
+	// fungsi cetak field keterangan di tabel
+	function fieldKeterangan(index, val=false){
+		var ket = val===false ? "" : val;
+	    var field = '<textarea class="form-control" row="1" onchange="onChange_ket('+index+',this)">'+ket+'</textarea>';
+	    return field;
+	}
+
+	// fungsi cetak field diskon di tabel
+	function fieldDiskon(jenisDiskon, diskon, index, status){
+		var text = max = span = field = readonly = "";
+
+		if(status=="0") readonly = "readonly";
+
+		if(jenisDiskon==="p"){
+			max = "100";
+			span = "<span class='input-group-addon'>%</span>";
+		}
+		else{
+			max = "999999";
+			span = "<span class='input-group-addon'>Rp.</span>";
+		}
+		text = '<input type="number" min="0" max="'+max+'" class="form-control" onchange="onChange_diskon('+index+',this)" value="'+diskon+'" '+readonly+'>';
+		field = "<div class='input-group'>"+span+text+"</div>";
 		
+	    return field;
 	}
-	if(!respon.aksi){
+
+	// fungsi cetak btn aksi di tabel
+	function btnAksi(index, respon = true){
+
+		var disabled = respon ? '' : 'disabled';
+		var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
+	                    '<i class="fa fa-trash"></button>';
+	    return btn;
+	}
+
+	// fungsi onchange qty
+	function onChange_qty(index, val){
+		var diskon = 0;
+
+		// ubah nilai qty di array
+		$.each(listItem, function(i, item){
+			if(item.index == index){
+				item.qty = val.value;
+				// sesuaikan ulang sub total
+				if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
+				else diskon=item.diskon;
+				item.subTotal = (item.harga*item.qty)-diskon;
+				$(val).parent().parent().children("td:eq(6)").html("Rp. "+item.subTotal+",00");	
+			} 
+			// console.log(item);
+		});
+		numberingList();
+		console.log(listItem);
+		// console.log($(val).parent().parent().children("td:eq(6)").html("0"));
+	}
+
+	// fungsi onchange diskon
+	function onChange_diskon(index, val){
+		var diskon = 0;
+
+		// ubah nilai qty di array
+		$.each(listItem, function(i, item){
+			if(item.index == index){
+				item.diskon = val.value;
+				// sesuaikan ulang sub total
+				if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
+				else diskon=item.diskon;
+				item.subTotal = (item.harga*item.qty)-diskon;	
+				$(val).parent().parent().parent().children("td:eq(6)").html("Rp. "+item.subTotal+",00");
+			} 
+			// console.log(item);
+		});
+		numberingList();
+		console.log(listItem);
+	}
+
+	// fungsi onchange ket
+	function onChange_ket(index, val){
+		// ubah nilai qty di array
+		$.each(listItem, function(i, item){
+			if(item.index == index) item.ket = val.value;
+		});
+		numberingList();
+		console.log(listItem);
+	}
+
+	// fungsi hapus baris di tabel
+	function delList(index, val){
+		$(val).parent().parent().remove(); // hapus data ditabel
+		$.each(listItem, function(i, item){
+			if(item.index == index) item.status = "hapus";
+		});
+		numberingList(); // reset ulang nomer
+		console.log(listItem);
+	}
+
+	// fungsi hitung sub total dari inputan
+	function hitungSubtotal(harga, qty, jenisDiskon, valueDiskon){
+		var diskon = 0;
+		var subTotal = 0;
 		
+		if(jenisDiskon === "p") diskon=(harga*qty*(valueDiskon/100));
+		else diskon=valueDiskon;
+		subTotal = (harga*qty)-diskon;
+		
+		return subTotal;
 	}
-}
 
-// fungsi penomeran berurut otomatis
-function numberingList(){
-	$('#tabel_item_penjualan tbody tr').each(function (index) {
-        $(this).children("td:eq(0)").html(index + 1);
-    });
-    $("#tampilHarga").text("Rp. "+hitungTotal());
-}
+	// fungsi hitung total dari array
+	function hitungTotal(){
+		var diskon = 0;
+		var total = 0;
+		$.each(listItem, function(i, item){
+			// selain hapus lakukan perhitungan
+			if(item.status !== "hapus") total += item.subTotal;
+		});
+		total += parseInt($("#fOngkir").val());
 
-// fungsi cetak field qty di tabel
-function fieldQty(qty, index, respon = true){
-
-	var disabled = respon ? '' : 'disabled';
-	var field = '<input type="number" min="1" onchange="onChange_qty('+index+',this)" style="width: 5em" class="form-control" value="'+qty+'" '+disabled+'>';
-	return field;
-}
-
-// fungsi cetak field keterangan di tabel
-function fieldKeterangan(index, val=false){
-	var ket = val===false ? "" : val;
-    var field = '<textarea class="form-control" row="1" onchange="onChange_ket('+index+',this)">'+ket+'</textarea>';
-    return field;
-}
-
-// fungsi cetak field diskon di tabel
-function fieldDiskon(jenisDiskon, diskon, index, status){
-	var text = max = span = field = readonly = "";
-
-	if(status=="0") readonly = "readonly";
-
-	if(jenisDiskon==="p"){
-		max = "100";
-		span = "<span class='input-group-addon'>%</span>";
+		return total.toFixed(2);
 	}
-	else{
-		max = "999999";
-		span = "<span class='input-group-addon'>Rp.</span>";
+
+	function clearBarang(){
+		var diskon = $("#fStatus").val() === "0" ? 100 : 0;
+
+		$('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
+	    $("#fQty").val(0);
+	    $("#fDiskon").val(diskon);
+	    $("#fKd_barang").focus();
 	}
-	text = '<input type="number" min="0" max="'+max+'" class="form-control" onchange="onChange_diskon('+index+',this)" value="'+diskon+'" '+readonly+'>';
-	field = "<div class='input-group'>"+span+text+"</div>";
+
+// ============================================
 	
-    return field;
-}
-
-// fungsi cetak btn aksi di tabel
-function btnAksi(index, respon = true){
-
-	var disabled = respon ? '' : 'disabled';
-	var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
-                    '<i class="fa fa-trash"></button>';
-    return btn;
-}
-
-// fungsi onchange qty
-function onChange_qty(index, val){
-	var diskon = 0;
-
-	// ubah nilai qty di array
-	$.each(listItem, function(i, item){
-		if(item.index == index){
-			item.qty = val.value;
-			// sesuaikan ulang sub total
-			if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
-			else diskon=item.diskon;
-			item.subTotal = (item.harga*item.qty)-diskon;
-			$(val).parent().parent().children("td:eq(6)").html("Rp. "+item.subTotal+",00");	
-		} 
-		// console.log(item);
-	});
-	numberingList();
-	console.log(listItem);
-	// console.log($(val).parent().parent().children("td:eq(6)").html("0"));
-}
-
-// fungsi onchange diskon
-function onChange_diskon(index, val){
-	var diskon = 0;
-
-	// ubah nilai qty di array
-	$.each(listItem, function(i, item){
-		if(item.index == index){
-			item.diskon = val.value;
-			// sesuaikan ulang sub total
-			if(item.jenisDiskon === "p") diskon=(item.harga*item.qty*(item.diskon/100));
-			else diskon=item.diskon;
-			item.subTotal = (item.harga*item.qty)-diskon;	
-			$(val).parent().parent().children("td:eq(6)").html("Rp. "+item.subTotal+",00");
-		} 
-		// console.log(item);
-	});
-	numberingList();
-	console.log(listItem);
-}
-
-// fungsi onchange ket
-function onChange_ket(index, val){
-	// ubah nilai qty di array
-	$.each(listItem, function(i, item){
-		if(item.index == index) item.ket = val.value;
-	});
-	numberingList();
-	console.log(listItem);
-}
-
-// fungsi hapus baris di tabel
-function delList(index, val){
-	$(val).parent().parent().remove(); // hapus data ditabel
-	$.each(listItem, function(i, item){
-		if(item.index == index) item.status = "hapus";
-	});
-	numberingList(); // reset ulang nomer
-	console.log(listItem);
-}
-
-// fungsi hitung sub total dari inputan
-function hitungSubtotal(harga, qty, jenisDiskon, valueDiskon){
-	var diskon = 0;
-	var subTotal = 0;
-	
-	if(jenisDiskon === "p") diskon=(harga*qty*(valueDiskon/100));
-	else diskon=valueDiskon;
-	subTotal = (harga*qty)-diskon;
-	
-	return subTotal;
-}
-
-// fungsi hitung total dari array
-function hitungTotal(){
-	var diskon = 0;
-	var total = 0;
-	$.each(listItem, function(i, item){
-		// selain hapus lakukan perhitungan
-		if(item.status !== "hapus") total += item.subTotal;
-	});
-	total += parseInt($("#fOngkir").val());
-
-	return total.toFixed(2);
-}
-
-function clearBarang(){
-	$('#fKd_barang').select2().val('').trigger('change'); // memngembalikan option barang ke default
-    $("#fQty").val(0);
-    $("#fDiskon").val(0);
-    $("#fKd_barang").focus();
-}
 
 // fungsi set kode pembelian (bug kode > 10)
 function setKdPenjualan(idSelect){
@@ -573,6 +594,7 @@ function setJenisTransaksi(){
 // fungsi set status transaksi
 function setStatusTransaksi(){
 	var arrayStatus = [
+		{value: "", text: "-- Pilih Status Transaksi --"},
 		{value: "1", text: "NORMAL"},
 		{value: "0", text: "FREE"},
 	];
@@ -582,7 +604,7 @@ function setStatusTransaksi(){
 		$("#fStatus").append(option);
 	});
 
-	$("#fStatus").val("1");
+	// $("#fStatus").val("1");
 }
 
 // fungsi set jenis diskon
@@ -637,4 +659,102 @@ function getTanggal(){
     if (day.length < 2) day = '0' + day;
 
     return [year, month, day].join('-');
+}
+
+// fungsi setError
+function setError(error){
+	// tanggal
+	if(!jQuery.isEmptyObject(error.tglError)){
+		$(".field-tgl").addClass('has-error');
+		$(".field-tgl span.help-block").text(error.tglError);
+	}
+	else{
+		$('.field-tgl').removeClass('has-error');
+		$(".field-tgl span.help-block").text('');
+	}
+
+	// jenis transaksi
+	if(!jQuery.isEmptyObject(error.jenisError)){
+		$(".field-jenis").addClass('has-error');
+		$(".field-jenis span.help-block").text(error.jenisError);
+	}
+	else{
+		$('.field-jenis').removeClass('has-error');
+		$(".field-jenis span.help-block").text('');
+	}
+
+	// status transaksi
+	if(!jQuery.isEmptyObject(error.statusError)){
+		$(".field-status").addClass('has-error');
+		$(".field-status span.help-block").text(error.statusError);
+	}
+	else{
+		$('.field-status').removeClass('has-error');
+		$(".field-status span.help-block").text('');
+	}
+
+	// keterangan
+	if(!jQuery.isEmptyObject(error.ketError)){
+		$(".field-ket").addClass('has-error');
+		$(".field-ket span.help-block").text(error.ketError);
+	}	
+	else{
+		$('.field-ket').removeClass('has-error');
+		$(".field-ket span.help-block").text('');
+	}
+
+	// nama
+	if(!jQuery.isEmptyObject(error.namaError)){
+		$(".field-nama").addClass('has-error');
+		$(".field-nama span.help-block").text(error.namaError);
+	}
+	else{
+		$('.field-nama').removeClass('has-error');
+		$(".field-nama span.help-block").text('');
+	}
+
+	// no. telepon
+	if(!jQuery.isEmptyObject(error.no_telpError)){
+		$(".field-telp").addClass('has-error');
+		$(".field-telp span.help-block").text(error.no_telpError);
+	}
+	else{
+		$('.field-telp').removeClass('has-error');
+		$(".field-telp span.help-block").text('');
+	}
+
+	// alamat
+	if(!jQuery.isEmptyObject(error.alamatError)){
+		$(".field-alamat").addClass('has-error');
+		$(".field-alamat span.help-block").text(error.alamatError);
+	}
+	else{
+		$('.field-alamat').removeClass('has-error');
+		$(".field-alamat span.help-block").text('');
+	}
+
+	// ongkir
+	if(!jQuery.isEmptyObject(error.ongkirError)){
+		$(".field-ongkir").addClass('has-error');
+		$(".field-ongkir .input-group").addClass('has-error');
+		$(".field-ongkir span.help-block").text(error.ongkirError);
+	}
+	else{
+		$('.field-ongkir').removeClass('has-error');
+		$(".field-ongkir span.help-block").text('');
+	}
+}	
+
+// fungsi setValue
+function setValue(value){
+	var ongkir = parseFloat(value.ongkir) ? parseFloat(value.ongkir) : value.ongkir;
+
+	$('#fTgl').datepicker('update',value.tgl);
+	$('#fJenis').val(value.jenis);
+	$('#fStatus').val(value.status);
+	$('#fKet').val(value.ket);
+	$('#fNama').val(value.nama);
+	$('#fno_telepon').val(value.no_telp);
+	$('#fAlamat').val(value.alamat);
+	$('#fOngkir').val(ongkir);
 }

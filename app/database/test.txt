@@ -1,0 +1,49 @@
+
+	SKEMA STOK BARANG
+
+	=> Tabel Barang
+		=> Keterangan Barang
+		=> Stok Akhir Barang
+
+	=> Tabel Mutasi
+		=> Keterangan atau history barang masuk-keluar
+		=> per tanggal per barang
+
+	=> Tabel Penjualan
+		=> tabel penjualan untuk mencatat invoice
+		=> Detail penjualan untuk barang, qty, dan harga
+
+	=> Tabel Pembelian
+		=> tabel pembelian untuk mencatat invoice
+		=> detail pembelian untuk barang, qty, dan harga
+
+
+	## Input Awal
+		=> Input data barang
+			=> input data keterangan, dan stok awal
+			=> insert ke tabel barang
+
+	## Transaksi
+		=> Tambah Penjualan
+			=> input data ke penjualan
+			=> insert ke tabel penjualan dan detail penjualan
+			=> insert ke mutasi barang
+				=> penjualan --> barang keluar
+				=> cek tgl, jika tgl dan barang blm ada di mutasi, create row baru
+					=> insert mutasi (keluar) values (keluar)
+				=> cek tgl, jika tgl dan barang sudah ada di mutasi, update row
+					=> update mutasi set keluar = keluar+qty where tgl=? and barang=?
+			=> update stok akhir
+				=> update barang set stok=(stok-qty) where barang=?
+
+		=> Edit Penjualan
+			=> Cek data yang di edit
+				=> data penjualan
+					=> cukup update penjualan
+				=> data detail penjualan
+					=> update data detail penjualan
+					=> update mutasi
+						=> update mutasi set keluar = (keluar-qty_lama)+qty_baru where tgl=? and barang=?
+					=> update stok akhir
+						=> update barang set stok = (stok-qty_lama)+qty_baru where barang=?
+				

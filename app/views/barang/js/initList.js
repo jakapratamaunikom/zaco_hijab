@@ -37,21 +37,24 @@ $(document).ready(function(){
                 "orderable":false,
             }
         ],
+        "createdRow": function(row, data, dataIndex){
+            if($(data[9]).text().toLowerCase() == "non aktif") $(row).addClass('danger');
+        },
     });
 });
 
 function edit_status(id, status){
-    var text = status = pesan = "";
+    var text = pesan = "";
 
     // cek status
     if(status == "aktif"){
         text = "Status Barang Akan di NON-AKTIFKAN !";
-        status = "0";
+        setStatus = "0";
         pesan = "Barang Berhasil Di Non-Aktifkan";
     }
     else{
         text = "Status Barang Akan di AKTIFKAN !";
-        status = "1";
+        setStatus = "1";
         pesan = "Barang Berhasil Di Aktifkan Kembali";
     }
 
@@ -61,7 +64,7 @@ function edit_status(id, status){
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Hapus!",
+        confirmButtonText: "Ya",
         closeOnConfirm: false,
         },function(){ // saat confirm
             $.ajax({
@@ -70,7 +73,7 @@ function edit_status(id, status){
                 dataType: "json",
                 data: {
                     "id" : id,
-                    "status": status,
+                    "status": setStatus,
                     "action" : "setStatus",
                 },
                 success: function(hasil){
@@ -80,7 +83,7 @@ function edit_status(id, status){
                                 text: pesan,
                                 type: "success",
                             }, function(){
-                                $("#tabel_barang").DataTable.ajax.reload();
+                                $("#tabel_barang").DataTable().ajax.reload();
                             }
                         );
                     }

@@ -124,16 +124,16 @@
 				else $cekArray = true;
 			}
 
-			if($cekArray){ // jika ada list lanjutkan
-				$configData_penjualan = configData($dataPenjualan);
-				$validasi_penjualan = set_validasi($configData_penjualan);
-				$cek = $validasi_penjualan['cek'];
-				$pesanError_penjualan = $validasi_penjualan['setError'];
-				$set_value_penjualan = $validasi_penjualan['setValue'];
-			}
-			else $cek = false;
+			$configData_penjualan = configData($dataPenjualan);
+			$validasi_penjualan = set_validasi($configData_penjualan);
+			$cek = $validasi_penjualan['cek'];
+			$pesanError_penjualan = $validasi_penjualan['setError'];
+			$set_value_penjualan = $validasi_penjualan['setValue'];
+
+			if(!$cekArray) $cek = false;
 		// ======================================== //
 		if($cek){
+			session_start();
 			$dataPenjualan = array(
 				'kd_penjualan' => validInputan($dataPenjualan['kd_penjualan'], false, false),
 				'tgl' => validInputan($dataPenjualan['tgl'], false, false),
@@ -144,6 +144,7 @@
 				'no_telp' => validInputan($dataPenjualan['no_telp'], false, false),
 				'alamat' => validInputan($dataPenjualan['alamat'], false, false),
 				'ongkir' => validInputan($dataPenjualan['ongkir'], false, false),
+				'user' => $_SESSION['sess_username'],
 			);
 
 			// cek duplikat kd_penjualan
@@ -176,7 +177,7 @@
 						}
 					}
 					$status = true;
-					session_start();
+					// session_start();
 					$_SESSION['notif'] = "Tambah Data Berhasil";
 				}
 				else{
@@ -255,6 +256,7 @@
 			else $cek = false;
 		// ======================================== //
 		if($cek){
+			session_start();
 			$dataPenjualan = array(
 				'id' => $dataPenjualan['id'],
 				'kd_penjualan' => validInputan($dataPenjualan['kd_penjualan'], false, false),
@@ -266,6 +268,7 @@
 				'no_telp' => validInputan($dataPenjualan['no_telp'], false, false),
 				'alamat' => validInputan($dataPenjualan['alamat'], false, false),
 				'ongkir' => validInputan($dataPenjualan['ongkir'], false, false),
+				'user' => $_SESSION['sess_username'],
 			);
 
 			// update penjualan
@@ -293,11 +296,12 @@
 					}
 					// hapus list
 					else if(($dataLisItem[$index]['status'] == "hapus") && ($dataLisItem[$index]['aksi'] == "edit")){
-						// // get data list item
-						// foreach ($dataLisItem[$index] as $key => $value) {
-						// 	$dataUpdate[$key] = $value;
-						// }
-						// updateDetail_penjualan($koneksi,$dataUpdate);
+						$dataUpdate['kd_penjualan'] = $dataPenjualan['kd_penjualan'];
+						// get data list item
+						foreach ($dataLisItem[$index] as $key => $value) {
+							$dataUpdate[$key] = $value;
+						}
+						deleteDetail_penjualan($koneksi,$dataUpdate);
 					}
 				}
 			}
@@ -306,7 +310,7 @@
 				$errorDb = true;
 			}
 			$status = true;
-			session_start();
+			// session_start();
 			$_SESSION['notif'] = "Edit Data Berhasil";
 		}
 		else $status = false;
@@ -386,11 +390,6 @@
 		echo json_encode($data);
 	}
 
-	// fungsi hapus detail penjualan
-	function deleteDetail_penjualan($koneksi, $data){
-
-	}
-
 	// fungsi validasi list item
 	function validList($koneksi){
 		$dataList = isset($_POST['data']) ? $_POST['data'] : false;
@@ -431,6 +430,7 @@
 		if((strtolower($data['jenis'])=="harga pasar") || (strtolower($data['jenis'])=="reseller")){
 			$required = "not_required";
 		}
+		else if($data['jenis'] == "" || empty($data['jenis'])) $required = "not_required";
 		else $required = "required";
 
 		$configData = array(

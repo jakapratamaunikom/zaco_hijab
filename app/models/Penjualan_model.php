@@ -109,11 +109,11 @@
 
 	// insert data penjualan
 	function insertPenjualan($koneksi, $data){
-		$username = "admin";
+		// $username = "admin";
 
 		$query = "INSERT INTO penjualan ";
-		$query .= "(kd_penjualan, tgl, jenis, nama, telp, alamat, ongkir, status, ket, username) ";
-		$query .= "VALUES (:kd_penjualan, :tgl, :jenis, :nama, :telp, :alamat, :ongkir, :status, :ket, :username);";
+		$query .= "(kd_penjualan, tgl, jenis, nama, telp, alamat, ongkir, status, ket, user) ";
+		$query .= "VALUES (:kd_penjualan, :tgl, :jenis, :nama, :telp, :alamat, :ongkir, :status, :ket, :user);";
 
 		$statement = $koneksi->prepare($query);
 		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
@@ -125,7 +125,7 @@
 		$statement->bindParam(':ongkir',$data['ongkir']);
 		$statement->bindParam(':status',$data['status']);
 		$statement->bindParam(':ket',$data['ket']);
-		$statement->bindParam(':username',$username);
+		$statement->bindParam(':user',$data['user']);
 		$result = $statement->execute();
 		tutup_koneksi($koneksi);
 
@@ -204,6 +204,22 @@
 		$statement->bindParam(':subtotal',$data['subTotal']);
 		$statement->bindParam(':laba',$laba);
 		$statement->bindParam(':ket',$data['ket']);
+		$result = $statement->execute();		
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
+	// hapus detail penjualan
+	function deleteDetail_penjualan($koneksi, $data){
+		$query = "CALL hapus_penjualan ";
+		$query .= "(:id_detail, :kd_barang, :tgl, :qty)";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':id_detail',$data['id']);
+		$statement->bindParam(':kd_barang',$data['kd_barang']);
+		$statement->bindParam(':tgl',$data['tgl']);
+		$statement->bindParam(':qty',$data['qty']);
 		$result = $statement->execute();		
 		tutup_koneksi($koneksi);
 

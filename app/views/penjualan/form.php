@@ -41,16 +41,18 @@
 	    						<div class="row">
 	    							<div class="col-md-6">
 	    								<!-- kode -->
-	    								<div class="form-group">
+	    								<div class="form-group field-kode">
 		                    				<label for="fKd_penjualan">Kode Penjualan</label>
 		                    				<input type="text" name="fKd_penjualan" id="fKd_penjualan" class="form-control" placeholder="Kode Penjualan">
+		                    				<span class="help-block small"></span>
 		                    			</div>		
 	    							</div>
 	    							<div class="col-md-6">
 	    								<!-- tanggal -->
-		                    			<div class="form-group">
+		                    			<div class="form-group field-tgl">
 		                    				<label for="fTgl">Tanggal</label>
 		                    				<input type="text" name="fTgl" id="fTgl" class="form-control datepicker">
+		                    				<span class="help-block small"></span>
 		                    			</div>
 	    							</div>
 	    						</div>
@@ -58,24 +60,27 @@
 	    						<div class="row">
 	    							<div class="col-md-6">
 	    								<!-- jenis transaksi -->
-		                    			<div class="form-group">
+		                    			<div class="form-group field-jenis">
 		                    				<label for="fJenis">Jenis Transaksi</label>
 		                    				<select id="fJenis" name="fJenis" class="form-control">
 		                    				</select>
+		                    				<span class="help-block small"></span>
 		                    			</div>
 	    							</div>
 	    							<div class="col-md-6">
 	    								<!-- status transaksi -->
-		                    			<div class="form-group">
+		                    			<div class="form-group field-status">
 		                    				<label for="fStatus">Status Transaksi</label>
 		                    				<select id="fStatus" name="fStatus" class="form-control">
 		                    				</select>
+		                    				<span class="help-block small"></span>
 		                    			</div>
 	    							</div>
 	    						</div>
-	    						<div class="form-group">
+	    						<div class="form-group field-ket">
                     				<label for="fKet">Keterangan</label>
                     				<textarea id="fKet" class="form-control" placeholder="Masukkan Keterangan Penjualan"></textarea>
+                    				<span class="help-block small"></span>
                     			</div>
 	    					</fieldset>
 	    				</div>
@@ -87,25 +92,28 @@
 	    						<div class="row">
 	    							<!-- nama -->
 	    							<div class="col-md-6">
-	    								<div class="form-group">
+	    								<div class="form-group field-nama">
 	                        				<label for="fNama">Nama</label>
 	                        				<input type="text" name="fNama" id="fNama" class="form-control" placeholder="Masukkan Nama Pembeli">
+	                        				<span class="help-block small"></span>
 	                        			</div>	
 	    							</div>
 	    							<div class="col-md-6">
-	    								<div class="form-group">
+	    								<div class="form-group field-telp">
 	                        				<label for="fno_telepon">No. Telepon</label>
 	                        				<input type="text" name="fno_telepon" id="fno_telepon" class="form-control" placeholder="Masukkan No. Telepon">
+	                        				<span class="help-block small"></span>
 	                        			</div>
 	    							</div>
 	    						</div>
 	    						<!-- alamat -->
-	    						<div class="form-group">
+	    						<div class="form-group field-alamat">
                     				<label for="fAlamat">Alamat</label>
                     				<textarea id="fAlamat" class="form-control" placeholder="Masukkan Alamat Pembeli"></textarea>
+                    				<span class="help-block small"></span>
                     			</div>
                     			<!-- ongkir -->
-                    			<div class="form-group">
+                    			<div class="form-group field-ongkir">
                                     <div class="row">
                                         <div class="col-md-12 col-xs-12">
                                             <label for="fOngkir">Ongkir</label>
@@ -206,7 +214,7 @@
    					</div>
    					<div class="box-footer text-right">
                     	<button type="submit" class="btn btn-default btn-lg btn-flat" id="btn_submit_penjualan" name="action" value="<?= $btn ?>"><i class="fa fa-plus"></i> <?= ucfirst($btn); ?></button>
-                    	<button type="button" class="btn btn-default btn-lg btn-flat">Batal</button>
+                    	<a href="<?=base_url."index.php?m=penjualan&p=list" ?>" class="btn btn-default btn-lg btn-flat"><i class="fa fa-reply"></i>  Batal</a>
                     </div>
    				</div>
    			</div>
@@ -224,5 +232,5 @@
         var listItem = [];
         var indexItem = 0;
     </script>
-	<script type="text/javascript" src="<?= base_url."app/views/penjualan/init_form.js"; ?>"></script>
+	<script type="text/javascript" src="<?= base_url."app/views/penjualan/js/initForm.js"; ?>"></script>
 <!-- -->
