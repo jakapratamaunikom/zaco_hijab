@@ -844,10 +844,35 @@ end;
 
 -- procedure hapus salah satu item di detail penjualan
 create procedure hapus_detail_penjualan(
-
+    in kd_penjualan_param int,
+    in kd_barang_param int,
+    in tgl_param date
 )
 BEGIN
+    DECLARE tgl_skrng date;
+    DECLARE qty_dec smallint;
+    DECLARE brg_keluar_dec smallint;
+    DECLARE stok_akhir_dec int;
+    
+    SELECT current_date into tgl_skrng;
+    IF tgl_param = tgl_skrng THEN
 
+        -- mendapatkan qty dari datail pembelian
+        select qty into qty_dec from detail_penjualan where kd_penjualan=kd_penjualan_param and kd_barang=kd_barang_param;
+        -- mendapatkan brg_masuk dari stok
+        select brg_keluar into brg_keluar_dec from stok where kd_barang=kd_barang_param and tgl=tgl_param;
+        -- mendapatkan stok_akhir dari stok
+        select stok_akhir into stok_akhir_dec from stok where kd_barang=kd_barang_param and tgl=tgl_param;
+        
+        -- kurangi brg_masuk dan stok_akhir dengan qty dari detail_pembelian
+        update stok 
+            set brg_keluar=(brg_keluar_dec-qty_dec), stok_akhir=(stok_akhir_dec+qty_dec) 
+        where kd_barang=kd_barang_param and tgl=tgl_param;
+
+        -- hapus barang pada detail_pembelian
+        delete from detail_penjualan where kd_penjualan=kd_penjualan_param and kd_barang=kd_barang_param;
+
+    END IF;
 end;
 
 -- ==============================================================
@@ -906,7 +931,7 @@ CREATE OR REPLACE VIEW v_barang AS
         id_warna iw on iw.id = b.id_warna 
     where 
         s.id in(SELECT max(id) from stok GROUP by(kd_barang)) 
-    ORDER by b.id asc, status desc
+    ORDER by b.id asc, status asc;
 
 
 -- ==============================================================

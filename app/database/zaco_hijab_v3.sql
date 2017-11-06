@@ -184,8 +184,8 @@
 		brg_keluar SMALLINT,
 		stok_akhir int,
 
-		CONSTRAINT pk_mutasi_id PRIMARY KEY(id),
-		CONSTRAINT fk_mutasi_kd_barang FOREIGN KEY(kd_barang) REFERENCES barang(id)
+		CONSTRAINT pk_stok_id PRIMARY KEY(id),
+		CONSTRAINT fk_stok_kd_barang FOREIGN KEY(kd_barang) REFERENCES barang(id)
 	);
 
 -- ======================================== --
@@ -218,7 +218,9 @@
 		BEGIN
 			DECLARE id_param int;
     
-		    SELECT `AUTO_INCREMENT` INTO id_param FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'zaco_hijab' AND   TABLE_NAME   = 'barang';
+		    SELECT `AUTO_INCREMENT` INTO id_param 
+		    FROM INFORMATION_SCHEMA.TABLES 
+		    WHERE TABLE_SCHEMA = 'zaco_hijab' AND TABLE_NAME = 'barang';
 
 			-- insert ke barang
 			INSERT INTO barang(id_barang, id_warna, nama, hpp, harga_pasar, market_place, harga_ig, foto, ket, status)
@@ -234,5 +236,353 @@
 		-- Hapus Baang => ?
 
 	-- Data Penjualan
+		-- Tambah penjualan => Insert penjualan biasa
+
+		-- Tambah Detail Penjualan => Insert detail penjualan dan insert stok
+		-- Procedure Tambah detail penjualan
+		CREATE PROCEDURE tambah_penjualan(
+			in kd_penjualan_param varchar(16),
+		    in tgl_param date,
+		    in kd_barang_param int,
+		    in hpp_param double(8,2),
+		    in harga_param double(8,2),
+		    in qty_param SMALLINT,
+		    in jenis_diskon_param char(1),
+		    in diskon_param int,
+		    in subtotal_param double(12,2),
+		    in laba_param double(8,2),
+		    in ket_param text -- ket masing2
+		)
+		BEGIN
+			DECLARE cek_tgl SMALLINT;
+			DECLARE stok_akhir_param int;
+			DECLARE get_brg_keluar SMALLINT;
+			DECLARE get_stk_awal int;
+			DECLARE get_brg_masuk SMALLINT;
+			DECLARE kd_penjualan_id_param int;
+
+			-- dapatkan id kd_penjualan
+    		SELECT id into kd_penjualan_id_param FROM penjualan WHERE kd_penjualan = kd_penjualan_param;
+
+    		INSERT INTO detail_penjualan(
+        		kd_penjualan, kd_barang, hpp, harga, qty, jenis_diskon, diskon, subtotal, laba, ket) 
+    		VALUES(
+        		kd_penjualan_id_param, kd_barang_param, hpp_param, harga_param, qty_param, 
+        		jenis_diskon_param, diskon_param, subtotal_param, laba_param, ket_param);
+
+    		-- get tgl stok ada/tidak
+    		SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+
+    		IF cek_tgl > 0 THEN -- jika tgl transaksi sesuai dgn tgl di stok
+    			SELECT brg_keluar into get_brg_keluar FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_keluar terbaru yg sesuai
+		        SELECT stok_awal into get_stk_awal FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data stok_awal terbaru yg sesuai
+		        SELECT brg_masuk into get_brg_masuk FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_masuk terbaru yg sesuai
+		        
+		    	UPDATE stok SET
+		    		brg_keluar=(qty_param+get_brg_keluar), stok_akhir=(get_stk_awal+get_brg_masuk-(qty_param+get_brg_keluar))
+		    	WHERE
+		    		kd_barang=kd_barang_param AND tgl=tgl_param;
+
+		    ELSE -- jika tgl transaksi tidak ada yg sama dgn tgl di stok
+		    	SELECT stok_akhir into stok_akhir_param FROM stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
+        
+		    	-- tambah stok
+		    	INSERT INTO stok(
+		    		tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+		    	VALUES(
+		    		tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
+
+    		END IF;
+		END;
+
+		-- Edit Detail Penjualan => Update detail penjualan dan edit stok
+		-- Procedure Edit detail Penjualan
+		CREATE PROCEDURE edit_penjualan(
+			in id_param int, -- id penjualan
+		    in id_detail_param int, -- id detail penjualan
+		    in tgl_param date,
+		    in kd_barang_param int,
+		    in hpp_param double(8,2),
+		    in harga_param double(8,2),
+		    in qty_param SMALLINT,
+		    in jenis_diskon_param char(1),
+		    in diskon_param int,
+		    in subtotal_param double(12,2),
+		    in laba_param double(8,2),
+		    in ket_param text
+		)
+		BEGIN
+			DECLARE kd_barang_penjualan int;
+		    DECLARE get_qty_penjualan SMALLINT;
+		    DECLARE get_stk_awal int;
+		    DECLARE get_brg_keluar SMALLINT;
+		    DECLARE get_brg_masuk SMALLINT;
+		    DECLARE cek_tgl SMALLINT;
+		    DECLARE stok_awal_A int;
+		    DECLARE stok_awal_B int;
+		    DECLARE brg_masuk_A SMALLINT;
+		    DECLARE brg_masuk_B SMALLINT;
+		    DECLARE brg_keluar_A SMALLINT;
+		    DECLARE brg_keluar_B SMALLINT;
+		    DECLARE stok_akhir_param int;
+
+		    -- get data barang di detail penjualan
+    		SELECT kd_barang into kd_barang_penjualan FROM detail_penjualan WHERE id=id_detail_param; -- kd barang lama
+
+    		 -- jika barang sama (tidak ada perubahan)
+		    IF kd_barang_param = kd_barang_penjualan THEN
+
+		        -- dapatkan qty barangnya
+		        SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+		        
+		        -- jika qty berubah
+		        IF qty_param != get_qty_penjualan THEN
+		            
+		            SELECT stok_awal into get_stk_awal FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data stok_awal terbaru yg sesuai
+		            SELECT brg_keluar into get_brg_keluar FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_keluar terbaru yg sesuai
+		            SELECT brg_masuk into get_brg_masuk FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; -- get data brg_masuk terbaru yg sesuai
+
+		            UPDATE stok SET
+		                brg_keluar=(get_brg_keluar+(qty_param-get_qty_penjualan)), 
+		                stok_akhir=((get_stk_awal+get_brg_masuk)-(get_brg_keluar+(qty_param-get_qty_penjualan)))
+		            WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+		        end if;
+
+		        -- update detail penjualan, ubah qty nya saja
+		        UPDATE detail_penjualan SET
+		            hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, diskon=diskon_param, 
+		            subtotal=subtotal_param, laba=laba_param, ket=ket_param
+		        WHERE id=id_detail_param;
+
+
+		    -- jika barang berubah
+		    ELSE
+		        SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param; -- cek tgl
+		        SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+
+		        -- jika qty sama
+		        IF qty_param = get_qty_penjualan THEN
+		            -- get data lama (A)
+		            SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+		            SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+		            SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+
+		            -- get data yg baru (B)
+		            SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+		            SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+		            SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+
+		            -- update data lama
+		            UPDATE stok SET
+		                brg_keluar=(brg_keluar_A-qty_param), stok_akhir=(stok_awal_A+brg_masuk_A-(brg_keluar_A-qty_param))
+		            WHERE tgl=tgl_param AND kd_barang=kd_barang_penjualan;
+
+		            IF cek_tgl > 0 THEN
+
+		                -- update data baru
+		                UPDATE stok SET
+		                    brg_keluar=(brg_keluar_B+qty_param), stok_akhir=(stok_awal_B+brg_masuk_B-(brg_keluar_B+qty_param))
+		                WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+		            
+		            ELSE
+		                SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
+		    
+		                -- tambah stok
+		                INSERT into stok(
+		                    tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+		                VALUES(
+		                    tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
+
+		            end if;
+
+		            -- update detail penjualan, ubah kd_barang nya saja
+		            UPDATE detail_penjualan SET
+		                kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, jenis_diskon=jenis_diskon_param, 
+		                diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
+		            WHERE id=id_detail_param;
+		            
+		        -- jika qty berubah
+		        ELSE
+
+		            SELECT qty into get_qty_penjualan FROM detail_penjualan WHERE id=id_detail_param;
+		            -- pindah barang
+		            SELECT brg_keluar into brg_keluar_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+		            SELECT brg_masuk into brg_masuk_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+		            SELECT stok_awal into stok_awal_A from stok WHERE kd_barang=kd_barang_penjualan AND tgl=tgl_param;
+
+		            -- get data yg baru (B)
+		            SELECT stok_awal into stok_awal_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+		            SELECT brg_keluar into brg_keluar_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+		            SELECT brg_masuk into brg_masuk_B FROM stok WHERE kd_barang=kd_barang_param and tgl=tgl_param; 
+
+		            -- update data lama
+		            UPDATE stok SET
+		                brg_keluar=(brg_keluar_A-get_qty_penjualan), 
+		                stok_akhir=(stok_awal_A+brg_masuk_A-(brg_keluar_A-get_qty_penjualan))
+		            WHERE tgl=tgl_param AND kd_barang=kd_barang_penjualan;
+
+		            IF cek_tgl > 0 THEN
+
+		                -- update data baru
+		                UPDATE stok SET
+		                    brg_keluar=(brg_keluar_B+qty_param), stok_akhir=(stok_awal_B+brg_masuk_B-(brg_keluar_B+qty_param))
+		                WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+		            
+		            ELSE
+		                SELECT stok_akhir into stok_akhir_param from stok WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1; -- get data stok_akhir terbaru
+
+		                -- tambah stok
+		                INSERT into stok(tgl,kd_barang,stok_awal,brg_masuk,brg_keluar,stok_akhir)
+		                VALUES(tgl_param,kd_barang_param,stok_akhir_param,'',qty_param,(stok_akhir_param-qty_param));
+		            END IF;
+
+		            -- update detail penjualan, ubah kd barang dan qty
+		            UPDATE detail_penjualan SET
+		                kd_barang=kd_barang_param, hpp=hpp_param, harga=harga_param, qty=qty_param, jenis_diskon=jenis_diskon_param, 
+		                diskon=diskon_param, subtotal=subtotal_param, laba=laba_param, ket=ket_param
+		            WHERE id=id_detail_param;
+
+
+		        END IF;
+
+		    END IF;
+		END;
+
+		-- Hapus Detail Penjualan => Hapus detail penjualan dan edit stok
+		-- Procedure Hapus detail penjualan
+		CREATE PROCEDURE hapus_penjualan(
+			in kd_penjualan_param int,
+			in id_detail_param int,
+		    in kd_barang_param int,
+		    in tgl_param date
+		)
+		BEGIN
+			DECLARE tgl_skrng date;
+		    DECLARE qty_param smallint;
+		    DECLARE brg_keluar_param smallint;
+		    DECLARE stok_akhir_param int;
+
+		     SELECT current_date INTO tgl_skrng;
+		     IF tgl_param = tgl_skrng THEN
+
+		        -- mendapatkan qty dari datail penjualan
+		        SELECT qty INTO qty_param FROM detail_penjualan WHERE kd_penjualan=kd_penjualan_param AND kd_barang=kd_barang_param;
+		        -- mendapatkan brg_keluar dari stok
+		        SELECT brg_keluar INTO brg_keluar_param FROM stok WHERE kd_barang=kd_barang_param AND tgl=tgl_param;
+		        -- mendapatkan stok_akhir dari stok
+		        SELECT stok_akhir INTO stok_akhir_param FROM stok WHERE kd_barang=kd_barang_param AND tgl=tgl_param;
+		        
+		        -- normalisasi brg_keluar dan stok_akhir dengan qty dari detail_penjualan
+		        UPDATE stok 
+		            SET brg_keluar=(brg_keluar_param-qty_param), stok_akhir=(stok_akhir_param+qty_param) 
+		        WHERE kd_barang=kd_barang_param AND tgl=tgl_param;
+
+		        -- hapus barang pada detail_penjualan
+		        DELETE FROM detail_penjualan WHERE id=id_detail_param;
+
+		    END IF;
+		END;
+
+-- ======================================== --
+
+-- ================= View ================= --
+	
+	-- View Data Barang
+	-- id barang, kode barang, nama, harga barang, ket, status dan stok akhir
+	CREATE OR REPLACE VIEW v_barang AS
+		SELECT
+			b.id, concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, 
+	        b.nama,  b.hpp,  b.harga_pasar, b.market_place, b.harga_ig, b.foto, b.ket, 
+	        (CASE WHEN (b.status = '1') THEN 'AKTIF' ELSE 'NON AKTIF' END) status, 
+	        s.stok_akhir stok
+		FROM stok s
+		JOIN barang b ON b.id = s.kd_barang 
+		JOIN id_barang ib ON ib.id = b.id_barang 
+		JOIN id_warna iw ON iw.id = b.id_warna 
+		WHERE
+			s.id in(SELECT max(id) from stok GROUP by(kd_barang))
+		ORDER BY b.id ASC, status ASC;
+
+	-- View Data Penjualan
+	-- id penjualan, kode penjualan, detail penjualan, ket, harga, status, dll
+		CREATE OR REPLACE VIEW v_penjualan AS
+			SELECT 
+		        p.id, p.kd_penjualan, tgl, jenis, 
+		        GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') item, 
+		        CAST(SUM(dp.subtotal)+p.ongkir as DECIMAL(12,2)) as total,
+		        CAST(SUM(dp.laba) as DECIMAL(12,2)) as total_laba, 
+		        (CASE WHEN (p.status = '1') THEN 'NORMAL' ELSE 'FREE' END) status, p.ket 
+		    FROM penjualan p
+		    JOIN detail_penjualan dp ON dp.kd_penjualan = p.id
+		    JOIN barang b ON b.id = dp.kd_barang
+		    JOIN id_barang ib ON ib.id = b.id_barang
+		    JOIN id_warna iw ON iw.id = b.id_warna
+		    GROUP BY p.id DESC;
+
+		CREATE OR REPLACE VIEW v_detail_penjualan AS
+		    SELECT dp.id, dp.kd_penjualan, dp.kd_barang, b.kd_barang kode_barang, b.nama, 
+		        dp.hpp, dp.harga, dp.qty, dp.jenis_diskon, dp.diskon, dp.subtotal, dp.ket
+		    FROM detail_penjualan dp
+		    JOIN penjualan p ON p.id=dp.kd_penjualan
+		    JOIN v_barang b ON b.id=dp.kd_barang
+		    ORDER BY dp.id ASC;
+
+	-- View Data Pembelian
+	-- id pembelian, kode pembelian, detail pembelian, ket, harga, dll
+		CREATE OR REPLACE VIEW v_pembelian AS
+			SELECT
+		        p.id, p.kd_pembelian, tgl,
+		        GROUP_CONCAT(concat(concat_ws('-', ib.id_barang, iw.id_warna), ' JUMLAH : ', dp.qty) separator ', ') item, 
+		        CAST(SUM(dp.subtotal) as DECIMAL(12,2)) as total,
+		        p.ket 
+		    FROM pembelian p
+		    JOIN detail_pembelian dp ON dp.kd_pembelian = p.id
+		    JOIN barang b ON b.id = dp.kd_barang
+		    JOIN id_barang ib ON ib.id = b.id_barang
+		    JOIN id_warna iw ON iw.id = b.id_warna
+		    GROUP BY p.id DESC;
+
+		CREATE OR REPLACE VIEW v_detail_pembelian AS
+		    SELECT dp.id, dp.kd_pembelian, dp.kd_barang, b.kd_barang kode_barang, b.nama, 
+		        dp.harga, dp.qty, dp.subtotal, dp.ket
+		    FROM detail_pembelian dp
+		    JOIN pembelian p ON p.id=dp.kd_pembelian
+		    JOIN v_barang b ON b.id=dp.kd_barang
+		    ORDER BY dp.id ASC;
+
+	-- View Pengeluaran
+	-- id pengeluaran, kode pengeluaran, detail pengeluaran, ket, harga, jenis, dll
+		CREATE OR REPLACE VIEW v_pengeluaran AS
+			SELECT
+		        p.id, p.kd_pengeluaran, tgl, p.ket,
+		        GROUP_CONCAT(concat(dp.ket, ' JUMLAH : ', dp.qty) separator ', ') keterangan, 
+		        CAST(SUM(dp.subtotal) as DECIMAL(12,2)) as total
+		    FROM pengeluaran p
+		    JOIN detail_pengeluaran dp ON dp.kd_pengeluaran = p.id
+		    GROUP BY p.id DESC;
+
+		CREATE OR REPLACE VIEW v_detail_pengeluaran AS
+			SELECT dp.id, dp.kd_pengeluaran, dp.ket, dp.nominal, dp.qty, dp.subtotal
+		    FROM detail_pengeluaran dp
+		    JOIN pengeluaran p ON p.id=dp.kd_pengeluaran
+		    ORDER BY dp.id ASC;
+
+	-- View stok
+		-- get semua data stok terbaru
+		CREATE OR REPLACE VIEW v_stok_terbaru AS
+			SELECT s.id, s.tgl, s.kd_barang, b.kd_barang kode_barang, b.nama, s.stok_awal,
+		        s.brg_masuk, s.brg_keluar, s.stok_akhir 
+		    FROM stok s
+		    JOIN v_barang b ON b.id = s.kd_barang
+		    WHERE s.id IN(SELECT MAX(id) FROM stok GROUP BY(kd_barang))
+		    ORDER BY b.kd_barang ASC;
+
+		-- get semua data stok
+		CREATE OR REPLACE VIEW v_stok_all AS
+		    SELECT s.id, s.tgl, s.kd_barang, b.kd_barang kode_barang, b.nama, s.stok_awal,
+		        s.brg_masuk, s.brg_keluar, s.stok_akhir 
+		    FROM stok s
+		    JOIN v_barang b ON b.id = s.kd_barang
+		    ORDER BY b.kd_barang ASC;
 
 -- ======================================== --
