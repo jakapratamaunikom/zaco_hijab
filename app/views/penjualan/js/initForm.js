@@ -178,7 +178,7 @@ function add_list(){
 							"<td></td>"+ // nomor
 							"<td>"+item_text+"</td>"+ // item
 							"<td>Rp. "+harga+",00</td>"+ // harga
-							"<td>"+fieldQty(qty, index, )+"</td>"+ // qty
+							"<td>"+fieldQty(qty, index)+"</td>"+ // qty
 							"<td>"+fieldDiskon(jenisDiskon, diskon, index, $("#fStatus").val())+"</td>"+ // diskon
 							"<td>"+fieldKeterangan(index)+"</td>"+ // keterangan
 							"<td>Rp. "+subTotal+",00</td>"+
@@ -267,7 +267,7 @@ function submit_penjualan(){
 					}
 
 					setError(hasil.pesanError);
-					// setValue(hasil.setValue);
+					setValue(hasil.set_value);
 				}
 			}
 			console.log(hasil);
@@ -302,6 +302,7 @@ function edit_penjualan(id){
 			$("#fNama").val(hasil.data.penjualan.nama);
 			$("#fno_telepon").val(hasil.data.penjualan.telp);
 			$("#fAlamat").val(hasil.data.penjualan.alamat);
+			$("#fKet").val(hasil.data.penjualan.ket);
 
 			$.each(hasil.data.listItem, function(index, item){
 				var index = indexItem++;

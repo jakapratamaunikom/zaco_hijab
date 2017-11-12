@@ -216,7 +216,7 @@
 		else{
 			$data['penjualan'] = $data_penjualan;
 			// get data detail penjualan
-			$data_detail = get_detail_by_id($koneksi, $id);
+			$data_detail = get_detail_penjualan_by_id($koneksi, $id);
 			$data['listItem'] = $data_detail;
 		}
 
@@ -330,7 +330,7 @@
 	// fungsi get view penjualan
 	function getView($koneksi, $id){
 		$get_penjualan = get_penjualan_by_id($koneksi, $id);
-		$get_detail_penjualan = get_detail_by_id($koneksi, $id);
+		$get_detail_penjualan = get_detail_penjualan_by_id($koneksi, $id);
 
 		if(!$get_penjualan || !$get_detail_penjualan){
 			session_start();
@@ -440,10 +440,10 @@
 				'value' => 'kd_penjualan', 'rule' => 'string | 13 | 16 | required',
 			),
 			// data tgl
-			// array(
-			// 	'field' => $data['tgl'], 'label' => 'Tanggal', 'error' => 'tglError',
-			// 	'value' => 'tgl', 'rule' => 'string | 10 | 10 | required',
-			// ),
+			array(
+				'field' => $data['tgl'], 'label' => 'Tanggal', 'error' => 'tglError',
+				'value' => 'tgl', 'rule' => 'string | 10 | 10 | required',
+			),
 			// data jenis
 			array(
 				'field' => $data['jenis'], 'label' => 'Jenis Transaksi', 'error' => 'jenisError',
