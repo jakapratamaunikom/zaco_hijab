@@ -731,7 +731,7 @@
 		JOIN id_warna iw ON iw.id = b.id_warna 
 		WHERE
 			s.id in(SELECT max(id) from stok GROUP by(kd_barang))
-		ORDER BY b.id ASC, status ASC;
+		ORDER BY status ASC, b.id ASC;
 
 	-- View Data Penjualan
 	-- id penjualan, kode penjualan, detail penjualan, ket, harga, status, dll
