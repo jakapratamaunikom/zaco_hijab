@@ -340,7 +340,7 @@
 				$cek = $statusUpload = false;
 				$fotoError = $valid_foto['error'];
 			}
-			else $fotoBaru = $valid_foto['namaFile'];
+			else $fotoBaru = "barang/".$valid_foto['namaFile'];
 		}
 		else $cek = $statusUpload = $foto;
 
