@@ -286,8 +286,6 @@ function editPembelian(id){
 
     // fungsi onchange qty
     function onChange_qty(index, val){
-        var diskon = 0;
-
         // ubah nilai qty di array
         $.each(listItem, function(i, item){
             if(item.index == index){

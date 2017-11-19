@@ -153,7 +153,6 @@
 			id int AUTO_INCREMENT NOT NULL,
 			kd_pengeluaran varchar(16) NOT NULL UNIQUE,
 			tgl date,
-			ket text,
 			jenis enum('MARKETING','OPERASIONAL','GAJI','AKTIVA TETAP','LAINNYA'),
 			user varchar(10),
 
@@ -165,10 +164,10 @@
 		CREATE TABLE detail_pengeluaran(
 			id int AUTO_INCREMENT NOT NULL,
 			kd_pengeluaran int,
+			ket varchar(255),
 			nominal double(12,2),
 			qty SMALLINT,
 			subtotal double(12,2),
-			ket text,
 
 			CONSTRAINT pk_detail_pengeluaran_id PRIMARY KEY(id),
 			CONSTRAINT fk_detail_pengeluaran_kd_pengeluaran FOREIGN KEY(kd_pengeluaran) REFERENCES pengeluaran(id)
@@ -713,6 +712,33 @@
 		    END IF;
 		END;
 
+	-- Data Pengeluaran
+		-- Tambah pengeluaran => Insert pengeluaran biasa
+
+		-- Tambah Detail Pengeluaran => insert detail pengeluaran
+		CREATE PROCEDURE tambah_pengeluaran(
+			in kd_pengeluaran_param varchar(16),
+		    in ket_param varchar(255),
+		    in nominal_param double(8,2),
+		    in qty_param SMALLINT,
+		    in subtotal_param double(12,2)
+		)
+		BEGIN
+			DECLARE kd_pengeluaran_id_param int;
+
+		    -- dapatkan id kd_penjualan
+    		SELECT id INTO kd_pengeluaran_id_param FROM pengeluaran WHERE kd_pengeluaran = kd_pengeluaran_param;
+
+    		-- tidak perlu insert ke pembelian tp langsung ke detail pembelian
+		    INSERT INTO detail_pengeluaran(
+		        kd_pengeluaran, ket, nominal, qty, subtotal) 
+		    VALUES (
+		        kd_pengeluaran_id_param, ket_param, nominal_param, qty_param, subtotal_param);
+		END;
+
+		-- Edit Detail Pengeluaran => update detail pengeluaran langsung
+		-- Hapus Detail Pengeluaran => hapus detail pengeluaran langsung
+
 -- ======================================== --
 
 -- ================= View ================= --
@@ -784,9 +810,10 @@
 	-- id pengeluaran, kode pengeluaran, detail pengeluaran, ket, harga, jenis, dll
 		CREATE OR REPLACE VIEW v_pengeluaran AS
 			SELECT
-		        p.id, p.kd_pengeluaran, tgl, p.ket,
+		        p.id, p.kd_pengeluaran, tgl,
 		        GROUP_CONCAT(concat(dp.ket, ' JUMLAH : ', dp.qty) separator ', ') keterangan, 
-		        CAST(SUM(dp.subtotal) as DECIMAL(12,2)) as total
+		        CAST(SUM(dp.subtotal) as DECIMAL(12,2)) as total,
+		        p.jenis
 		    FROM pengeluaran p
 		    JOIN detail_pengeluaran dp ON dp.kd_pengeluaran = p.id
 		    GROUP BY p.id DESC;

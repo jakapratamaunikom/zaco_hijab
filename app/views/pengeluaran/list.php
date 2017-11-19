@@ -25,8 +25,6 @@
 	</ol>
 </section>
 
-
-
 <section class="content">
 	<div class="row">
 		<div class="col-xs-12">
@@ -48,19 +46,7 @@
                           
                             <div class="btn-group">
                                 <!-- tambah -->
-
-                                <button type="button" class="btn btn-default btn-flat dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-caret-down"></i> Tambah
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="<?= base_url."index.php?m=pembelian&p=form" ?>">
-                                        <i class="fa fa-plus"></i> PRODUKSI
-                                    </a></li>
-                                    <li><a href="<?= base_url."index.php?m=pengeluaran&p=form" ?>">
-                                        <i class="fa fa-plus"></i> NON PRODUKSI
-                                    </a></li>
-                                </ul>
-
+                                <a href="<?= base_url."index.php?m=pengeluaran&p=form" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a>
                                 <!-- export excel -->
                                 <button type="button" id="exportExcel" class="btn btn-success btn-flat">
                                 	<i class="fa fa-file-excel-o"></i> Export Excel
@@ -78,7 +64,7 @@
                     <!-- tabel -->
                     <div class="row">
                         <div class="col-md-12 col-xs-12">
-                            <table id="tabel_pembelian" class="table table-bordered table-hover dt-responsive nowrap" cellspacing="0" width="100%">
+                            <table id="tabel_pengeluaran" class="table table-bordered table-hover dt-responsive nowrap" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
                                         <th style="width: 15px">No</th>
@@ -90,9 +76,6 @@
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    
-                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -104,8 +87,7 @@
 
 
 <!-- modal ekspor data -->
-<?php include_once("app/views/modals/modal_export.php"); ?>
-
+<?php include_once("app/views/export/formExportTgl.php"); ?>
 <!-- js -->
 <!-- DataTables -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js"; ?>"></script>
@@ -116,6 +98,7 @@
 <!-- js datepicker -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 
+<script type="text/javascript" src="<?= base_url."app/views/export/js/initExportTgl.js"; ?>"></script>
 <?php 
     if($notif){
         ?>
@@ -128,59 +111,6 @@
         <?php
     } 
 ?>
-
-<script type="text/javascript">
-	//setting datatable
-   
-
-	$(function(){
-        if(notif == "gagal") 
-            alertify.error("Data Tidak Ditemukan");
-        else if(notif != false) 
-            alertify.success(notif);
-
-		$("#tabel_pembelian").DataTable({
-			"language" : {
-				"lengthMenu": "Tampilkan _MENU_ data/page",
-	            "zeroRecords": "Data Tidak Ada",
-	            "info": "Page _PAGE_ dari _PAGES_",
-	            "infoEmpty": "Data Kosong",
-	            "search": "Pencarian:",
-	            "paginate": {
-			        "first": "Pertama",
-			        "last": "Terakhir",
-			        "next": "Selanjutnya",
-			        "previous": "Sebelumnya"
-			    }
-			},
-            "lengthMenu": [ 25, 50, 75, 100 ],
-            "pageLength": 25,
-            order: [],
-            processing: true,
-            serverSide: true,
-            ajax: {
-                url: base_url+"app/controllers/Pengeluaran.php",
-                type: 'POST',
-                data: {
-                    "action" : "list",
-                }
-            },
-            "columnDefs": [
-                {
-                    "targets":[0], // disable order di kolom 1
-                    "orderable":false,
-                }
-            ],
-                
-		});
-
-
-	});
-</script>
-
-<!-- js modal export -->
-<script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
-
-<!-- -->
+<script type="text/javascript" src="<?= base_url."app/views/pengeluaran/js/initList.js"; ?>"></script>
 
     

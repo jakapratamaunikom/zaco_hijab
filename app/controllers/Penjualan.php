@@ -491,11 +491,11 @@
 		$maxDiskon = $data['jenisDiskon'] === "p" ? 100 : 999999;
 		
 		$configData = array(
-			// data jenis transaksi
-			array(
-				'field' => $_POST['jenis'], 'label' => 'Jenis Transaksi', 'error' => 'jenisError',
-				'value' => 'jenis', 'rule' => 'string | 1 | 25 | required',
-			),
+			// // data jenis transaksi
+			// array(
+			// 	'field' => $_POST['jenis'], 'label' => 'Jenis Transaksi', 'error' => 'jenisError',
+			// 	'value' => 'jenis', 'rule' => 'string | 1 | 25 | required',
+			// ),
 			// data kd_barang
 			array(
 				'field' => $data['kd_barang'], 'label' => 'Item', 'error' => 'kd_barangError',

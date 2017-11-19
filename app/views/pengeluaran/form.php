@@ -1,6 +1,10 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
+    $id = isset($_GET['id']) ? $_GET['id'] : false;
+
+    if($id) $btn = "edit";
+    else $btn = "tambah";
 ?>
 
 <!-- form -->
@@ -36,8 +40,8 @@
                                     <div class="col-md-6">
                                         <!-- kode pengeluran -->
                                         <div class="form-group field-kode">
-                                            <label for="fKd_pembelian">Kode Pengeluaran</label>
-                                            <input type="text" name="fKd_pengeluaran" id="fKd_pengeluaran" class="form-control" placeholder="Masukkan Kode Pengeluaran" readonly>
+                                            <label for="fKd_pengeluaran">Kode Pengeluaran</label>
+                                            <input type="text" name="fKd_pengeluaran" id="fKd_pengeluaran" class="form-control" placeholder="Masukkan Kode Pengeluaran">
                                             <span class="help-block small"></span>  
                                         </div>
                                     </div>
@@ -50,13 +54,16 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group field-jenis">
-                                    <label for="fJenis">Jenis Pengeluaran</label>
-                                    <select id="fJenis" name="fJenis" class="form-control" style="width: 100%;">
-                                        <option value="">-- Pilih Jenis Pengeluaran --</option>
-                                    </select>
-                                    <span class="help-block small"></span>
-                                </div>       
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group field-jenis">
+                                            <label for="fJenis">Jenis Pengeluaran</label>
+                                            <select id="fJenis" name="fJenis" class="form-control">
+                                            </select>
+                                            <span class="help-block small"></span>
+                                        </div>
+                                    </div>
+                                </div>          
                             </fieldset>
                         </div>
                         <div class="col-md-6">
@@ -76,7 +83,6 @@
                                             </div>
                                         </div>  
                                     </div>
-                                    <span class="help-block small"></span>
                                 </div>
                                 <!-- Nominal -->
                                 <div class="form-group">
@@ -91,7 +97,7 @@
                                                 <span class="input-group-addon" style="background-color: #dd4b39; color: white;">
                                                     Rp. 
                                                 </span>
-                                                <input class="form-control" placeholder="Masukkan Nominal" id="fNominal" name="fNominal" type="number" min="0">
+                                                <input type="number" class="form-control" placeholder="Masukkan Nominal" id="fNominal" name="fNominal" min="0">
                                                 <span class="input-group-addon">,00</span>
                                                 <span class="input-group-btn">
                                                     <button type="button" id="fTambah_pengeluaran" name="fTambah_pengeluaran" class="btn btn-default">
@@ -100,8 +106,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <span class="help-block small"></span>  
+                                    </div> 
                                 </div>
                             </fieldset>
                         </div>
@@ -117,13 +122,14 @@
                         <fieldset>
                             <legend>List Item</legend>
                             <div class="table-responsive">
-                               <table id="tabel_item_pembelian" class="table table-bordered table-hover">
+                               <table id="tabel_item_pengeluaran" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
                                             <th style="width: 15px">No</th>
                                             <th>Keterangan</th>
                                             <th>Nominal</th>
                                             <th>Qty</th>
+                                            <th>Subtotal</th>
                                             <th>Aksi</th>
                                         </tr>
                                     </thead>
@@ -150,60 +156,8 @@
 <!-- js -->
 <!-- js datepicker -->
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
-
 <script type="text/javascript">
-	$(function(){
-		//setting datepicker
-		$(".datepicker").datepicker({
-			autoclose: true,
-	        format: "yyyy-mm-dd",
-	        todayHighlight: true,
-	        orientation: "bottom auto",
-	        todayBtn: true,
-	        todayHighlight: true,
-		});
-	});
-
-    // aksi tambah pengeluaran (tampilan)
-    $("#fTambah_pengeluaran").click(function() {
-        $('#tabel_item_pengeluaran > tbody:last-child').append(
-            '<tr id="baris">'+
-                '<td></td>'+
-                '<td>Dummy</td>'+
-                '<td>Dummy</td>'+
-                '<td>Dummy</td>'+
-                '<td><button type="button" class="btn btn-danger btn-sm" onclick="delList()" title="Hapus dari list"><i class="fa fa-trash"</button></td>'+
-            '</tr>'
-        );
-
-        // penyesuaian kolom No pada tampilan ketika list ditambah
-        numberingList();
-    })
-
-    // aksi delete List pengenluaran
-    function delList() {
-        $('#baris').remove();
-
-        // penyesuaian kolom No pada tampilan ketika list dihapus
-        numberingList();
-    }
-
-    // penyesuaian kolom No pada tampilan ketika list dihapus atau ditambah
-    function numberingList() {
-        $('#tabel_item_pengeluaran tbody tr').each(function (index) {
-            $(this).children("td:eq(0)").html(index + 1);
-        });
-    }
-
-    // menampilkan data dari list
-    function addPengeluaran() {
-        $('#tabel_item_pengeluaran tbody tr').each(function (index) {
-            //menampilkan isi dari kolom no
-            console.log($(this).children("td:eq(0)").html());
-        });
-    }
-
-    
-
-    
+        var listItem = [];
+        var indexItem = 0;
 </script>
+<script type="text/javascript" src="<?= base_url."app/views/pengeluaran/js/initForm.js"; ?>"></script>

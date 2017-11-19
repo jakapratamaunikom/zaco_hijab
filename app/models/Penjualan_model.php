@@ -160,8 +160,8 @@
 
 	// update penjualan
 	function updatePenjualan($koneksi, $data){
-		$ket = "";
-		$ongkir = 0;
+		// $ket = "";
+		// $ongkir = 0;
 
 		$query = "UPDATE penjualan SET tgl= :tgl, jenis= :jenis, nama= :nama, telp= :telp, ";
 		$query .= "alamat= :alamat, ongkir= :ongkir, status= :status, ket= :ket ";
@@ -173,9 +173,9 @@
 		$statement->bindParam(':nama', $data['nama']);
 		$statement->bindParam(':telp', $data['no_telp']);
 		$statement->bindParam(':alamat', $data['alamat']);
-		$statement->bindParam(':ongkir', $ongkir);
+		$statement->bindParam(':ongkir', $data['ongkir']);
 		$statement->bindParam(':status', $data['status']);
-		$statement->bindParam(':ket', $ket);
+		$statement->bindParam(':ket', $data['ket']);
 		$statement->bindParam(':id', $data['id']);
 		$result = $statement->execute();
 		tutup_koneksi($koneksi);

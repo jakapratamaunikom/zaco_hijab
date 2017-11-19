@@ -227,7 +227,6 @@
 	<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 	<!-- Select2 -->
 	<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
-	<script type="text/javascript" src="<?= base_url."assets/plugins/jquery-mask/jquery.mask.min.js"; ?>"></script>
 	<script type="text/javascript">
         var listItem = [];
         var indexItem = 0;

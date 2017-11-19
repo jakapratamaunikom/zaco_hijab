@@ -54,7 +54,10 @@ $(document).ready(function(){
 
 	// on change status transaksi
 	$("#fStatus").change(function(){
-		if(this.value === "1"){ // normal
+		if(this.value === ""){
+			this.disabled = false;
+		}
+		else if(this.value === "1"){ // normal
 			this.disabled = true;
 			// set jenis diskon jadi persen
 			$("#fJenisDiskon").val("p");
