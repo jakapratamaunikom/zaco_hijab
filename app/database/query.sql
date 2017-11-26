@@ -40,3 +40,5 @@ select b.id, concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, b.nama, s.stok_
     where s.id 
         in(SELECT max(id) from stok where stok_akhir > 0 GROUP by(kd_barang))
     ORDER by b.id asc
+
+    call tambah_reject(1, 1, '2017-11-26', 1, 1, 1, 'RETURN', 'Barang Telah Di Reject', 'admin');

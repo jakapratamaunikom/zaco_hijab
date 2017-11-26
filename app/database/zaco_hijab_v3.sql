@@ -85,6 +85,7 @@
 			subtotal double(12,2),
 			laba double(8,2),
 			ket text, -- opsional ket masing2 item
+			status char(1), -- 1: blm reject, 0: sudah pernah di reject
 
 			CONSTRAINT pk_detail_penjualan_id PRIMARY KEY(id),
 			CONSTRAINT fk_detail_penjualan_kd_penjualan FOREIGN KEY(kd_penjualan) REFERENCES penjualan(id),
@@ -92,34 +93,22 @@
 		);
 		
 	-- Tabel Reject
-		CREATE TABLE reject(
-			id int AUTO_INCREMENT NOT NULL,
-			kd_reject varchar(16) NOT NULL UNIQUE,
-			kd_penjualan int,
-			tgl date,
-			ket text,
-			user varchar(10),
+	CREATE TABLE reject(
+		id int AUTO_INCREMENT NOT NULL,
+		kd_penjualan int,
+		tgl date,
+		kd_barang int,
+		kd_barang_ganti int,
+		qty int,
+		jenis enum("REJECT", "RETURN"),
+		user varchar(10),
 
-			CONSTRAINT pk_reject_id PRIMARY KEY(id),
-			CONSTRAINT fk_reject_kd_penjualan FOREIGN KEY(kd_penjualan) REFERENCES penjualan(id),
-			CONSTRAINT fk_reject_user FOREIGN KEY(user) REFERENCES admin(username)
-		);
-
-		-- Detail Reject (belum final)
-		CREATE TABLE detail_reject(
-			id int AUTO_INCREMENT NOT NULL,
-			kd_reject int,
-			barang_lama int,
-			barang_ganti int
-			qty int,
-			jenis enum("REJECT", "RETURN"),
-			ket text,
-
-			CONSTRAINT pk_detail_reject_id PRIMARY KEY(id),
-			CONSTRAINT fk_detail_reject_kd_reject FOREIGN KEY(kd_reject) REFERENCES reject(id),
-			CONSTRAINT fk_detail_reject_barang_lama FOREIGN KEY(barang_lama) REFERENCES barang(id),
-			CONSTRAINT fk_detail_reject_barang_ganti FOREIGN KEY(barang_ganti) REFERENCES barang(id)
-		);
+		CONSTRAINT pk_reject_id PRIMARY KEY(id),
+		CONSTRAINT fk_reject_kd_penjualan FOREIGN KEY(kd_penjualan) REFERENCES penjualan(id),
+		CONSTRAINT fk_reject_kd_barang FOREIGN KEY(kd_barang) REFERENCES barang(id),
+		CONSTRAINT fk_reject_kd_barang_ganti FOREIGN KEY(kd_barang_ganti) REFERENCES barang(id),
+		CONSTRAINT fk_reject_user FOREIGN KEY(user) REFERENCES admin(username)
+	);
 
 	-- Tabel Pembelian
 		CREATE TABLE pembelian(
@@ -264,10 +253,10 @@
     		SELECT id into kd_penjualan_id_param FROM penjualan WHERE kd_penjualan = kd_penjualan_param;
 
     		INSERT INTO detail_penjualan(
-        		kd_penjualan, kd_barang, hpp, harga, qty, jenis_diskon, diskon, subtotal, laba, ket) 
+        		kd_penjualan, kd_barang, hpp, harga, qty, jenis_diskon, diskon, subtotal, laba, ket, status) 
     		VALUES(
         		kd_penjualan_id_param, kd_barang_param, hpp_param, harga_param, qty_param, 
-        		jenis_diskon_param, diskon_param, subtotal_param, laba_param, ket_param);
+        		jenis_diskon_param, diskon_param, subtotal_param, laba_param, ket_param, '1');
 
     		-- get tgl stok ada/tidak
     		SELECT count(tgl) into cek_tgl FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
@@ -739,6 +728,117 @@
 		-- Edit Detail Pengeluaran => update detail pengeluaran langsung
 		-- Hapus Detail Pengeluaran => hapus detail pengeluaran langsung
 
+	-- Data Reject
+		-- Tambah Reject => Insert reject, update detail_penjualan, update/insert stok
+		-- Procedure Tambah Reject
+		CREATE PROCEDURE tambah_reject(
+			in kd_penjualan_param int,
+			in id_detail_penjualan_param int,
+			in tgl_param date,
+			in kd_barang_param int,
+			in kd_barang_ganti_param int,
+			in qty_param int,
+			in jenis_param varchar(10),
+			in ket_param text,
+			in user_param varchar(10)
+		)
+		BEGIN
+			DECLARE cek_tgl_lama int;
+			DECLARE cek_tgl_ganti int;
+			DECLARE stok_akhir_param int;
+			DECLARE id_stok_ganti int;
+			DECLARE get_brg_keluar_ganti int;
+			DECLARE get_stok_akhir_ganti int;
+			DECLARE id_stok_lama int;
+			DECLARE get_brg_masuk_lama int;
+			DECLARE get_stok_akhir_lama int;
+
+			-- get cek tgl
+			SELECT COUNT(tgl) INTO cek_tgl_ganti FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_ganti_param;
+			SELECT COUNT(tgl) INTO cek_tgl_lama FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+
+			-- get brg_keluar ganti
+			SELECT brg_keluar INTO get_brg_keluar_ganti FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_ganti_param;
+
+			-- get stok_akhir ganti
+			SELECT stok_akhir INTO get_stok_akhir_ganti FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_ganti_param;
+			
+			-- Insert reject
+			INSERT INTO reject(
+				kd_penjualan, tgl, kd_barang, kd_barang_ganti, qty, jenis, user) 
+			VALUES(
+				kd_penjualan_param, tgl_param, kd_barang_param, kd_barang_ganti_param, 
+				qty_param, jenis_param, user_param);
+
+			-- update status dan ket detail_penjualan
+			UPDATE detail_penjualan SET status="0", ket=ket_param 
+			WHERE id=id_detail_penjualan_param;
+
+			-- Cek status reject
+			IF jenis_param = "REJECT" THEN -- jika status reject
+				IF cek_tgl_ganti > 0 THEN -- jika tgl ada
+					-- update stok
+					UPDATE stok SET 
+						brg_keluar = (get_brg_keluar_ganti+qty_param), stok_akhir = (get_stok_akhir_ganti-qty_param)
+					WHERE tgl=tgl_param AND kd_barang=kd_barang_ganti_param;
+				ELSE -- jika tgl gk ada
+					SELECT stok_akhir INTO stok_akhir_param FROM stok 
+					WHERE kd_barang=kd_barang_ganti_param ORDER BY id DESC LIMIT 1;
+					-- insert stok
+					INSERT INTO stok(
+						tgl, kd_barang, stok_awal, brg_masuk, brg_keluar, stok_akhir) 
+					VALUES(tgl_param, kd_barang_ganti_param, stok_akhir_param, '', qty_param, (stok_akhir_param-qty_param));
+				END IF;
+
+			ELSE -- jika status return
+				IF kd_barang_param != kd_barang_ganti_param THEN
+					IF cek_tgl_ganti > 0 THEN -- jika tgl ada
+
+						-- update stok barang ganti
+						UPDATE stok SET
+							brg_keluar = (get_brg_keluar_ganti+qty_param), stok_akhir = (get_stok_akhir_ganti-qty_param)
+						WHERE tgl=tgl_param AND kd_barang=kd_barang_ganti_param;
+
+					ELSE -- jika tgl gk ada
+						SELECT stok_akhir INTO stok_akhir_param FROM stok 
+						WHERE kd_barang=kd_barang_ganti_param ORDER BY id DESC LIMIT 1;
+						
+						INSERT INTO stok(
+							tgl, kd_barang, stok_awal, brg_masuk, brg_keluar, stok_akhir) 
+						VALUES(tgl_param, kd_barang_ganti_param, stok_akhir_param, '', qty_param, (stok_akhir_param-qty_param));
+					END IF;
+
+					IF cek_tgl_lama > 0 THEN
+						-- get brg_masuk lama
+						SELECT brg_masuk INTO get_brg_masuk_lama FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+
+						-- get stok_akhir lama
+						SELECT stok_akhir INTO get_stok_akhir_lama FROM stok WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+
+						-- update stok barang lama
+						UPDATE stok SET
+							brg_masuk = (get_brg_masuk_lama+qty_param), stok_akhir = (get_stok_akhir_lama+qty_param)
+						WHERE tgl=tgl_param AND kd_barang=kd_barang_param;
+
+					ELSE
+						SELECT stok_akhir INTO stok_akhir_param FROM stok 
+						WHERE kd_barang=kd_barang_param ORDER BY id DESC LIMIT 1;
+
+						INSERT INTO stok(
+							tgl, kd_barang, stok_awal, brg_masuk, brg_keluar, stok_akhir) 
+						VALUES(
+							tgl_param, kd_barang_param, stok_akhir_param, qty_param, '', (stok_akhir_param+qty_param));
+					END IF;
+
+				END IF;
+
+			END IF;
+		END;
+
+		-- Edit Reject => 
+
+		-- Hapus Reject =>
+
 -- ======================================== --
 
 -- ================= View ================= --
@@ -840,6 +940,6 @@
 		        s.brg_masuk, s.brg_keluar, s.stok_akhir 
 		    FROM stok s
 		    JOIN v_barang b ON b.id = s.kd_barang
-		    ORDER BY b.kd_barang ASC;
+		    ORDER BY s.kd_barang ASC;
 
 -- ======================================== --

@@ -122,7 +122,7 @@
 
 
 <!-- modal reject -->
-<?php include_once("app/views/modals/modal_reject.php"); ?>
+<?php include_once("app/views/reject/modal_reject.php"); ?>
 
 <!-- SELECT2 -->
 <script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
