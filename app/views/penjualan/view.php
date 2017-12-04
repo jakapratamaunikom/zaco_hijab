@@ -6,11 +6,11 @@
 
 <!-- List -->
 <section class="content-header">
-	<h1>Reject</h1>
+	<h1>Penjualan</h1>
 	<ol class="breadcrumb">
 		<li><a href="<?= base_url ?>"><i class="fa fa-dashboard"></i>Zaco Hijab</a></li>
-		<li><a href="<?= base_url."index.php?m=pengeluaran&p=list"?>">Reject</a></li>
-		<li class="active">Lihat Detail Reject</li>
+		<li><a href="<?= base_url."index.php?m=pengeluaran&p=list"?>">Penjualan</a></li>
+		<li class="active">Lihat Detail Penjualan</li>
 	</ol>
 </section>
 
@@ -20,7 +20,7 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<h2 class="page-header">
-				<i class="fa fa-globe"></i> Faktur Penjualan
+				<i class="fa fa-globe"></i> Invoice Penjualan
 				<small class="pull-right" id="lbl_tgl"></small>
 			</h2>
 		</div>
@@ -152,7 +152,7 @@
 			getView(id);
 		}
 
-		setSelect($('#slc_nama'));
+		// setSelect($('#slc_nama'));
 	});
 
 	function getView(id){
@@ -199,6 +199,8 @@
 				id: item.id, 
 				kd_penjualan: item.kd_penjualan, 
 				kd_barang: item.kd_barang,
+				id_barang: item.id_barang,
+				kode_barang: item.kode_barang,
 				nama: item.nama, 
 				hpp: item.hpp,
 				harga: item.harga,
@@ -212,14 +214,14 @@
 			$("#tbl_reject > tbody:last-child").append(
 				"<tr>"+
 				"<td></td>"+ // nomor
-				"<td></td>"+ // kd_barang
+				"<td>"+item.kode_barang+"</td>"+ // kd_barang
 				"<td>"+item.nama+"</td>"+ // nama barang
 				"<td>"+item.harga+"</td>"+ // harga
 				"<td>"+item.qty+"</td>"+ // qty
 				"<td>"+item.diskon+"</td>"+ // diskon
 				"<td>"+item.subtotal+"</td>"+ // subtotal
 				"<td>"+item.ket+"</td>"+ // keterangan
-				"<td>"+btnAksi(dataItem.index)+"</td>"+
+				"<td>"+btnAksi(dataItem.index, item.id_barang)+"</td>"+
 				"</tr>"
 			);
 			numberingList();
@@ -228,30 +230,33 @@
 		
 	}
 
-	function btnAksi(index){
+	function btnAksi(index, id_barang){
 
 		// var disabled = respon ? '' : 'disabled';
 		// var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
 	 //                    '<i class="fa fa-trash"></button>';
 	    
 		var btn = '<button type="button" class="btn btn-danger btn-sm btn-flat" title="Reject"'+
-						' onclick="reject('+index+', this)">'+
+						' onclick="reject('+index+', '+id_barang+')">'+
 	                    'Reject</button>';
 	    return btn;
 	}
 
-	function reject(index, val) {
+	function reject(index, id_barang) {
 		$("#modal_reject").modal('show');
 		$('#txt_nama').val(listItem[index].nama);
 		$('#txt_qty').val(listItem[index].qty);
 		$('#txt_subtotal').val(listItem[index].subtotal);
-		console.log($(val));
+
+		setSelect_barang(id_barang);
+
+		// console.log($(val));
 	}
 
 	// funsgi set isi select id_barang dan qty
-	function setSelect(idSelect){
+	function setSelect(id_barang){
 	    // reset ulang select
-	    idSelect.find('option')
+	    $("#slc_nama").find('option')
 	        .remove()
 	        .end()
 	        .append($('<option>',{
@@ -265,6 +270,7 @@
 	        dataType: "json",
 	        data: {
 	            "action" : "getSelect",
+	            "id_barang": id_barang,
 	        },
 	        success: function(data){
 	        	var disabled = false;

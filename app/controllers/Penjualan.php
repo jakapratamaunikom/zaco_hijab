@@ -371,7 +371,9 @@
 				$dataRow['id'] = $row['id'];
 				$dataRow['kd_penjualan'] = $row['kd_penjualan'];
 				$dataRow['kd_barang'] = $row['kd_barang'];
-				// $dataRow[] = $row['kode_barang'];
+				$dataRow['kode_barang'] = $row['kode_barang'];
+				$dataRow['id_barang'] = $row['id_barang'];
+				// $dataRow['id_warna'] = $row['id_warna'];
 				$dataRow['nama'] = $row['nama'];
 				$dataRow['hpp'] = rupiah($row['hpp']);
 				$dataRow['harga'] = rupiah($row['harga']);

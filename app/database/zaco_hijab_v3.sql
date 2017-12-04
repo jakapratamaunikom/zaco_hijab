@@ -847,8 +847,9 @@
 	-- id barang, kode barang, nama, harga barang, ket, status dan stok akhir
 	CREATE OR REPLACE VIEW v_barang AS
 		SELECT
-			b.id, concat_ws('-',ib.id_barang, iw.id_warna) kd_barang, 
-	        b.nama,  b.hpp,  b.harga_pasar, b.market_place, b.harga_ig, b.foto, b.ket, 
+			b.id, concat_ws('-',ib.id_barang, iw.id_warna) kd_barang,
+			b.id_barang, b.id_warna, b.nama, b.hpp, b.harga_pasar, 
+			b.market_place, b.harga_ig, b.foto, b.ket, 
 	        (CASE WHEN (b.status = '1') THEN 'AKTIF' ELSE 'NON AKTIF' END) status, 
 	        s.stok_akhir stok
 		FROM stok s
