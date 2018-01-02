@@ -35,11 +35,6 @@ $(document).ready(function(){
                 "orderable":false,
             }
         ],
-        // "createdRow": function(row, data, dataIndex){
-        //     if(data[1] == "RAI"){
-        //         $(row).addClass('danger');
-        //     }
-        // },
     });
 });
 

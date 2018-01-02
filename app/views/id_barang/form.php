@@ -9,17 +9,17 @@
             </div>
             <div class="modal-body">
                 <form id="form_modal_idBarang" role=form>
-                    <input type="hidden" name="id_barang" id="id_barang">
+                    <input type="hidden" name="id_idBarang" id="id_barang">
                     <!-- field id barang -->
                     <div class="form-group">
-                        <label for="fmId_barang">Id Barang</label>
-                        <input type="text" name="fmId_barang" id="fmId_barang" class="form-control" placeholder="Masukkan ID Barang">
+                        <label for="id_barang">Id Barang</label>
+                        <input type="text" name="id_barang" id="id_barang" class="form-control" placeholder="Masukkan ID Barang">
                         <span class="help-block small"></span>
                     </div>
                     <!-- field nama -->
                     <div class="form-group">
-                        <label for="fmNama_idBarang">Nama</label>
-                        <input type="text" name="fmNama_idBarang" id="fmNama_idBarang" class="form-control" placeholder="Masukkan Nama Barang">
+                        <label for="nama_idBarang">Nama</label>
+                        <input type="text" name="nama_idBarang" id="nama_idBarang" class="form-control" placeholder="Masukkan Nama Barang">
                         <span class="help-block small"></span>
                     </div>
             </div>

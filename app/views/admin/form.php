@@ -6,14 +6,6 @@
 	if($id) $btn = "edit";
 	else $btn = "tambah";
 ?>
-
-
-	<!-- form -->
-
-	<!-- css -->
-
-	<!-- -->
-
 <!-- isi konten -->
 <section class="content-header">
 	<h1>Admin</h1>

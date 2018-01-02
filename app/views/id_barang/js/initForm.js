@@ -19,8 +19,8 @@ $(document).ready(function(){
 
 function submit(){
     var id = $("#id_barang").val().trim();
-    var id_barang = $("#fmId_barang").val().trim();
-    var nama = $("#fmNama_idBarang").val().trim();
+    var id_barang = $("#id_idBarang").val().trim();
+    var nama = $("#nama_idBarang").val().trim();
     var submit = $("#btn_submit_idBarang").val();
 
     // request action

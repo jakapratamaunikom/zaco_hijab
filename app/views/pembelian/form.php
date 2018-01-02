@@ -6,13 +6,6 @@
     if($id) $btn = "edit";
     else $btn = "tambah";
 ?>
-
-<!-- form -->
-<!-- css -->
-    <!-- Datepicker -->
-    <link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
-<!-- -->
-
 <!-- header dan breadcrumb -->
 <section class="content-header">
     <h1>Form Data Pembelian</h1>
@@ -151,13 +144,5 @@
     </form>
 </section>                      
 
-<!-- js -->
-<!-- js datepicker -->
-<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
-<!-- Select2 -->
-<script src="<?= base_url."assets/plugins/select2/select2.full.min.js"; ?>"></script>
-<script type="text/javascript">
-    var listItem = [];
-    var indexItem = 0;
-</script>
+
 <script type="text/javascript" src="<?= base_url."app/views/pembelian/js/initForm.js"; ?>"></script>

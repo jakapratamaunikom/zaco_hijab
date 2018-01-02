@@ -6,16 +6,6 @@
 	
 ?>
 
-<!-- css -->
-<!-- DataTables -->
-<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
-<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
-
-<!-- Datepicker -->
-<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
-<!-- -->
-
-
 <section class="content-header">
 	<h1>Pengeluaran</h1>
 	<ol class="breadcrumb">
@@ -40,10 +30,6 @@
                     <!-- panel button -->
                     <div class="row" style="padding-top: 25px;">
                         <div class="col-md-12 col-xs-12">
-
-                                <!-- <button type="button" class="btn btn-default btn-flat"><i class="fa fa-plus"></i> Tambah</button> -->
-                                
-                          
                             <div class="btn-group">
                                 <!-- tambah -->
                                 <a href="<?= base_url."index.php?m=pengeluaran&p=form" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a>
@@ -89,15 +75,6 @@
 <!-- modal ekspor data -->
 <?php include_once("app/views/export/formExportTgl.php"); ?>
 <!-- js -->
-<!-- DataTables -->
-<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/jquery.dataTables.min.js"; ?>"></script>
-<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"; ?>"></script>
-<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
-<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
-
-<!-- js datepicker -->
-<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
-
 <script type="text/javascript" src="<?= base_url."app/views/export/js/initExportTgl.js"; ?>"></script>
 <?php 
     if($notif){

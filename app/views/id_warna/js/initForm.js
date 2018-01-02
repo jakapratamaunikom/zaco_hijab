@@ -18,9 +18,9 @@ $(document).ready(function(){
 });
 
 function submit(){
-	var id = $("#id_warna").val().trim();
-    var id_warna = $("#fmId_warna").val().trim();
-    var nama = $("#fmNama_idWarna").val().trim();
+	var id = $("#id_idWarna").val().trim();
+    var id_warna = $("#id_warna").val().trim();
+    var nama = $("#nama_idWarna").val().trim();
     var submit = $("#submit_idWarna").val();
 
    // request action
