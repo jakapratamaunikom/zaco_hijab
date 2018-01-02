@@ -64,28 +64,12 @@
                                         <th>Kode Penjualan</th>
                                         <th>Tanggal</th>
                                         <th>Item</th>
+                                        <th>Item Pengganti</th>
                                         <th>Qty</th>
-                                        <th>Pengganti</th>
-                                        <th>Keterangan</th>
+                                        <th>Jenis</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td>Dummy</td>
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>Dummy</td> 
-                                        <td>
-                                        <a href="<?= base_url."index.php?m=reject&p=view" ?>" class="btn bg-maroon btn-flat">
-                                                <i class="fa fa-eye"></i> Detail
-                                            </a>
-                                        </td>   
-                                    </tr>
-                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -94,9 +78,6 @@
     	</div>
     </div>
 </section>
-
-<!-- modal ekspor data -->
-<?php include_once("app/views/modals/modal_export.php"); ?>
 
 <!-- js -->
 <!-- DataTables -->
@@ -109,27 +90,44 @@
 <script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 
 <script type="text/javascript">
-	//setting datatable
-	$(function(){
-		$("#tabel_reject").DataTable({
-			"language" : {
-				"lengthMenu": "Tampilkan _MENU_ data/page",
-	            "zeroRecords": "Data Tidak Ada",
-	            "info": "Page _PAGE_ dari _PAGES_",
-	            "infoEmpty": "Data Kosong",
-	            "search": "Pencarian:",
-	            "paginate": {
-			        "first": "Pertama",
-			        "last": "Terakhir",
-			        "next": "Selanjutnya",
-			        "previous": "Sebelumnya"
-			    }
-			}
-		});
-	});
+	$(document).ready(function(){
+        // setting datatable
+        var tabel_reject = $("#tabel_reject").DataTable({
+            "language" : {
+                "lengthMenu": "Tampilkan _MENU_ data/page",
+                "zeroRecords": "Data Tidak Ada",
+                "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
+                "infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
+                "search": "Pencarian:",
+                "loadingRecords": "Loading...",
+                "processing": "Processing...",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            "lengthMenu": [ 25, 50, 75, 100 ],
+            "pageLength": 25,
+            order: [],
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: base_url+"app/controllers/Reject.php",
+                type: 'POST',
+                data: {
+                    "action" : "list",
+                }
+            },
+            "columnDefs": [
+                {
+                    "targets":[0, 7],
+                    "orderable":false,
+                }
+            ],
+        });
+    });
 </script>
 
-
-<!-- js modal export -->
-<script type="text/javascript" src="<?= base_url."app/views/modals/modal_export.js"; ?>"></script>
 <!-- -->

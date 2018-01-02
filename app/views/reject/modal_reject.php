@@ -9,6 +9,7 @@
                 <h4 class="modal-title">Reject Barang</h4>
             </div>
             <form id="form_modal_reject" role="form" enctype="multipart/form-data">
+                <input type="hidden" name="id_detail" id="id_detail">
                 <div class="modal-body">
                         
                         <div class="row">
@@ -18,6 +19,7 @@
                                 <!-- field jenis -->
                                 <div class="form-group">
                                     <label for="txt_nama">Nama</label>
+                                    <input type="hidden" name="kd_barang_lama" id="kd_barang_lama">
                                     <input type="text" name="txt_nama" id="txt_nama" class="form-control" readonly>
                                 </div>
                                 
@@ -51,6 +53,7 @@
                                 <!-- field jenis -->
                                 <div class="form-group">
                                     <label for="slc_nama">Nama</label>
+                                    <input type="hidden" name="nama_barang_ganti" id="nama_barang_ganti">
                                     <select id="slc_nama" name="slc_nama" class="form-control select2" style="width: 100%;">
                                                             
                                     </select>
@@ -69,12 +72,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6 col-lg-6 col-sm-12">
+                                    <!-- <div class="col-md-6 col-lg-6 col-sm-12">
                                         <div class="form-group">
                                             <label for="txt_subtotal_ganti">Subtotal</label>
                                             <input type="text" name="txt_subtotal_ganti" id="txt_subtotal_ganti" class="form-control" readonly>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>

@@ -21,11 +21,6 @@
 			legend{
 				font-size: 15px;
 			}
-			/*.rp{
-				background-color: #dd4b39;
-				border-color: #d73925;
-			}*/
-
 			/* uplaod foto v2 */
 			.image-preview-input{
 				position: relative;
@@ -50,6 +45,14 @@
 			    margin-left:2px;
 			}
 		</style>
+
+		<!-- DataTables -->
+  		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/css/dataTables.bootstrap.min.css"; ?>"/>
+  		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/css/responsive.bootstrap.min.css"; ?>"/>
+  		<!-- Datepicker -->
+		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker3.min.css"; ?>"/>
+		<link rel="stylesheet" type="text/css" href="<?= base_url."assets/plugins/lightbox2/css/lightbox.min.css"; ?>">
+
 		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>

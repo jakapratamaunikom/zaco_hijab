@@ -164,7 +164,7 @@
 		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/DataTables-1.10.15/js/dataTables.bootstrap.min.js"; ?>"></script>
 		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
 		<script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
-		<script type="text/javascript" src="<?= base_url."assets/plugins/lightbox2/js/lightbox.min.js"; ?>"></script>
+		
 		<script type="text/javascript" src="<?= base_url."assets/plugins/datepicker/bootstrap-datepicker.min.js"; ?>"></script>
 		<!-- js modal export -->
         <script type="text/javascript" src="<?= base_url."app/views/export/js/initExport.js"; ?>"></script>

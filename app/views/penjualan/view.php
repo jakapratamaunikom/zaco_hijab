@@ -34,19 +34,16 @@
         <div class="col-sm-4 col-xs-12 invoice-col">
 			Penjual: <!-- Informasi Penjual --> 
 			<address>
-				<strong>Zaco Hijab, Inc.</strong><br>
-				Alamat<br><br>
-				Telepon: (+62) 81573777945
+				<strong>Zaco Hijab</strong><br>
 			</address>
         </div>
 
         <div class="col-sm-4 col-xs-12 invoice-col">
 			Pembeli: <!-- Informasi Pembeli yang klaim Reject --> 
 			<address>
-				<strong>Nama:&nbsp;</strong><nama id="lbl_nama"></nama> 
-				<div id="lbl_alamat"></div>
-				<br>
-				<strong>Telepon:&nbsp;</strong><tlp id="lbl_telp"></tlp>
+				<strong>Nama:&nbsp;</strong><nama id="lbl_nama"></nama><br>
+				<strong>Alamat:&nbsp;</strong><alamat id="lbl_alamat"></alamat><br>
+				<strong>Telepon:&nbsp;</strong><tlp id="lbl_telp"></tlp><br>
 			</address>
         </div>
 
@@ -56,7 +53,6 @@
         		<b><c id="lbl_no_penjualan"></c></b><br>
 				<b id="lbl_jenis"></b><br>
 				<b>Ongkir <c id="lbl_ongkir"></c></b><br><br>
-				<b>No Reject #007612</b><br>
         	</div>
         </div>
         <!-- /.col -->
@@ -152,6 +148,13 @@
 			getView(id);
 		}
 
+		$('#form_modal_reject').submit(function(e){
+			e.preventDefault();
+			submit_reject();
+
+			return false;
+		});
+
 		// setSelect($('#slc_nama'));
 	});
 
@@ -209,6 +212,7 @@
 				subtotal: item.subtotal,
 				jenis_diskon: item.jenis_diskon,
 				ket: item.ket,
+				status_reject: item.status,
 			};
 			listItem.push(dataItem);
 			$("#tbl_reject > tbody:last-child").append(
@@ -221,7 +225,7 @@
 				"<td>"+item.diskon+"</td>"+ // diskon
 				"<td>"+item.subtotal+"</td>"+ // subtotal
 				"<td>"+item.ket+"</td>"+ // keterangan
-				"<td>"+btnAksi(dataItem.index, item.id_barang)+"</td>"+
+				"<td>"+btnAksi(dataItem.index, item.id_barang, item.status)+"</td>"+
 				"</tr>"
 			);
 			numberingList();
@@ -230,31 +234,33 @@
 		
 	}
 
-	function btnAksi(index, id_barang){
+	function btnAksi(index, id_barang, status){
 
-		// var disabled = respon ? '' : 'disabled';
+		var disabled = status==="0" ? 'disabled' : '';
 		// var btn = '<button type="button" class="btn btn-danger btn-sm bnt-flat" onclick="delList('+index+',this)" title="Hapus dari list"'+disabled+'>'+
 	 //                    '<i class="fa fa-trash"></button>';
 	    
 		var btn = '<button type="button" class="btn btn-danger btn-sm btn-flat" title="Reject"'+
-						' onclick="reject('+index+', '+id_barang+')">'+
+						' onclick="modal_reject('+index+', '+id_barang+')" '+disabled+'>'+
 	                    'Reject</button>';
 	    return btn;
 	}
 
-	function reject(index, id_barang) {
+	function modal_reject(index, id_barang) {
 		$("#modal_reject").modal('show');
+		$('#id_detail').val(listItem[index].id);
 		$('#txt_nama').val(listItem[index].nama);
+		$('#kd_barang_lama').val(listItem[index].kd_barang);
 		$('#txt_qty').val(listItem[index].qty);
 		$('#txt_subtotal').val(listItem[index].subtotal);
 
-		setSelect_barang(id_barang);
+		console.log(id_barang);
 
-		// console.log($(val));
+		setSelect_reject(id_barang);
 	}
 
 	// funsgi set isi select id_barang dan qty
-	function setSelect(id_barang){
+	function setSelect_reject(id_barang){
 	    // reset ulang select
 	    $("#slc_nama").find('option')
 	        .remove()
@@ -269,7 +275,7 @@
 	        type: "post",
 	        dataType: "json",
 	        data: {
-	            "action" : "getSelect",
+	            "action" : "getSelect_reject",
 	            "id_barang": id_barang,
 	        },
 	        success: function(data){
@@ -278,13 +284,13 @@
 	            	if(parseInt(item.stok) <= 0) disabled = true; 
 	            	else disabled = false;
 
-	                idSelect.append($("<option>", {
+	                $("#slc_nama").append($("<option>", {
 	                    value: item.id,
 	                    text: item.nama+' - STOK: '+item.stok,
 	                    disabled: disabled,
 	                }));                 
 	            });
-	            // console.log(data);
+	            console.log(data);
 	        },
 	        error: function (jqXHR, textStatus, errorThrown){ // error handling
 	            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
@@ -297,8 +303,8 @@
 	function setStatus(){
 		var arrayStatus = [
 			{value: "", text: "-- Pilih Status --"},
-			{value: "1", text: "REJECT"},
-			{value: "2", text: "RETURN"},
+			{value: "REJECT", text: "REJECT"},
+			{value: "RETURN", text: "RETURN"},
 		];
 
 		$.each(arrayStatus, function(index, item){
@@ -307,6 +313,54 @@
 		});
 
 		$("#slc_status").val("");
+	}
+
+	// submit reject
+	function submit_reject(){
+		swal({
+    		title: "Apakah Anda Yakin ?",
+    		type: "warning",
+    		showCancelButton: true,
+    		confirmButtonColor: "#DD6B55",
+    		confirmButtonText: "Ya, Reject/Return!",
+    		closeOnConfirm: false,
+    		},function(){ // saat confirm
+    			var data = {
+					"kd_penjualan": urlParams.id,
+					"id_detail": $('#id_detail').val(),
+					"kd_barang": $('#kd_barang_lama').val(),
+					"kd_barang_ganti": $('#slc_nama').val(),
+					"qty": $('#txt_qty_ganti').val(),
+					"jenis": $('#slc_status').val(),
+					"action": "reject",
+				};
+
+				$.ajax({
+	    			url: base_url+"app/controllers/Penjualan.php",
+					type: "post",
+					dataType: "json",
+					data: data,
+					success: function(hasil){
+						if(hasil){
+							swal({
+								title: "Pesan",
+								text: "Barang Berhasil Di Reject/ Return",
+								type: "success",
+								}, function(){
+									location.reload();
+								}
+							);
+						}
+						else swal("Pesan!", "Barang Gagal Di Reject / Return, Coba Lagi", "error");
+						console.log(hasil);
+					},
+					error: function (jqXHR, textStatus, errorThrown) { // error handling
+			            swal("Pesan Error", "Operasi Gagal, Silahkan Coba Lagi", "error");
+			            console.log(jqXHR, textStatus, errorThrown);
+			        }
+		    	})
+    		}
+    	);
 	}
 
 	// fungsi penomeran berurut otomatis

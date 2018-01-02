@@ -39,6 +39,18 @@
 		return $result;
 	}
 
+	function get_barang_reject($koneksi, $id_barang){
+		$query = "SELECT id, nama, stok FROM v_barang WHERE id_barang = :id";
+
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':id', $id_barang);
+		$statement->execute();
+		$result = $statement->fetchAll();
+		tutup_koneksi($koneksi);
+
+		return $result;
+	}
+
 	// get harga barang
 	function get_harga_barang($koneksi, $id){
 		$query = "SELECT hpp, harga_pasar, market_place, harga_ig FROM v_barang WHERE id=:id";

@@ -83,23 +83,43 @@
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/dataTables.responsive.min.js"; ?>"></script>
 <script type="text/javascript" src="<?= base_url."assets/plugins/DataTables/Responsive-2.1.1/js/responsive.bootstrap.min.js"; ?>"></script>
 <script type="text/javascript">
-	//setting datatable
-	$(function(){
-		$("#tabel_stok").DataTable({
-			"language" : {
-				"lengthMenu": "Tampilkan _MENU_ data/page",
-	            "zeroRecords": "Data Tidak Ada",
-	            "info": "Page _PAGE_ dari _PAGES_",
-	            "infoEmpty": "Data Kosong",
-	            "search": "Pencarian:",
-	            "paginate": {
-			        "first": "Pertama",
-			        "last": "Terakhir",
-			        "next": "Selanjutnya",
-			        "previous": "Sebelumnya"
-			    }
-			}
-		});
-	});
+	$(document).ready(function(){
+        // setting datatable
+        var tabel_stok = $("#tabel_stok").DataTable({
+            "language" : {
+                "lengthMenu": "Tampilkan _MENU_ data/page",
+                "zeroRecords": "Data Tidak Ada",
+                "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
+                "infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
+                "search": "Pencarian:",
+                "loadingRecords": "Loading...",
+                "processing": "Processing...",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Selanjutnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            "lengthMenu": [ 25, 50, 75, 100 ],
+            "pageLength": 25,
+            order: [],
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: base_url+"app/controllers/Stok.php",
+                type: 'POST',
+                data: {
+                    "action" : "list",
+                }
+            },
+            "columnDefs": [
+                {
+                    "targets":[0, 7],
+                    "orderable":false,
+                }
+            ],
+        });
+    });
 </script>
 <!-- -->

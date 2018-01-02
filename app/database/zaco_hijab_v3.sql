@@ -442,7 +442,7 @@
 			in id_detail_param int,
 		    in kd_barang_param int,
 		    in tgl_param date,
-		    in qty_param int,
+		    in qty_param int
 		)
 		BEGIN
 			DECLARE tgl_skrng date;
@@ -943,4 +943,12 @@
 		    JOIN v_barang b ON b.id = s.kd_barang
 		    ORDER BY s.kd_barang ASC;
 
+	-- view reject
+		CREATE OR REPLACE VIEW v_reject AS
+			SELECT r.id, p.kd_penjualan, r.tgl, b.kd_barang, b_ganti.kd_barang kd_barang_ganti, r.qty, r.jenis, r.user
+			FROM reject r
+			JOIN penjualan p ON p.id = r.kd_penjualan
+			JOIN v_barang b ON b.id = r.kd_barang
+			JOIN v_barang b_ganti ON b_ganti.id = r.kd_barang_ganti
+			ORDER BY r.id ASC;
 -- ======================================== --

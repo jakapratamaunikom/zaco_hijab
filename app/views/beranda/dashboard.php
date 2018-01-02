@@ -75,7 +75,7 @@
   	<!-- panel 2 -->
   	<div class="row">
 		<!-- panel grafik penjualan dan laba -->
-    	<div class="col-xs-12 col-md-8">
+    	<div class="col-xs-12 col-md-12">
       		<div class="box box-default box-penjualan-laba">
         		<div class="box-header with-border">
           			<h3 class="box-title">Grafik Perbandingan Penjualan dan Laba</h3>
@@ -94,46 +94,12 @@
                 </div>
       		</div>
     	</div>
-    	<!-- panel item -->
-    	<div class="col-xs-12 col-md-4">
-      		<div class="box box-default box-keterangan-item">
-        		<div class="box-header with-border">
-          			<h3 class="box-title">Keterangan Item</h3>
-          			<div class="box-tools pull-right">
-                    	<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-              		</div>
-        		</div>
-        		<!-- tab -->
-        		<div class="box-body">
-              		<div class="nav-tabs-custom">
-		    			<ul class="nav nav-tabs">
-		              		<li class="active"><a href="#tab_terlaris" data-toggle="tab">Terlaris</a></li>
-             				<li><a href="#tab_kurang_laku" data-toggle="tab">Kurang Laku</a></li>
-             				<li><a href="#tab_belum_terjual" data-toggle="tab">Belum Terjual</a></li>
-		    			</ul>
-		    			<div class="tab-content">
-		    				<!-- content terlaris -->
-		    				<div class="tab-pane active" id="tab_terlaris">
-		    				</div>
-		    				<!-- konten kurang laku -->
-		    				<div class="tab-pane" id="tab_kurang_laku">
-		    				</div>
-		    				<!-- konten belum terjual -->
-		    				<div class="tab-pane" id="tab_belum_terjual">
-		    				</div>
-		    			</div>
-		    		</div>
-          		</div>
-          		<div class="overlay" style="display: none;">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
-      		</div>
-    	</div>
+    	
 	</div>
   	<!-- panel 3 -->
   	<div class="row">
     	<!-- panel grafik pengeluaran -->
-    	<div class="col-xs-12 col-md-8">
+    	<div class="col-xs-12 col-md-12">
       		<div class="box box-default box-pembelian-pengeluaran">
         		<div class="box-header with-border">
           			<h3 class="box-title">Grafik Pembelian-Pengeluaran</h3>
@@ -149,24 +115,6 @@
                     <i class="fa fa-refresh fa-spin"></i>
                 </div>
       		</div>
-    	</div>
-    	<!-- panel stok warning -->
-    	<div class="col-xs-12 col-md-4">
-    		<div class="box box-default box-stok-warning">
-    			<div class="box-header with-border">
-          			<h3 class="box-title">Stok Warning</h3>
-          			<div class="box-tools pull-right">
-                    	<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                  	</div>
-        		</div>
-        		<!-- grafik -->
-        		<div class="box-body">
-            		The body of the box
-        		</div>
-        		<div class="overlay" style="display: none;">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
-    		</div>
     	</div>
   	</div>
 </section>

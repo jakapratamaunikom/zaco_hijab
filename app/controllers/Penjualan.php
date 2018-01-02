@@ -53,6 +53,15 @@
 				getSelect($koneksi);
 				break;
 
+			case 'getselect_reject':
+				$id_barang = isset($_POST['id_barang']) ? $_POST['id_barang'] : false;
+				getSelect_reject($koneksi, $id_barang);
+				break;
+
+			case 'reject':
+				reject($koneksi);
+				break;
+
 			default:
 				die();
 				break;
@@ -382,6 +391,7 @@
 				$dataRow['diskon'] = $diskon;
 				$dataRow['subtotal'] = rupiah($row['subtotal']);
 				$dataRow['ket'] = $ket;
+				$dataRow['status'] = $row['status'];
 
 				$temp_data[] = $dataRow;
 			}
@@ -424,6 +434,11 @@
 	// fungsi get data select barang
 	function getSelect($koneksi){
 		$data_barang = get_ket_barang($koneksi);
+		echo json_encode($data_barang);
+	}
+
+	function getSelect_reject($koneksi, $id_barang){
+		$data_barang = get_barang_reject($koneksi, $id_barang);
 		echo json_encode($data_barang);
 	}
 
@@ -550,4 +565,36 @@
 		}
 
 		return $respon;
+	}
+
+	function reject($koneksi){
+		$data = isset($_POST) ? $_POST : false;
+
+		$nama_barang_ganti = get_barang_by_id($koneksi, $data['kd_barang_ganti']);
+
+		$ket = "BARANG DI ".$data['jenis']." DENGAN ".$nama_barang_ganti['nama'];
+		$tgl = date("Y-m-d");
+
+		$query = "CALL tambah_reject ";
+		$query .= "(:kd_penjualan, :id_detail_penjualan, :tgl, :kd_barang, :kd_barang_ganti, ";
+		$query .= ":qty, :jenis, :ket, :user)";
+		
+		session_start();
+		$statement = $koneksi->prepare($query);
+		$statement->bindParam(':kd_penjualan',$data['kd_penjualan']);
+		$statement->bindParam(':id_detail_penjualan',$data['id_detail']);
+		$statement->bindParam(':tgl', $tgl);
+		$statement->bindParam(':kd_barang',$data['kd_barang']);
+		$statement->bindParam(':kd_barang_ganti',$data['kd_barang_ganti']);
+		$statement->bindParam(':qty',$data['qty']);
+		$statement->bindParam(':jenis',$data['jenis']);
+		$statement->bindParam(':ket',$ket);
+		$statement->bindParam(':user',$_SESSION['sess_username']);
+		$result = $statement->execute();
+
+		$output = array(
+			"hasil" => $result,
+		);
+
+		echo json_encode($output);
 	}

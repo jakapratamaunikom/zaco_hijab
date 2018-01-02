@@ -10,7 +10,7 @@
 	}
 
 	function get_login($koneksi, $username){
-		$query = "SELECT * FROM admin WHERE BINARY username = :username";
+		$query = "SELECT * FROM admin WHERE username = :username";
 
 		$statement = $koneksi->prepare($query);
 		$statement->bindParam(':username', $username);
