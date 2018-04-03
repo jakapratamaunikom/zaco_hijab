@@ -56,15 +56,19 @@
 			'kondisi' => false,
 		);
 
-		$data_id_barang = get_all_id_barang($koneksi, $config_db);
+		$data_id_barang = get_datatable_id_barang($koneksi, $config_db);
 
 		// siapkan data untuk isi datatable
 		$data = array();
 		$no_urut = $_POST['start'];
 		foreach($data_id_barang as $row){
 			$no_urut++;
-			$aksi = '<button type="button" class="btn btn-success btn-flat btn-sm" onclick="edit_id_barang('."'".$row["id"]."'".')">Edit</button>';
+			// $aksi = '<button type="button" class="btn btn-success btn-flat btn-sm" onclick="edit_id_barang('."'".$row["id"]."'".')">Edit</button>';
 			
+			$aksiEdit = '<button type="button" class="btn btn-success btn-flat btn-sm" onclick="edit_id_barang('."'".$row["id"]."'".')">Edit</button>';
+			$aksiHapus = '<button type="button" class="btn btn-danger btn-flat btn-sm" onclick="edit_id_barang('."'".$row["id"]."'".')">Hapus</button>';
+			$aksi = $aksiEdit.$aksiHapus;
+
 			$dataRow = array();
 			$dataRow[] = $no_urut;
 			$dataRow[] = $row['id_barang'];

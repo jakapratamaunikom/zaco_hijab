@@ -71,8 +71,10 @@
 				// Footer
 				include_once("app/views/template/footer.php");
 
-				// Control Sidebar
-				include_once("app/views/template/control_sidebar.php");
+				if(strtolower($sess_level) == "admin"){
+					// Control Sidebar
+					include_once("app/views/template/control_sidebar.php");
+				}	
 			?>
 		</div>
 		<!-- ./wrapper -->

@@ -1,6 +1,6 @@
 <?php
 	// get all data id barang
-	function get_all_id_barang($koneksi, $config_db){
+	function get_datatable_id_barang($koneksi, $config_db){
 		$query = get_dataTable($config_db);
 
 		$statement = $koneksi->prepare($query);
